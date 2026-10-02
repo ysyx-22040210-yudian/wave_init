@@ -1,0 +1,44 @@
+[
+  {
+    "test": "test_plain_and_shapes",
+    "status": "pass",
+    "seconds": 4.14,
+    "error": ""
+  },
+  {
+    "test": "test_modports_and_generics",
+    "status": "pass",
+    "seconds": 20.31,
+    "error": ""
+  },
+  {
+    "test": "test_interface_array_and_aliases",
+    "status": "pass",
+    "seconds": 8.79,
+    "error": ""
+  },
+  {
+    "test": "test_time_and_xz",
+    "status": "pass",
+    "seconds": 20.8,
+    "error": ""
+  },
+  {
+    "test": "test_dump_gaps_and_missing",
+    "status": "fail",
+    "seconds": 17.82,
+    "error": "/root/wave_init/build/acceptance_5uxqtlgf/late_signal.log: exit 1, expected 2\nReading timing_top.dut at 10ps through Verdi NPI...\nwave_init: time 10 outside FSDB range 15..70 ticks\ntime 10 outside FSDB range 15..70 ticks\n    while executing\n\"error \"time $tick outside FSDB range $lo..$hi ticks\"\"\n    (procedure \"wi::main\" line 14)\n    invoked from within\n\"wi::main\"\n"
+  },
+  {
+    "test": "test_existing_include_and_release",
+    "status": "pass",
+    "seconds": 4.36,
+    "error": ""
+  },
+  {
+    "test": "test_parameters_struct_union_shared_interface",
+    "status": "fail",
+    "seconds": 4.11,
+    "error": "'\\\\escaped.port'"
+  }
+]

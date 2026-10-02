@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+out/
+build/
+/dist/*
+!/dist/wave_init-1.3.0-linux-x86_64.tar.gz
+!/dist/wave_init-1.3.0-linux-x86_64.tar.gz.sha256
+.vm_results/
+verdiLog/
+novas.*
+*.fsdb
+simv*
+csrc/

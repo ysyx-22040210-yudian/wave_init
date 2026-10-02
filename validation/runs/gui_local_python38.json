@@ -1,0 +1,11 @@
+{
+  "status": "pass",
+  "mode": "local",
+  "python": "3.8.13 (default, Aug 16 2022, 12:16:29) \n[GCC 9.3.1 20200408 (Red Hat 9.3.1-2)]",
+  "tk": "8.5.13",
+  "signals": 16,
+  "responsive_heartbeats": 90,
+  "output": "/root/wave_init/out/gui_acceptance_03fe768c54be479c80141af35b687504",
+  "local_report": "/root/wave_init/out/gui_acceptance_03fe768c54be479c80141af35b687504",
+  "sftp_browser": false
+}

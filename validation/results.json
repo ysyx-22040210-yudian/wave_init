@@ -1,0 +1,117 @@
+{
+  "date": "2026-10-02",
+  "vm": "192.168.31.116",
+  "runtime": "CentOS 7 / Python 3.6.8 / Verdi and VCS O-2018.09-SP2",
+  "unit_tests": {
+    "count": 7,
+    "status": "pass",
+    "platforms": [
+      "Windows",
+      "CentOS 7"
+    ]
+  },
+  "integration_groups": [
+    {
+      "test": "test_plain_and_shapes",
+      "status": "pass",
+      "seconds": 4.29,
+      "error": "",
+      "evidence": "runs/acceptance_zdq54owv.json"
+    },
+    {
+      "test": "test_modports_and_generics",
+      "status": "pass",
+      "seconds": 20.61,
+      "error": "",
+      "evidence": "runs/acceptance_u1lawfik.json"
+    },
+    {
+      "test": "test_interface_array_and_aliases",
+      "status": "pass",
+      "seconds": 8.03,
+      "error": "",
+      "evidence": "runs/acceptance_zdq54owv.json"
+    },
+    {
+      "test": "test_time_and_xz",
+      "status": "pass",
+      "seconds": 20.8,
+      "error": "",
+      "evidence": "runs/acceptance_u1lawfik.json"
+    },
+    {
+      "test": "test_dump_gaps_and_missing",
+      "status": "pass",
+      "seconds": 21.76,
+      "error": "",
+      "evidence": "runs/acceptance_u1lawfik.json"
+    },
+    {
+      "test": "test_existing_include_and_release",
+      "status": "pass",
+      "seconds": 5.48,
+      "error": "",
+      "evidence": "runs/acceptance_u1lawfik.json"
+    },
+    {
+      "test": "test_parameters_struct_union_shared_interface",
+      "status": "pass",
+      "seconds": 5.88,
+      "error": "",
+      "evidence": "runs/acceptance_zdq54owv.json"
+    },
+    {
+      "test": "test_sparse_fsdb_and_glitches",
+      "status": "pass",
+      "seconds": 16.06,
+      "error": "",
+      "evidence": "runs/acceptance_u1lawfik.json"
+    },
+    {
+      "test": "test_partial_sv_parameter_diagnostic",
+      "status": "pass",
+      "seconds": 4.72,
+      "error": "",
+      "evidence": "runs/acceptance_u1lawfik.json"
+    },
+    {
+      "test": "test_constant_assign_connections",
+      "status": "pass",
+      "seconds": 8.17,
+      "error": "",
+      "evidence": "runs/acceptance_zdq54owv.json"
+    }
+  ],
+  "datasets": [
+    {
+      "dataset": "existing_interface_port_root",
+      "scope": "if_root_tb.u_src",
+      "signals": 5,
+      "status": "pass"
+    },
+    {
+      "dataset": "existing_interface_port_root",
+      "scope": "if_root_tb.u_sink",
+      "signals": 3,
+      "status": "pass"
+    },
+    {
+      "dataset": "PicoRV32",
+      "source": "/mnt/hgfs/VMshare/CPU_CORE/ysyx/picorv32_subsystem_kdb_test/picorv32.v",
+      "scope": "picorv32_snapshot_tb.dut",
+      "signals": 9,
+      "parameters": 26,
+      "status": "pass"
+    }
+  ],
+  "delivered_source_sha256": {
+    "wave_init.py": "a0d71d7b2e201eb9dc41dff6514dcb72d46b171c69bf249d94929491132c23bb",
+    "backend/snapshot.tcl": "1872903df34e845b644b60aa9a68c664cdce0c46e82df987d19fd2d6f6c922df",
+    "waveinit/cli.py": "cc2095adf8a8b77a30b8d39565b570aad0d86ab4cee72da343061df4f8d6ce85",
+    "waveinit/sv.py": "a65156ca6f31ee5b85796f0fe7363c57dbe2b15c24630560949ac7b914e70082",
+    "waveinit/__init__.py": "29ac18f44ea5c94f0ed92d275c81ef7f7edb52931b2d5eaafd23610ea4839481"
+  },
+  "note": "Version 1.1.0: all 10 integration groups passed on the delivered constant-assign implementation. Earlier version histories are retained.",
+  "tool_version": "1.1.0",
+  "dataset_evidence": "runs/datasets_atcdiji6.json"
+}

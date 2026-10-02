@@ -1,0 +1,38 @@
+[
+  {
+    "test": "test_modports_and_generics",
+    "status": "pass",
+    "seconds": 20.61,
+    "error": ""
+  },
+  {
+    "test": "test_time_and_xz",
+    "status": "pass",
+    "seconds": 20.8,
+    "error": ""
+  },
+  {
+    "test": "test_dump_gaps_and_missing",
+    "status": "pass",
+    "seconds": 21.76,
+    "error": ""
+  },
+  {
+    "test": "test_existing_include_and_release",
+    "status": "pass",
+    "seconds": 5.48,
+    "error": ""
+  },
+  {
+    "test": "test_sparse_fsdb_and_glitches",
+    "status": "pass",
+    "seconds": 16.06,
+    "error": ""
+  },
+  {
+    "test": "test_partial_sv_parameter_diagnostic",
+    "status": "pass",
+    "seconds": 4.72,
+    "error": ""
+  }
+]

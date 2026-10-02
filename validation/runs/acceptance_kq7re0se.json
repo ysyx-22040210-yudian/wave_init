@@ -1,0 +1,20 @@
+[
+  {
+    "test": "test_dump_gaps_and_missing",
+    "status": "pass",
+    "seconds": 19.96,
+    "error": ""
+  },
+  {
+    "test": "test_parameters_struct_union_shared_interface",
+    "status": "pass",
+    "seconds": 6.63,
+    "error": ""
+  },
+  {
+    "test": "test_sparse_fsdb_and_glitches",
+    "status": "fail",
+    "seconds": 1.49,
+    "error": "/root/wave_init/build/acceptance_kq7re0se/sparse/writer_compile.log: exit 1, expected 0\nIn file included from /root/wave_init/tests/fixtures/sparse_fsdb.cpp:4:0:\n/home/synopsys/verdi/Verdi_O-2018.09-SP2/share/NPI/inc/npi_fsdbw.h:46:107: error: 'NULL' was not declared in this scope\n     virtual NPI_INT32 create_scope( npiFsdbScopeType_e scopeType, const char* name, const char* defName = NULL );\n                                                                                                           ^\nIn file included from /root/wave_init/tests/fixtures/sparse_fsdb.cpp:4:0:\n/home/synopsys/verdi/Verdi_O-2018.09-SP2/share/NPI/inc/npi_fsdbw.h:58:146: error: 'NULL' was not declared in this scope\n     virtual npiFsdbwSigObj* create_eq_sig( npiFsdbwSigObj* sourceSig, const char* name, npiFsdbDirType dir = npiFsdbDirNone, npiFsdbwDtObj* dt = NULL );\n                                                                                                                                                  ^\n/root/wave_init/tests/fixtures/sparse_fsdb.cpp: In function 'int main(int, char**)':\n/root/wave_init/tests/fixtures/sparse_fsdb.cpp:18:31: error: invalid initialization of non-const reference of type 'char**&' from an rvalue of type 'char**'\n     if (!npi_init(n, init_args)) return 2;\n                               ^\nIn file included from /root/wave_init/tests/fixtures/sparse_fsdb.cpp:3:0:\n/home/synopsys/verdi/Verdi_O-2018.09-SP2/share/NPI/inc/npi.h:11:12: error: in passing argument 2 of 'int npi_init(int&, char**&)'\n int        npi_init            (int &argc,\n            ^\n"
+  }
+]

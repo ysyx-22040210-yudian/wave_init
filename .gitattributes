@@ -1,0 +1,4 @@
+# Preserve Linux-compatible line endings when checked out on Windows.
+* text=auto eol=lf
+*.gz binary
+*.png binary

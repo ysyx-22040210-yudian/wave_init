@@ -1,0 +1,11 @@
+Chronologic VCS simulator copyright 1991-2018
+Contains Synopsys proprietary information.
+Compiler version O-2018.09-SP2_Full64; Runtime version O-2018.09-SP2_Full64;  Oct  2 14:16 2026
+WAVE_INIT_SNAPSHOT_PASS
+WAVE_INIT_ASSIGN_HOLD_PASS
+$finish called from file "/root/wave_init/build/acceptance_zdq54owv/assign_observer.sv", line 15.
+$finish at simulation time                20000
+           V C S   S i m u l a t i o n   R e p o r t 
+Time: 20000 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Fri Oct  2 14:16:48 2026

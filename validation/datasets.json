@@ -1,0 +1,22 @@
+[
+  {
+    "dataset": "existing_interface_port_root",
+    "scope": "if_root_tb.u_src",
+    "signals": 5,
+    "status": "pass"
+  },
+  {
+    "dataset": "existing_interface_port_root",
+    "scope": "if_root_tb.u_sink",
+    "signals": 3,
+    "status": "pass"
+  },
+  {
+    "dataset": "PicoRV32",
+    "source": "/mnt/hgfs/VMshare/CPU_CORE/ysyx/picorv32_subsystem_kdb_test/picorv32.v",
+    "scope": "picorv32_snapshot_tb.dut",
+    "signals": 9,
+    "parameters": 26,
+    "status": "pass"
+  }
+]

@@ -1,0 +1,451 @@
+{
+  "ports": [
+    {
+      "name": "a",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "dut",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "check_snapshot",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "wi_bus_clk",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pad",
+      "direction": "inout",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "bus",
+      "direction": "unknown",
+      "port_type": "npiModportPort",
+      "shape": {
+        "width": -1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiInterfaceTypespec",
+        "hdl_type": "npiRefObj",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "observed",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    }
+  ],
+  "interfaces": [
+    {
+      "path": "assign_top.link",
+      "definition": "assign_if",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "port_type": "npiPort",
+          "shape": {
+            "width": 1,
+            "signed": 0,
+            "packed_ranges": [],
+            "unpacked_ranges": [],
+            "type": "npiLogicTypespec",
+            "hdl_type": "npiNet",
+            "typedef": "",
+            "unpacked_struct": 0
+          },
+          "shape_error": ""
+        }
+      ],
+      "array_path": "",
+      "array_ranges": []
+    }
+  ],
+  "bindings": [
+    {
+      "port": "bus",
+      "logical_path": "assign_top.u.bus",
+      "interface_path": "assign_top.link",
+      "modport": "slv"
+    }
+  ],
+  "signals": [
+    {
+      "logical_path": "assign_top.u.a",
+      "port": "a",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "assign_top.u.a"
+      },
+      "status": "ok",
+      "value_bin": "10xz0101",
+      "change_tick": "5000",
+      "detail": "",
+      "waveform_paths": [
+        "assign_top.u.a"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "assign_top.u.bus.clk",
+      "port": "bus",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "assign_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "assign_top.link.clk"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "5000",
+      "detail": "",
+      "waveform_paths": [
+        "assign_top.link.clk"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "assign_top.u.bus.req",
+      "port": "bus",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "assign_top.link",
+      "shape": {
+        "width": 4,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            3,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 4,
+        "path": "assign_top.link.req"
+      },
+      "status": "ok",
+      "value_bin": "1010",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "assign_top.link.req"
+      ],
+      "width": 4
+    },
+    {
+      "logical_path": "assign_top.u.check_snapshot",
+      "port": "check_snapshot",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "assign_top.u.check_snapshot"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "assign_top.u.check_snapshot"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "assign_top.u.dut",
+      "port": "dut",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "assign_top.u.dut"
+      },
+      "status": "ok",
+      "value_bin": "0",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "assign_top.u.dut"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "assign_top.u.pad",
+      "port": "pad",
+      "direction": "inout",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "assign_top.u.pad"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "assign_top.u.pad"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "assign_top.u.wi_bus_clk",
+      "port": "wi_bus_clk",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "assign_top.u.wi_bus_clk"
+      },
+      "status": "ok",
+      "value_bin": "0",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "assign_top.u.wi_bus_clk"
+      ],
+      "width": 1
+    }
+  ],
+  "dependencies": [
+    {
+      "logical_path": "assign_top.link.clk",
+      "port": "clk",
+      "direction": "input",
+      "direction_source": "interface_constructor",
+      "modport": "",
+      "interface_path": "assign_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "assign_top.link.clk"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "5000",
+      "detail": "",
+      "waveform_paths": [
+        "assign_top.link.clk"
+      ],
+      "width": 1
+    }
+  ],
+  "scope": "assign_top.u",
+  "definition": "assign_dut",
+  "parameters": [],
+  "timescale": "1ps",
+  "tick": "7000",
+  "min_tick": "0",
+  "max_tick": "10000",
+  "dump_off_ranges": [],
+  "source_file": "/root/wave_init/tests/fixtures/assign_design.sv",
+  "values_complete": true,
+  "directions_complete": true,
+  "schema_version": 1,
+  "tool_version": "1.1.0",
+  "fsdb": "/root/wave_init/build/acceptance_zdq54owv/assign_fixture/waves.fsdb",
+  "kdb": "/root/wave_init/build/acceptance_zdq54owv/assign_fixture/simv.daidir/kdb.elab++",
+  "requested_time": "7ns",
+  "elapsed_seconds": 2.824,
+  "sv": {
+    "complete": true,
+    "existing_tb_complete": true,
+    "standalone_complete": true,
+    "diagnostics": [],
+    "standalone_drive": "assign",
+    "skipped": [],
+    "forced_targets": 7,
+    "force_unknown": false
+  },
+  "complete": true
+}

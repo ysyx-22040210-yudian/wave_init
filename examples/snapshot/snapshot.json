@@ -1,0 +1,876 @@
+{
+  "ports": [
+    {
+      "name": "clk",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "rst_n",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "scalar",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 8,
+        "signed": 1,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "ascending",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            0,
+            7
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "packed_data",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            1,
+            0
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "packet",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 16,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiStructTypespec",
+        "hdl_type": "npiStructNet",
+        "typedef": "snap_pkg::packet_t",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "matrix",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [
+          [
+            1,
+            0
+          ],
+          [
+            2,
+            1
+          ]
+        ],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiArrayNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "wide",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 130,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            129,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pad",
+      "direction": "inout",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "bus",
+      "direction": "unknown",
+      "port_type": "npiModportPort",
+      "shape": {
+        "width": -1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiInterfaceTypespec",
+        "hdl_type": "npiRefObj",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "result",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    }
+  ],
+  "interfaces": [
+    {
+      "path": "snapshot_top.link",
+      "definition": "snap_if",
+      "parameters": [
+        {
+          "name": "W",
+          "value": "32'sb00000000000000000000000000001000"
+        }
+      ],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "port_type": "npiPort",
+          "shape": {
+            "width": 1,
+            "signed": 0,
+            "packed_ranges": [],
+            "unpacked_ranges": [],
+            "type": "npiLogicTypespec",
+            "hdl_type": "npiNet",
+            "typedef": "",
+            "unpacked_struct": 0
+          },
+          "shape_error": ""
+        }
+      ],
+      "array_path": "",
+      "array_ranges": []
+    }
+  ],
+  "bindings": [
+    {
+      "port": "bus",
+      "logical_path": "snapshot_top.dut.bus",
+      "interface_path": "snapshot_top.link",
+      "modport": "slv"
+    }
+  ],
+  "signals": [
+    {
+      "logical_path": "snapshot_top.dut.ascending",
+      "port": "ascending",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            0,
+            7
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "snapshot_top.dut.ascending"
+      },
+      "status": "ok",
+      "value_bin": "10100110",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.ascending"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "snapshot_top.dut.bus.clk",
+      "port": "bus",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "snapshot_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "snapshot_top.link.clk"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "5000",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.link.clk"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "snapshot_top.dut.bus.pad",
+      "port": "bus",
+      "direction": "inout",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "snapshot_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "snapshot_top.link.pad"
+      },
+      "status": "ok",
+      "value_bin": "z",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.link.pad"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "snapshot_top.dut.bus.req",
+      "port": "bus",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "snapshot_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "snapshot_top.link.req"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.link.req"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "snapshot_top.dut.bus.wdata",
+      "port": "bus",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "snapshot_top.link",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "snapshot_top.link.wdata"
+      },
+      "status": "ok",
+      "value_bin": "10100101",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.link.wdata"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "snapshot_top.dut.clk",
+      "port": "clk",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "snapshot_top.dut.clk"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "5000",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.clk"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "snapshot_top.dut.matrix[0][1]",
+      "port": "matrix",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "snapshot_top.dut.matrix[0][1]"
+      },
+      "status": "ok",
+      "value_bin": "00000001",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.matrix[0][1]"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "snapshot_top.dut.matrix[0][2]",
+      "port": "matrix",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "snapshot_top.dut.matrix[0][2]"
+      },
+      "status": "ok",
+      "value_bin": "00000010",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.matrix[0][2]"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "snapshot_top.dut.matrix[1][1]",
+      "port": "matrix",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "snapshot_top.dut.matrix[1][1]"
+      },
+      "status": "ok",
+      "value_bin": "00010001",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.matrix[1][1]"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "snapshot_top.dut.matrix[1][2]",
+      "port": "matrix",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "snapshot_top.dut.matrix[1][2]"
+      },
+      "status": "ok",
+      "value_bin": "00010010",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.matrix[1][2]"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "snapshot_top.dut.packed_data",
+      "port": "packed_data",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            1,
+            0
+          ],
+          [
+            3,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "snapshot_top.dut.packed_data"
+      },
+      "status": "ok",
+      "value_bin": "10111001",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.packed_data"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "snapshot_top.dut.packet",
+      "port": "packet",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 16,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiStructTypespec",
+        "hdl_type": "npiStructNet",
+        "typedef": "snap_pkg::packet_t",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 16,
+        "path": "snapshot_top.dut.packet"
+      },
+      "status": "ok",
+      "value_bin": "1100000100100011",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.packet"
+      ],
+      "width": 16
+    },
+    {
+      "logical_path": "snapshot_top.dut.pad",
+      "port": "pad",
+      "direction": "inout",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "snapshot_top.dut.pad"
+      },
+      "status": "ok",
+      "value_bin": "z",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.pad"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "snapshot_top.dut.rst_n",
+      "port": "rst_n",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "snapshot_top.dut.rst_n"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "5000",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.rst_n"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "snapshot_top.dut.scalar",
+      "port": "scalar",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 8,
+        "signed": 1,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "snapshot_top.dut.scalar"
+      },
+      "status": "ok",
+      "value_bin": "10010110",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.scalar"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "snapshot_top.dut.wide",
+      "port": "wide",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 130,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            129,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 130,
+        "path": "snapshot_top.dut.wide"
+      },
+      "status": "ok",
+      "value_bin": "xz00000001001000110100010101100111100010011010101111001101111011111111111011011100101110101001100001110110010101000011001000010000",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.dut.wide"
+      ],
+      "width": 130
+    }
+  ],
+  "dependencies": [
+    {
+      "logical_path": "snapshot_top.link.clk",
+      "port": "clk",
+      "direction": "input",
+      "direction_source": "interface_constructor",
+      "modport": "",
+      "interface_path": "snapshot_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "snapshot_top.link.clk"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "5000",
+      "detail": "",
+      "waveform_paths": [
+        "snapshot_top.link.clk"
+      ],
+      "width": 1
+    }
+  ],
+  "scope": "snapshot_top.dut",
+  "definition": "snap_slave",
+  "parameters": [
+    {
+      "name": "W",
+      "value": "32'sb00000000000000000000000000001000"
+    }
+  ],
+  "timescale": "1ps",
+  "tick": "7000",
+  "min_tick": "0",
+  "max_tick": "25000",
+  "dump_off_ranges": [],
+  "source_file": "/root/wave_init/tests/fixtures/snapshot_design.sv",
+  "values_complete": true,
+  "directions_complete": true,
+  "schema_version": 1,
+  "tool_version": "1.1.0",
+  "fsdb": "/root/wave_init/build/fixture/waves.fsdb",
+  "kdb": "/root/wave_init/build/fixture/simv.daidir/kdb.elab++",
+  "requested_time": "7ns",
+  "elapsed_seconds": 2.573,
+  "sv": {
+    "complete": true,
+    "existing_tb_complete": true,
+    "standalone_complete": true,
+    "diagnostics": [],
+    "standalone_drive": "assign",
+    "skipped": [],
+    "forced_targets": 16,
+    "force_unknown": false
+  },
+  "complete": true
+}

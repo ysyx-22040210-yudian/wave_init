@@ -1,0 +1,14 @@
+[
+  {
+    "test": "test_parameters_struct_union_shared_interface",
+    "status": "pass",
+    "seconds": 5.62,
+    "error": ""
+  },
+  {
+    "test": "test_partial_sv_parameter_diagnostic",
+    "status": "pass",
+    "seconds": 4.05,
+    "error": ""
+  }
+]

@@ -1,0 +1,21 @@
+Reading snapshot_top.dut at 7ns through Verdi NPI...
+snapshot_top.dut @ 7ns (7000 ticks, 1ps): 16/16 values read
+  input   snapshot_top.dut.ascending                       10100110
+  input   snapshot_top.dut.bus.clk                         1
+  inout   snapshot_top.dut.bus.pad                         z
+  input   snapshot_top.dut.bus.req                         1
+  input   snapshot_top.dut.bus.wdata                       10100101
+  input   snapshot_top.dut.clk                             1
+  input   snapshot_top.dut.matrix[0][1]                    00000001
+  input   snapshot_top.dut.matrix[0][2]                    00000010
+  input   snapshot_top.dut.matrix[1][1]                    00010001
+  input   snapshot_top.dut.matrix[1][2]                    00010010
+  input   snapshot_top.dut.packed_data                     10111001
+  input   snapshot_top.dut.packet                          1100000100100011
+  inout   snapshot_top.dut.pad                             z
+  input   snapshot_top.dut.rst_n                           1
+  input   snapshot_top.dut.scalar                          10010110
+  input   snapshot_top.dut.wide                            xz000000010010001101000101011001...010101000011001000010000
+Reports: /root/wave_init/build/portable_acceptance_r2fsrv9z/snapshot
+
+--- stderr ---

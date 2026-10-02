@@ -1,0 +1,9 @@
+{
+  "status": "pass",
+  "mode": "frozen_gui_local",
+  "signals": 16,
+  "responsive_ui_queries": 61,
+  "assign_preview": true,
+  "release": "/root/wave_init/build/linux_package_wuscinci/stage/wave_init-linux-x86_64",
+  "evidence_directory": "/root/wave_init/build/frozen_gui_dvs3037r"
+}

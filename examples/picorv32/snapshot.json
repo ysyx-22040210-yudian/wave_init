@@ -1,0 +1,938 @@
+{
+  "ports": [
+    {
+      "name": "clk",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "resetn",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "trap",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_valid",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_instr",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_ready",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_addr",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_wdata",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_wstrb",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 4,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            3,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_rdata",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_la_read",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_la_write",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_la_addr",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_la_wdata",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "mem_la_wstrb",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 4,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            3,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pcpi_valid",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pcpi_insn",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pcpi_rs1",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pcpi_rs2",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pcpi_wr",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pcpi_rd",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pcpi_wait",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "pcpi_ready",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "irq",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "eoi",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "trace_valid",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "trace_data",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 36,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            35,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    }
+  ],
+  "interfaces": [],
+  "bindings": [],
+  "signals": [
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.clk",
+      "port": "clk",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "picorv32_snapshot_tb.dut.clk"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "25000",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.clk"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.irq",
+      "port": "irq",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 32,
+        "path": "picorv32_snapshot_tb.dut.irq"
+      },
+      "status": "ok",
+      "value_bin": "00000000000000000000000000000000",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.irq"
+      ],
+      "width": 32
+    },
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.mem_rdata",
+      "port": "mem_rdata",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 32,
+        "path": "picorv32_snapshot_tb.dut.mem_rdata"
+      },
+      "status": "ok",
+      "value_bin": "00000000000000000000000000010011",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.mem_rdata"
+      ],
+      "width": 32
+    },
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.mem_ready",
+      "port": "mem_ready",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "picorv32_snapshot_tb.dut.mem_ready"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.mem_ready"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.pcpi_rd",
+      "port": "pcpi_rd",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 32,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            31,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 32,
+        "path": "picorv32_snapshot_tb.dut.pcpi_rd"
+      },
+      "status": "ok",
+      "value_bin": "00010010001101000101011001111000",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.pcpi_rd"
+      ],
+      "width": 32
+    },
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.pcpi_ready",
+      "port": "pcpi_ready",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "picorv32_snapshot_tb.dut.pcpi_ready"
+      },
+      "status": "ok",
+      "value_bin": "0",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.pcpi_ready"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.pcpi_wait",
+      "port": "pcpi_wait",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "picorv32_snapshot_tb.dut.pcpi_wait"
+      },
+      "status": "ok",
+      "value_bin": "0",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.pcpi_wait"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.pcpi_wr",
+      "port": "pcpi_wr",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "picorv32_snapshot_tb.dut.pcpi_wr"
+      },
+      "status": "ok",
+      "value_bin": "0",
+      "change_tick": "0",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.pcpi_wr"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "picorv32_snapshot_tb.dut.resetn",
+      "port": "resetn",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "picorv32_snapshot_tb.dut.resetn"
+      },
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "12000",
+      "detail": "",
+      "waveform_paths": [
+        "picorv32_snapshot_tb.dut.resetn"
+      ],
+      "width": 1
+    }
+  ],
+  "dependencies": [],
+  "scope": "picorv32_snapshot_tb.dut",
+  "definition": "picorv32",
+  "parameters": [
+    {
+      "name": "ENABLE_COUNTERS",
+      "value": "1'b1"
+    },
+    {
+      "name": "ENABLE_COUNTERS64",
+      "value": "1'b1"
+    },
+    {
+      "name": "ENABLE_REGS_16_31",
+      "value": "1'b1"
+    },
+    {
+      "name": "ENABLE_REGS_DUALPORT",
+      "value": "1'b1"
+    },
+    {
+      "name": "LATCHED_MEM_RDATA",
+      "value": "1'b0"
+    },
+    {
+      "name": "TWO_STAGE_SHIFT",
+      "value": "1'b1"
+    },
+    {
+      "name": "BARREL_SHIFTER",
+      "value": "1'b0"
+    },
+    {
+      "name": "TWO_CYCLE_COMPARE",
+      "value": "1'b0"
+    },
+    {
+      "name": "TWO_CYCLE_ALU",
+      "value": "1'b0"
+    },
+    {
+      "name": "COMPRESSED_ISA",
+      "value": "1'b0"
+    },
+    {
+      "name": "CATCH_MISALIGN",
+      "value": "1'b1"
+    },
+    {
+      "name": "CATCH_ILLINSN",
+      "value": "1'b1"
+    },
+    {
+      "name": "ENABLE_PCPI",
+      "value": "1'b0"
+    },
+    {
+      "name": "ENABLE_MUL",
+      "value": "1'b0"
+    },
+    {
+      "name": "ENABLE_FAST_MUL",
+      "value": "1'b0"
+    },
+    {
+      "name": "ENABLE_DIV",
+      "value": "1'b0"
+    },
+    {
+      "name": "ENABLE_IRQ",
+      "value": "1'b0"
+    },
+    {
+      "name": "ENABLE_IRQ_QREGS",
+      "value": "1'b1"
+    },
+    {
+      "name": "ENABLE_IRQ_TIMER",
+      "value": "1'b1"
+    },
+    {
+      "name": "ENABLE_TRACE",
+      "value": "1'b1"
+    },
+    {
+      "name": "REGS_INIT_ZERO",
+      "value": "1'b1"
+    },
+    {
+      "name": "MASKED_IRQ",
+      "value": "32'b00000000000000000000000000000000"
+    },
+    {
+      "name": "LATCHED_IRQ",
+      "value": "32'b11111111111111111111111111111111"
+    },
+    {
+      "name": "PROGADDR_RESET",
+      "value": "32'b00000000000000000000000000000000"
+    },
+    {
+      "name": "PROGADDR_IRQ",
+      "value": "32'b00000000000000000000000000010000"
+    },
+    {
+      "name": "STACKADDR",
+      "value": "32'b11111111111111111111111111111111"
+    }
+  ],
+  "timescale": "1ps",
+  "tick": "26000",
+  "min_tick": "0",
+  "max_tick": "212000",
+  "dump_off_ranges": [],
+  "source_file": "/mnt/hgfs/VMshare/CPU_CORE/ysyx/picorv32_subsystem_kdb_test/picorv32.v",
+  "values_complete": true,
+  "directions_complete": true,
+  "schema_version": 1,
+  "tool_version": "1.1.0",
+  "fsdb": "/root/wave_init/build/datasets_atcdiji6/picorv32/waves.fsdb",
+  "kdb": "/root/wave_init/build/datasets_atcdiji6/picorv32/simv.daidir/kdb.elab++",
+  "requested_time": "26ns",
+  "elapsed_seconds": 2.475,
+  "sv": {
+    "complete": true,
+    "existing_tb_complete": true,
+    "standalone_complete": true,
+    "diagnostics": [],
+    "standalone_drive": "assign",
+    "skipped": [],
+    "forced_targets": 9,
+    "force_unknown": false
+  },
+  "complete": true
+}

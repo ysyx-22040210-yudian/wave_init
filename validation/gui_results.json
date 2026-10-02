@@ -1,0 +1,81 @@
+{
+  "date": "2026-10-02",
+  "tool_version": "1.2.0",
+  "unit_tests": {
+    "tests": 15,
+    "failed": 0,
+    "skipped": 0,
+    "python": "3.8.13",
+    "tk": "8.5.13",
+    "platform": "CentOS 7",
+    "evidence": "runs/gui_unittest_python38.log"
+  },
+  "gui_scenarios": [
+    {
+      "status": "pass",
+      "mode": "local",
+      "python": "3.8.13 (default, Aug 16 2022, 12:16:29) \n[GCC 9.3.1 20200408 (Red Hat 9.3.1-2)]",
+      "tk": "8.5.13",
+      "signals": 16,
+      "responsive_heartbeats": 90,
+      "output": "/root/wave_init/out/gui_acceptance_03fe768c54be479c80141af35b687504",
+      "local_report": "/root/wave_init/out/gui_acceptance_03fe768c54be479c80141af35b687504",
+      "sftp_browser": false,
+      "evidence": "runs/gui_local_python38.json"
+    },
+    {
+      "status": "pass",
+      "mode": "ssh",
+      "python": "3.11.5 | packaged by Anaconda, Inc. | (main, Sep 11 2023, 13:26:23) [MSC v.1916 64 bit (AMD64)]",
+      "tk": "8.6.12",
+      "signals": 16,
+      "responsive_heartbeats": 91,
+      "output": "/root/wave_init/out/gui_acceptance_b37b0742ca1841a192b2de91efbff18b",
+      "local_report": "D:\\wave_init\\out\\gui_downloads\\20261002_145054_ntdrfaqz",
+      "sftp_browser": true,
+      "evidence": "runs/gui_ssh_windows.json"
+    },
+    {
+      "status": "pass",
+      "mode": "ssh_cancel",
+      "code": 130,
+      "seconds_after_cancel": 0.34,
+      "vendor_processes_stopped": 2,
+      "remote_fixture": "/root/wave_init/build/gui_cancel_4873e0f22c41473cb597f37d324a94b7",
+      "local_report": "D:\\wave_init\\out\\gui_downloads\\20261002_145320_5gzsnah9",
+      "evidence": "runs/gui_cancel_ssh.json"
+    }
+  ],
+  "cli_regression": {
+    "evidence": "runs/acceptance_tl4tq5sz.json",
+    "tests": [
+      {
+        "test": "test_plain_and_shapes",
+        "status": "pass",
+        "seconds": 4.09,
+        "error": ""
+      },
+      {
+        "test": "test_existing_include_and_release",
+        "status": "pass",
+        "seconds": 4.16,
+        "error": ""
+      }
+    ]
+  },
+  "screenshot": "gui_preview.png",
+  "delivered_source_sha256": {
+    "wave_init.py": "a0d71d7b2e201eb9dc41dff6514dcb72d46b171c69bf249d94929491132c23bb",
+    "wave_init_gui.py": "88eea31cf6e6f82c541fe685cc40203fb769b310734be97d14ac640de9a1e0ea",
+    "waveinit/__init__.py": "f06a9fc5d2f4b0d1adaa95bf1cd1a2e975c10ab628c3fbcdab9bbc47d17bae53",
+    "waveinit/cli.py": "e7338f27d948c210c53c598744d4f0aade6437b04e8c23e2f5f533899e64fde9",
+    "waveinit/gui.py": "36ba1742f25d2e0ecd062b7f1eb833d65baec0495d9d8a8c843052db49bd0ce1",
+    "waveinit/gui_runner.py": "cff4e7ad488a280f93461452a0bc3d3005313d453f5e1027126479a634f2c744",
+    "waveinit/sv.py": "a65156ca6f31ee5b85796f0fe7363c57dbe2b15c24630560949ac7b914e70082",
+    "backend/snapshot.tcl": "1872903df34e845b644b60aa9a68c664cdce0c46e82df987d19fd2d6f6c922df"
+  },
+  "notes": [
+    "Core extraction and SV generation acceptance history remains in results.json (version 1.1.0).",
+    "The cancellation fixture deliberately simulates a slow vendor process and child; real NPI extraction is covered by both GUI modes."
+  ]
+}

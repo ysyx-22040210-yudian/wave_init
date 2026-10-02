@@ -1,0 +1,23 @@
+{
+  "gui_profile_version": 1,
+  "settings": {
+    "mode": "ssh",
+    "fsdb": "/root/wave_init/build/fixture/waves.fsdb",
+    "kdb": "/root/wave_init/build/fixture/simv.daidir",
+    "scope": "snapshot_top.dut",
+    "time_value": "7",
+    "time_unit": "ns",
+    "out": "/root/wave_init/out/gui_snapshot",
+    "timeout": "300",
+    "verdi": "",
+    "sv_target": "",
+    "interface_maps": "",
+    "force_unknown": false,
+    "host": "192.168.31.116",
+    "port": "22",
+    "user": "root",
+    "directory": "/root/wave_init",
+    "python": "python3.8",
+    "environment": "/root/wave_init/tests/env.sh"
+  }
+}

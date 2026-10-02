@@ -1,0 +1,26 @@
+[
+  {
+    "test": "test_plain_and_shapes",
+    "status": "pass",
+    "seconds": 4.29,
+    "error": ""
+  },
+  {
+    "test": "test_interface_array_and_aliases",
+    "status": "pass",
+    "seconds": 8.03,
+    "error": ""
+  },
+  {
+    "test": "test_parameters_struct_union_shared_interface",
+    "status": "pass",
+    "seconds": 5.88,
+    "error": ""
+  },
+  {
+    "test": "test_constant_assign_connections",
+    "status": "pass",
+    "seconds": 8.17,
+    "error": ""
+  }
+]
