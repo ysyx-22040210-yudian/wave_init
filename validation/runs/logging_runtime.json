@@ -1,0 +1,102 @@
+{
+  "run_id": "07ba4aca964d4004bb403b28ca3f8040",
+  "started_utc": "2026-10-04T14:39:53.785Z",
+  "tool_version": "1.3.3",
+  "python": "3.8.13 (default, Aug 16 2022, 12:16:29) \n[GCC 9.3.1 20200408 (Red Hat 9.3.1-2)]",
+  "executable": "/root/wave_init/build/linux_package_7_dq_na3/stage/wave_init-linux-x86_64/wave_init",
+  "frozen": true,
+  "platform": "Linux-3.10.0-1160.53.1.el7.x86_64-x86_64-with-glibc2.14",
+  "machine": "x86_64",
+  "hostname": "IC_EDA",
+  "libc": [
+    "glibc",
+    "2.17"
+  ],
+  "cwd": "/root/wave_init",
+  "resource_root": "/root/wave_init/build/linux_package_7_dq_na3/stage/wave_init-linux-x86_64/_internal",
+  "source_sha256": {
+    "backend/snapshot.tcl": "ceeffc440f929b60ba4a7435831027c78fd686efc5c70999fd6e92815ac56c0d"
+  },
+  "environment_paths": {
+    "VERDI_HOME": "/home/synopsys/verdi/Verdi_O-2018.09-SP2",
+    "VCS_HOME": "/home/synopsys/vcs-mx/O-2018.09-SP2",
+    "PATH": "/home/synopsys/vcs-mx/O-2018.09-SP2/bin:/home/synopsys/verdi/Verdi_O-2018.09-SP2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin",
+    "LD_LIBRARY_PATH": "/home/synopsys/verdi/Verdi_O-2018.09-SP2/share/PLI/VCS/LINUX64:/home/synopsys/verdi/Verdi_O-2018.09-SP2/share/NPI/lib/LINUX64:",
+    "TCL_LIBRARY": "",
+    "TK_LIBRARY": ""
+  },
+  "license_configured": {
+    "SNPSLMD_LICENSE_FILE": true,
+    "LM_LICENSE_FILE": false
+  },
+  "request": {
+    "fsdb": "build/deep_interfaces_nc3uw9bx/depth_8/dut_only/waves.fsdb",
+    "kdb": "build/deep_interfaces_nc3uw9bx/depth_8/simv.daidir",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "time": "1ns",
+    "out": "/root/wave_init/build/logging_0mwlor0h/deep_default",
+    "timeout_seconds": 300,
+    "verdi": null,
+    "debug_console": false,
+    "sv_target": null,
+    "interface_maps": [],
+    "force_unknown": false
+  },
+  "inputs": {
+    "fsdb": {
+      "path": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/dut_only/waves.fsdb",
+      "exists": true,
+      "size_bytes": 9316,
+      "modified_ns": 1791121166971139584,
+      "kind": "file"
+    },
+    "kdb": {
+      "path": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/simv.daidir",
+      "exists": true,
+      "size_bytes": 4096,
+      "modified_ns": 1791121138938637824,
+      "kind": "directory"
+    }
+  },
+  "logs": [
+    "wave_init.log",
+    "npi_trace.log",
+    "npi_records.jsonl",
+    "runtime.json",
+    "verdi.log",
+    "diagnostics.txt"
+  ],
+  "stage": "finished",
+  "verdi_executable": "/home/synopsys/verdi/Verdi_O-2018.09-SP2/bin/verdi",
+  "resolved_kdb": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/simv.daidir/kdb.elab++",
+  "resolved_fsdb": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/dut_only/waves.fsdb",
+  "resolved_inputs": {
+    "fsdb": {
+      "path": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/dut_only/waves.fsdb",
+      "exists": true,
+      "size_bytes": 9316,
+      "modified_ns": 1791121166971139584,
+      "kind": "file"
+    },
+    "kdb": {
+      "path": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/simv.daidir/kdb.elab++",
+      "exists": true,
+      "size_bytes": 127,
+      "modified_ns": 1791124782483206912,
+      "kind": "directory"
+    }
+  },
+  "time_conversion": {
+    "mode": "physical",
+    "numerator": 1000000,
+    "denominator": 1
+  },
+  "verdi_release": "Verdi_O-2018.09-SP2 for (RH Linux x86_64/64bit) -- Thu Feb 21 04:40:56 PDT 2019",
+  "verdi_exit_code": 0,
+  "raw_records": "/root/wave_init/build/logging_0mwlor0h/deep_default/npi__yny5ofy/records.jsonl",
+  "exit_code": 0,
+  "complete": true,
+  "signal_statuses": {
+    "ok": 5
+  }
+}

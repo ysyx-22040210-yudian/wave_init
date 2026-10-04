@@ -87,6 +87,8 @@ def main():
         if split:
             set_field("采样时刻", "1")
         set_field("输出目录（新目录或空目录）", output)
+        detailed = find_text("实时显示详细日志（绑定 / FSDB 查询）")
+        remote(detailed, "invoke")
         button = find_text("提取快照并生成 SV")
         remote(button, "invoke")
         wait_until(lambda: "disabled" in root.tk.splitlist(remote(button, "state")), 5)
@@ -101,6 +103,8 @@ def main():
         wait_until(complete, 90)
         report = json.loads((output / "snapshot.json").read_text(encoding="utf-8"))
         assert report["complete"]
+        for name in ("wave_init.log", "npi_trace.log", "npi_records.jsonl", "runtime.json", "gui.log"):
+            assert (output/name).is_file(), name
         if split:
             expected = {args.scope+"."+name: value for name, value in (
                 ("rst_n", "1"), ("bus.clk", "1"), ("bus.req", "1"), ("bus.pad", "z"), ("bus.data", "10xz0101"))}
@@ -114,6 +118,7 @@ def main():
         assert len(root.tk.splitlist(remote(tree, "children", ""))) == len(expected)
         previews = [remote(w, "get", "1.0", "end") for w in widgets
                     if remote("winfo", "class", w) == "Text"]
+        assert any("npi.fsdb.candidates" in text for text in previews)
         if split:
             assert any("assign bus.data = 8'b10xz0101;" in text for text in previews)
         else:
@@ -123,6 +128,7 @@ def main():
         proof = {"status": "pass", "mode": "frozen_gui_local", "signals": len(expected), "interface_alias_case": bool(split),
                  "scope": report["scope"], "tool_version": report["tool_version"],
                  "responsive_ui_queries": responses[0], "assign_preview": True,
+                 "detailed_logs": True,
                  "release": str(release), "evidence_directory": str(evidence)}
         (evidence / "results.json").write_text(json.dumps(proof, indent=2) + "\n")
         print(json.dumps(proof, indent=2))

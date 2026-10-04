@@ -4,14 +4,14 @@
 
 运行环境：Linux、Python 3.6+、可用 Verdi 及许可证。Python 运行部分仅使用标准库；运行生成的 testbench 另需 VCS、原始 RTL/package/filelist。开发验证环境为 Verdi/VCS O-2018.09-SP2。
 
-**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.2。
+**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.3。
 
 ## 其他 Linux 设备直接启动
 
-使用 `dist/wave_init-1.3.2-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
+使用 `dist/wave_init-1.3.3-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
 
 ```bash
-tar -xzf wave_init-1.3.2-linux-x86_64.tar.gz
+tar -xzf wave_init-1.3.3-linux-x86_64.tar.gz
 cd wave_init-linux-x86_64
 ./start_gui.sh
 ```
@@ -90,7 +90,11 @@ python3 wave_init.py \
 | `run_vcs.sh` | 使用原始 RTL filelist 编译、运行独立 testbench |
 | `README.txt` | 本次结果的接入说明 |
 | `diagnostics.txt` | interface 绑定、KDB/FSDB 路径区别及失败处理提示 |
-| `verdi.log`、`npi_*/records.jsonl` | Vendor 日志及原始 NPI 查询记录 |
+| `wave_init.log` | UTC 时间、耗时、运行阶段、退出码、警告与失败堆栈 |
+| `npi_trace.log` | 默认始终保存的详细 NPI 事件（UTF-8 JSON Lines） |
+| `runtime.json` | 本次 run_id、工具/Python/Verdi 版本、环境路径、输入元数据和源码校验值 |
+| `verdi.log`、`npi_records.jsonl` | Vendor 日志及原始 NPI 查询记录；运行子目录也保留原始记录 |
+| `gui.log` | GUI 本机/SSH 连接、执行、取消和报告下载日志；GUI 执行时生成 |
 
 JSON 的 `signals` 是目标模块边界快照；`dependencies` 是生成独立 interface 实例所需的构造端口采样，不混入选中的 input/inout 集合。`ports` 还保留输出端口的连接元数据，用于构建完整 testbench。
 
@@ -99,6 +103,26 @@ JSON 的 `signals` 是目标模块边界快照；`dependencies` 是生成独立 
 `value_bin` 是保留 `0/1/x/z` 的无损二进制字符串。未找到或不可信的数据为 `null`，不能等同于真实的 `x`。`status` 区分 `ok`、`not_dumped`、`no_initial_value`、`dump_off`、`width_mismatch`、`unsupported_type`、`read_error`。
 
 返回码：`0` 表示所需值和 SV 均成功生成；`2` 表示有不完整项，但报告已保存；`1` 表示参数、时间范围、数据库或 Verdi 运行失败；`130` 表示响应 GUI 的取消请求。`values_complete` 与 `directions_complete` 分别表示值和方向是否完整。按用户选择保留的无 modport 成员可在方向未知时返回 `0`。
+
+## 其他设备出错时的日志
+
+1.3.3 默认打印启动环境摘要、输入路径、Verdi 启动/退出、KDB 加载、时间换算、interface 绑定、信号统计和所有异常。查询较慢时每 10 秒打印仍在运行的提示。详细 NPI 日志始终写入 `npi_trace.log`，无需先开启调试再复现；每条记录立即刷新，取消或超时时保留已生成的日志。
+
+需要实时看到每层绑定和波形查询时，在 CLI 原命令后添加 `--debug`，或在 GUI“SSH / 高级”勾选“实时显示详细日志（绑定 / FSDB 查询）”。该选项可以保存到 GUI 配置，不改变采样结果。
+
+`npi_trace.log` 可以看到：
+
+- `binding.port` / `binding.high` / `binding.lexical_scope` / `binding.resolved`：每层形式端口、high/low connection 对象类型、generate 索引、最终实际 interface 和 modport。
+- `modport.member`：成员方向及 `skip_output` / `sample` 决定，方向仍取自 NPI。
+- `fsdb.candidates` / `fsdb.lookup` / `fsdb.absent` / `fsdb.selected`：所有经过 KDB 证明的候选路径和最终读取路径。
+- `fsdb.found` / `fsdb.vct` / `signal.result`：期望/实际位宽、目标 tick、最后变化 tick、四态值预览及状态；完整值在快照报告中。
+- `interface.unresolved` / `backend.fatal`：失败位置、原因和 Tcl 调用堆栈。旧版 API 属性不可用的详细记录按对象去重，最多保留 100 条。
+
+排查时提供本次输出目录中的 **`runtime.json`、`wave_init.log`、`npi_trace.log`、`verdi.log`、`npi_records.jsonl` 和 `snapshot.json` / `error.json`**；部分完成还可提供 `diagnostics.txt`。这些文件通过同一个 `run_id` 关联，避免把不同运行的日志混在一起。已有非空输出目录会直接拒绝运行，不追加或覆盖旧日志。
+
+SSH 模式自动下载上述日志，失败或部分完成时也会尝试下载。`gui.log` 从连接前开始写入本机缓存，即使连接失败也能保留：Linux 为 `${XDG_CACHE_HOME:-~/.cache}/wave_init/logs/gui_*/gui.log`，Windows 为 `%LOCALAPPDATA%/wave_init/logs/gui_*/gui.log`。完成后还复制到本机结果目录；连接错误会在 GUI 显示日志的完整路径。
+
+日志不保存 SSH 密码，不转储整个环境；许可证配置只记录是否设置。日志包含工程路径、实例名称及采样值预览，分享前可按工程需要处理这些信息。Python 3.6 的 `LANG=C` / ASCII 输出环境也能打印 UTF-8 诊断。
 
 ## Interface 方向
 

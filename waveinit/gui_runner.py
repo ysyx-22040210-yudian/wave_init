@@ -7,6 +7,8 @@ import math
 import os
 from pathlib import Path
 import posixpath
+import platform
+import shutil
 import shlex
 import stat
 import subprocess
@@ -15,13 +17,17 @@ import tempfile
 import threading
 import time
 import uuid
+import traceback
 
+from . import __version__
 from .cli import parse_time
+from .diagnostics import RunLog
 from .portable import cli_command, download_root, resource_root
 
 ROOT = resource_root()
 ARTIFACTS = ("snapshot.json", "snapshot.csv", "tb_snapshot.sv", "snapshot.svh",
-             "README.txt", "run_vcs.sh", "error.json", "verdi.log", "diagnostics.txt")
+             "README.txt", "run_vcs.sh", "error.json", "verdi.log", "diagnostics.txt",
+             "wave_init.log", "npi_trace.log", "npi_records.jsonl", "runtime.json")
 
 
 @dataclass
@@ -37,6 +43,7 @@ class Task:
     sv_target: str = ""
     interface_maps: tuple = ()
     force_unknown: bool = False
+    debug: bool = False
 
     def validate(self):
         if self.mode not in ("local", "ssh"):
@@ -89,6 +96,8 @@ class Task:
             args.extend(("--sv-interface-map", item))
         if self.force_unknown:
             args.append("--force-unknown")
+        if self.debug:
+            args.append("--debug")
         return args
 
 
@@ -166,7 +175,55 @@ def collect_result(code, out, remote_out=""):
     return result
 
 
+def _logged_job(task, emit, invoke, settings=None, cache_root=None):
+    parent = Path(cache_root) if cache_root else download_root().parent / "logs"
+    parent.mkdir(parents=True, exist_ok=True)
+    directory = Path(tempfile.mkdtemp(prefix=time.strftime("gui_%Y%m%d_%H%M%S_"), dir=str(parent)))
+    secret = settings.password if settings else ""
+    def redact(text):
+        return text.replace(secret, "<redacted>") if secret else text
+    log = RunLog(directory / "gui.log", debug=True, console=lambda line: emit("log", line))
+    def notify(kind, data):
+        if kind == "log":
+            data = redact(data)
+            # Raw CLI output already has timestamps; transport messages get one.
+            log.chunk(data)
+        else:
+            emit(kind, data)
+    result = None
+    try:
+        log.event("INFO", "gui.start", tool_version=__version__, mode=task.mode,
+                  python=sys.version, platform=platform.platform(), frozen=bool(getattr(sys, "frozen", False)),
+                  scope=task.scope, time=task.when, fsdb=task.fsdb, kdb=task.kdb, out=task.out,
+                  debug=task.debug, log_path=str(log.path))
+        if settings:
+            log.event("INFO", "ssh.connect", host=settings.host, port=settings.port, user=settings.user,
+                      directory=settings.directory, python=settings.python, environment_script=settings.environment)
+        result = invoke(notify)
+        log.event("INFO", "gui.finished", exit_code=result["code"], directory=result["directory"],
+                  remote_directory=result.get("remote_directory", ""))
+        result["gui_log"] = str(log.path)
+        return result
+    except Exception as exc:
+        log.event("ERROR", "gui.failed", error_type=type(exc).__name__, detail=redact(str(exc)),
+                  stack=redact(traceback.format_exc()))
+        raise RuntimeError("{}\n本机 GUI/SSH 日志：{}".format(redact(str(exc)), log.path)) from exc
+    finally:
+        log.close()
+        if result and result.get("directory"):
+            destination = Path(result["directory"]) / "gui.log"
+            try:
+                shutil.copyfile(str(log.path), str(destination))
+                result["gui_log"] = str(destination)
+            except OSError:
+                pass  # The original flushed journal remains in the cache.
+
+
 def run_local(task, stop, emit):
+    return _logged_job(task, emit, lambda notify: _run_local(task, stop, notify))
+
+
+def _run_local(task, stop, emit):
     if os.name != "posix":
         raise RuntimeError("本机提取需要 Linux 和 Verdi；Windows 请选 SSH 模式。已有报告可直接打开。")
     if stop.is_set():
@@ -197,7 +254,13 @@ def run_local(task, stop, emit):
 
 
 def run_ssh(task, settings, stop, emit, cache_root=None):
+    return _logged_job(task, emit, lambda notify: _run_ssh(task, settings, stop, notify, cache_root),
+                       settings=settings, cache_root=cache_root)
+
+
+def _run_ssh(task, settings, stop, emit, cache_root=None):
     client = connect_ssh(settings)
+    emit("log", "SSH 已连接，主机密钥校验通过；正在检查远端输出目录。\n")
     cancel_file = "/tmp/wave_init_gui_{}.cancel".format(uuid.uuid4().hex)
     sftp, channel, cancel_written, exited = None, None, False, False
     try:
@@ -215,6 +278,7 @@ def run_ssh(task, settings, stop, emit, cache_root=None):
             if not stat.S_ISDIR(mode) or sftp.listdir(task.out):
                 raise ValueError("远端输出目录不是空目录；请换一个新目录。")
         argv = [settings.python, "-u", "wave_init.py"] + task.arguments(cancel_file)
+        emit("log", "远端命令：{}\n".format(remote_command(settings, argv)))
         channel = client.get_transport().open_session(timeout=15)
         channel.set_combine_stderr(True)
         channel.exec_command(remote_command(settings, argv))
@@ -241,10 +305,12 @@ def run_ssh(task, settings, stop, emit, cache_root=None):
             time.sleep(0.05)
         emit("log", decoder.decode(b"", final=True))
         code = channel.recv_exit_status()
+        emit("log", "远端进程退出码：{}；开始下载报告与诊断日志。\n".format(code))
         exited = True
         parent = Path(cache_root) if cache_root else download_root()
         parent.mkdir(parents=True, exist_ok=True)
         local = Path(tempfile.mkdtemp(prefix=time.strftime("%Y%m%d_%H%M%S_"), dir=str(parent)))
+        emit("log", "本机下载目录：{}\n".format(local))
         for name in ARTIFACTS:
             remote = posixpath.join(task.out, name)
             try:
@@ -255,6 +321,7 @@ def run_ssh(task, settings, stop, emit, cache_root=None):
                 raise
             if stat.S_ISREG(info.st_mode):
                 sftp.get(remote, str(local / name))
+                emit("log", "已下载 {} ({} bytes)\n".format(name, info.st_size))
         emit("log", "本机报告：{}\n".format(local))
         return collect_result(code, local, task.out)
     finally:

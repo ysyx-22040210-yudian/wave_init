@@ -13,6 +13,8 @@ namespace eval wi {
     variable defer_rows 0
     variable pending_rows {}
     variable count 0
+    variable trace_file ""
+    variable api_failures [dict create]
 }
 
 proc wi::j {s} {
@@ -32,24 +34,44 @@ proc wi::obj {args} {
 proc wi::arr {xs} {return "\[[join $xs ,]\]"}
 proc wi::strings {xs} {set a {}; foreach x $xs {lappend a [j $x]}; return [arr $a]}
 proc wi::emit {json} {variable output; puts $output $json; flush $output}
+proc wi::trace {level event args} {
+    variable trace_file
+    if {$trace_file eq ""} {return}
+    set now [clock milliseconds]
+    set stamp "[clock format [expr {$now/1000}] -gmt 1 -format {%Y-%m-%dT%H:%M:%S}].[format %03d [expr {$now%1000}]]Z"
+    set fields [list utc [j $stamp] level [j $level] event [j $event]]
+    foreach {key value} $args {lappend fields $key [j $value]}
+    puts $trace_file [obj {*}$fields]
+    flush $trace_file
+}
+proc wi::api_failure {operation h property why} {
+    variable api_failures
+    set key [list $operation $h $property]
+    if {[dict exists $api_failures $key] || [dict size $api_failures]>=100} {return}
+    dict set api_failures $key 1
+    trace DEBUG api.unavailable operation $operation handle $h property $property detail $why
+}
 proc wi::valid {h} {expr {$h ne "" && $h ne "0"}}
 proc wi::s {h p} {
     if {![valid $h]} {return ""}
-    if {[catch {npi_get_str -property $p -object $h} v]} {return ""}
+    if {[catch {npi_get_str -property $p -object $h} v]} {api_failure npi_get_str $h $p $v; return ""}
     return $v
 }
 proc wi::n {h p {default 0}} {
-    if {![valid $h] || [catch {npi_get -property $p -object $h} v] || ![string is entier -strict $v]} {return $default}
+    if {![valid $h]} {return $default}
+    if {[catch {npi_get -property $p -object $h} v]} {api_failure npi_get $h $p $v; return $default}
+    if {![string is entier -strict $v]} {return $default}
     return $v
 }
 proc wi::r {h kind} {
     if {![valid $h]} {return ""}
-    if {[catch {npi_handle -type $kind -refHandle $h} v]} {return ""}
+    if {[catch {npi_handle -type $kind -refHandle $h} v]} {api_failure npi_handle $h $kind $v; return ""}
     return $v
 }
 proc wi::children {h kind} {
     set xs {}
-    if {[catch {npi_iterate -type $kind -refHandle $h} it] || ![valid $it]} {return $xs}
+    if {[catch {npi_iterate -type $kind -refHandle $h} it]} {api_failure npi_iterate $h $kind $it; return $xs}
+    if {![valid $it]} {return $xs}
     while {[valid [set x [npi_scan -iterator $it]]]} {lappend xs $x}
     return $xs
 }
@@ -262,6 +284,7 @@ proc wi::read_bits {sig {depth 0}} {
     if {$depth>32} {error "FSDB composite nesting exceeds 32"}
     if {[npi_fsdb_sig_property -type npiFsdbSigHasMember -sig $sig]} {
         set ct [npi_fsdb_sig_property -type npiFsdbSigCompositeType -sig $sig]
+        trace DEBUG fsdb.composite handle $sig composite_type $ct depth $depth
         set it [npi_fsdb_iter_member -sig $sig]
         set value ""; set changed ""; set count 0
         while {[valid [set member [npi_fsdb_iter_sig_next -iter $it]]]} {
@@ -297,25 +320,38 @@ proc wi::read_bits {sig {depth 0}} {
     } why]
     npi_fsdb_release_vct -vct $vct
     if {$code} {error $why}
+    trace DEBUG fsdb.vct handle $sig requested_tick $tick status [dict get $result status] \
+        change_tick [dict get $result change_tick] value_bits [string length [dict get $result value]]
     return $result
 }
 proc wi::sample {path width} {
     variable file; variable tick; variable sampled; variable dump_off
     set key [list $path $width]
-    if {[dict exists $sampled $key]} {return [dict get $sampled $key]}
+    if {[dict exists $sampled $key]} {
+        trace DEBUG fsdb.cache path $path width $width status [dict get $sampled $key status]
+        return [dict get $sampled $key]
+    }
+    trace DEBUG fsdb.lookup path $path expected_width $width requested_tick $tick
     set ret [dict create status not_dumped value "" path $path change_tick ""]
     set sig [npi_fsdb_sig_by_name -file $file -name $path -scope ""]
-    if {![valid $sig]} {dict set sampled $key $ret; return $ret}
+    if {![valid $sig]} {
+        trace DEBUG fsdb.absent path $path
+        dict set sampled $key $ret; return $ret
+    }
     set actual_width [npi_fsdb_sig_property -type npiFsdbSigRangeSize -sig $sig]
     set has_members [npi_fsdb_sig_property -type npiFsdbSigHasMember -sig $sig]
+    trace DEBUG fsdb.found path $path handle $sig expected_width $width actual_width $actual_width has_members $has_members
     if {![string is entier -strict $actual_width] || (!$has_members && $actual_width != $width)} {
         dict set ret status width_mismatch
+        dict set ret detail "expected $width bits, FSDB declared $actual_width bits"
+        trace WARNING fsdb.width_mismatch path $path expected_width $width actual_width $actual_width
         dict set sampled $key $ret; return $ret
     }
     foreach pair $dump_off {
         lassign $pair start end
         if {$tick >= $start && $tick < $end} {
             dict set ret status dump_off
+            trace WARNING fsdb.dump_off path $path requested_tick $tick start_tick $start end_tick $end
             dict set sampled $key $ret; return $ret
         }
     }
@@ -334,6 +370,8 @@ proc wi::sample {path width} {
     # Keep only the compact sampled string, never all signals' VC histories.
     npi_fsdb_unload_vc -file $file
     dict set sampled $key $ret
+    trace DEBUG fsdb.sampled path $path waveform_path [dict get $ret path] status [dict get $ret status] \
+        change_tick [dict get $ret change_tick] value_bits [string length [dict get $ret value]]
     return $ret
 }
 proc wi::expr_paths {e} {
@@ -349,6 +387,7 @@ proc wi::expr_paths {e} {
 }
 proc wi::sample_candidates {e paths} {
     set unique {}; foreach path $paths {if {$path ni $unique} {lappend unique $path}}
+    trace DEBUG fsdb.candidates design_paths [expr_paths $e] width [dict get $e width] paths $unique
     set result [dict create status not_dumped value "" change_tick ""]
     set selected ""
     foreach path $unique {
@@ -365,6 +404,7 @@ proc wi::sample_candidates {e paths} {
     if {[dict get $result status] eq "not_dumped"} {
         dict set result detail "FSDB signal not found; tried exact NPI-bound paths: [join $unique {, }]"
     }
+    trace DEBUG fsdb.selected waveform_path $selected status [dict get $result status]
     return $result
 }
 proc wi::evaluate {e} {
@@ -424,6 +464,11 @@ proc wi::row {h logical port dir modport interface_path {origin port} {problem "
         set change [dict get $result change_tick]
         if {[dict exists $result detail]} {set detail [dict get $result detail]}
     } failure]} {set status unsupported_type; set detail $failure}
+    set level DEBUG
+    if {$status ne "ok" || $dir in {unknown ref}} {set level WARNING}
+    trace $level signal.result logical_path $logical direction $dir direction_source $origin modport $modport \
+        interface_path $interface_path status $status expression $ex waveform_reads [arr $reads] \
+        change_tick $change value_preview [string range $value 0 65] detail $detail
     emit [obj kind [j signal] logical_path [j $logical] port [j $port] direction [j $dir] \
         direction_source [j $origin] modport [j $modport] interface_path [j $interface_path] \
         shape $shp expression $ex waveform_reads [arr $reads] status [j $status] value_bin $value change_tick [j $change] detail [j $detail]]
@@ -548,6 +593,8 @@ proc wi::connection_object {h} {
 }
 proc wi::connection_high {high context visited} {
     set name [s $high npiName]; set mp ""
+    trace DEBUG binding.high name $name type [s $high npiType] full_name [s $high npiFullName] \
+        context [s $context npiFullName] forwarding_depth [llength $visited]
     if {![catch {set act [actual $high]}] && [s $act npiType] eq "npiModport"} {
         set mp [s $act npiName]
         set suffix ".$mp"
@@ -563,6 +610,7 @@ proc wi::connection_high {high context visited} {
     set scopes {}
     while {[valid $context] && $context ni $scopes} {
         lappend scopes $context
+        trace DEBUG binding.lexical_scope name $name scope [s $context npiFullName]
         foreach p [children $context npiPort] {
             if {[s $p npiName] ne $base || [s $p npiPortType] ni {npiInterfacePort npiModportPort}} {continue}
             set result [connection_port $p $visited]
@@ -592,7 +640,7 @@ proc wi::connection_port {p {visited {}}} {
     variable binding_cache
     set owner [r $p npiScope]; set logical "[s $owner npiFullName].[s $p npiName]"
     if {$logical in $visited || [llength $visited]>256} {error "cyclic or excessive interface forwarding at $logical"}
-    if {[dict exists $binding_cache $logical]} {return [dict get $binding_cache $logical]}
+    if {[dict exists $binding_cache $logical]} {trace DEBUG binding.cache logical_path $logical; return [dict get $binding_cache $logical]}
     lappend visited $logical
     set low [r $p npiLowConn]
     # The named declaration supplies ranges/modport metadata when low-conn
@@ -607,6 +655,10 @@ proc wi::connection_port {p {visited {}}} {
         }
     }
     set high [r $p npiHighConn]
+    trace DEBUG binding.port logical_path $logical port_type [s $p npiPortType] \
+        low_type [s $low npiType] low_name [s $low npiFullName] \
+        declaration_type [s $declaration npiType] formal_modport $mp \
+        high_type [s $high npiType] high_name [s $high npiName] forwarding_depth [llength $visited]
     if {![valid $high]} {interface_error "unconnected port $logical"}
     set result [connection_high $high [r $owner npiScope] $visited]
     if {$mp eq ""} {set mp [dict get $result view]}
@@ -630,6 +682,8 @@ proc wi::connection_port {p {visited {}}} {
         incr i
     }
     dict set binding_cache $logical $result
+    set names {}; foreach itf $items {lappend names [s $itf npiFullName]}
+    trace DEBUG binding.resolved logical_path $logical interfaces $names modport $mp indices $idxs aliases [dict get $result aliases]
     return $result
 }
 proc wi::connected_interface {p logical port} {
@@ -650,6 +704,7 @@ proc wi::interface_instance {itf logical port mp} {
     if {$mp ne ""} {set act [interface_view $itf $mp]}
     interface_metadata $itf
     set ip [s $itf npiFullName]
+    trace INFO interface.bound logical_path $logical interface_path $ip modport $mp definition [s $itf npiDefName]
     variable interface_bindings
     lappend interface_bindings [list $logical $ip $mp]
     emit [obj kind [j binding] port [j $port] logical_path [j $logical] interface_path [j $ip] modport [j $mp]]
@@ -659,6 +714,8 @@ proc wi::interface_instance {itf logical port mp} {
         if {![llength $members]} {error "modport members unavailable"}
         foreach m $members {
             set dir [direction $m]
+            trace DEBUG modport.member logical_path "$logical.[s $m npiName]" direction $dir \
+                modport $mp expr_type [s [r $m npiExpr] npiType] action [expr {$dir eq "output" ? "skip_output" : "sample"}]
             if {$dir eq "output"} {continue}
             set name [s $m npiName]
             expand [r $m npiExpr] "$logical.$name" $port $dir $mp $ip modport
@@ -679,6 +736,9 @@ proc wi::main {} {
     variable file; variable tick; variable dump_off
     variable defer_rows; variable pending_rows
     global env
+    trace INFO backend.start run_id $env(WI_RUN_ID) tcl_version [info patchlevel] \
+        fsdb $env(WI_FSDB) kdb $env(WI_KDB) scope $env(WI_SCOPE)
+    trace INFO fsdb.open path $env(WI_FSDB)
     set file [npi_fsdb_open -name $env(WI_FSDB)]
     if {![valid $file]} {error "cannot open FSDB"}
     set scale [npi_fsdb_file_property_str -file $file -type npiFsdbFileScaleUnit]
@@ -689,40 +749,63 @@ proc wi::main {} {
     if {$env(WI_TIME_NUM) % $divisor != 0} {error "requested time is not an integral FSDB tick ($scale)"}
     set tick [expr {$env(WI_TIME_NUM)/$divisor}]
     set lo [npi_fsdb_min_time -file $file]; set hi [npi_fsdb_max_time -file $file]
+    trace INFO time.resolved timescale $scale mode $env(WI_TIME_MODE) numerator $env(WI_TIME_NUM) \
+        denominator $env(WI_TIME_DEN) tick $tick min_tick $lo max_tick $hi
     if {$tick < $lo || $tick > $hi || $tick>18446744073709551615} {error "time $tick outside FSDB range $lo..$hi ticks"}
     set dumpstr [npi_fsdb_file_property_str -file $file -type npiFsdbFileDumpOffRange]
     foreach {whole start end} [regexp -all -inline {\(\s*([0-9]+)\s+([0-9]+)\s*\)} $dumpstr] {lappend dump_off [list $start $end]}
+    trace DEBUG fsdb.dump_ranges ranges $dump_off
+    trace INFO kdb.import path $env(WI_KDB)
     debImport -elab $env(WI_KDB)
+    trace INFO kdb.imported path $env(WI_KDB)
     set scope [byname $env(WI_SCOPE)]
+    trace INFO scope.resolved requested $env(WI_SCOPE) type [s $scope npiType] \
+        full_name [s $scope npiFullName] definition [s $scope npiDefName] source_file [s $scope npiDefFile]
     if {[s $scope npiType] ne "npiModule"} {error "scope is not a module instance: $env(WI_SCOPE)"}
     emit [obj kind [j metadata] scope [j [s $scope npiFullName]] definition [j [s $scope npiDefName]] \
         parameters [params $scope] timescale [j $scale] tick [j $tick] min_tick [j $lo] max_tick [j $hi] \
         dump_off_ranges [ranges_json $dump_off] source_file [j [s $scope npiDefFile]]]
     set defer_rows 1
-    foreach port [children $scope npiPort] {
+    set ports [children $scope npiPort]
+    trace INFO ports.enumerated count [llength $ports]
+    foreach port $ports {
         set name [s $port npiName]; set low [r $port npiLowConn]
+        trace DEBUG port.inspect name $name type [s $port npiPortType] direction [direction $port] \
+            low_type [s $low npiType] low_name [s $low npiFullName]
         emit [obj kind [j port] description [port_description $port]]
         set logical "$env(WI_SCOPE).$name"
         if {[s $port npiPortType] in {npiInterfacePort npiModportPort}} {
-            if {[catch {connected_interface $port $logical $name} why]} {row $low $logical $name unknown "" "" unresolved_binding $why}
+            if {[catch {connected_interface $port $logical $name} why options]} {
+                trace WARNING interface.unresolved logical_path $logical detail $why stack [dict get $options -errorinfo]
+                row $low $logical $name unknown "" "" unresolved_binding $why
+            }
         } else {
             set dir [direction $port]
             if {$dir ne "output"} {expand $low $logical $name $dir "" "" port}
         }
     }
     prepare_aliases
+    trace INFO signals.prepared count [llength $pending_rows] aliases [dict size $wi::expression_aliases]
     set defer_rows 0
     foreach job $pending_rows {row {*}$job}
     npi_fsdb_close -file $file
     emit [obj kind [j done] count $wi::count]
+    trace INFO backend.finished records $wi::count unique_samples [dict size $wi::sampled]
 }
 
 if {[info exists env(WI_LIBRARY_ONLY)]} {return}
+if {[info exists env(WI_TRACE)]} {
+    set wi::trace_file [open $env(WI_TRACE) w]
+    fconfigure $wi::trace_file -encoding utf-8 -translation lf
+}
+if {![info exists env(WI_RUN_ID)]} {set env(WI_RUN_ID) "standalone"}
 set wi::output [open $env(WI_RESULT) w]
 fconfigure $wi::output -encoding utf-8 -translation lf
 if {[catch {wi::main} error options]} {
+    wi::trace ERROR backend.fatal detail $error stack [dict get $options -errorinfo]
     wi::emit [wi::obj kind [wi::j fatal] message [wi::j $error] detail [wi::j [dict get $options -errorinfo]]]
     if {[info exists wi::file] && [wi::valid $wi::file]} {catch {npi_fsdb_close -file $wi::file}}
 }
 close $wi::output
+if {$wi::trace_file ne ""} {close $wi::trace_file}
 debExit

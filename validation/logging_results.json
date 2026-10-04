@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-04",
+  "tool_version": "1.3.3",
+  "status": "pass",
+  "environment": {
+    "os": "CentOS 7 / glibc 2.17",
+    "verdi_vcs": "O-2018.09-SP2",
+    "source_python": "3.6.8 / 3.8.13",
+    "bundled_python": "3.8.13"
+  },
+  "unit_gui_tests": {
+    "count": 28,
+    "passed": 28,
+    "skipped_on_vm": 0
+  },
+  "core_regression": {
+    "groups": 10,
+    "status": "pass",
+    "evidence": "runs/logging_core_results.json"
+  },
+  "source_log_checks": {
+    "cases": 6,
+    "status": "pass",
+    "evidence": "runs/logging_source_results.json"
+  },
+  "frozen_log_checks": {
+    "cases": 6,
+    "status": "pass",
+    "evidence": "runs/logging_frozen_results.json"
+  },
+  "log_scenarios": [
+    "13-module/23-segment interface path, default console",
+    "same path with debug live trace",
+    "undumped members",
+    "interface analyzed without KDB",
+    "invalid scope",
+    "time out of FSDB range"
+  ],
+  "gui_local": {
+    "status": "pass",
+    "mode": "local",
+    "python": "3.8.13 (default, Aug 16 2022, 12:16:29) \n[GCC 9.3.1 20200408 (Red Hat 9.3.1-2)]",
+    "tk": "8.5.13",
+    "signals": 16,
+    "responsive_heartbeats": 78,
+    "output": "/root/wave_init/out/gui_acceptance_dbec8029a0b04917a414868921df1d41",
+    "local_report": "/root/wave_init/out/gui_acceptance_dbec8029a0b04917a414868921df1d41",
+    "sftp_browser": false,
+    "diagnostic_logs": "pass"
+  },
+  "gui_ssh": {
+    "status": "pass",
+    "mode": "ssh",
+    "python": "3.11.5 | packaged by Anaconda, Inc. | (main, Sep 11 2023, 13:26:23) [MSC v.1916 64 bit (AMD64)]",
+    "tk": "8.6.12",
+    "signals": 16,
+    "responsive_heartbeats": 102,
+    "output": "/root/wave_init/out/gui_acceptance_154d2cb6738e4ee5a48e7fc4d8c03102",
+    "local_report": "C:\\Users\\1\\AppData\\Local\\wave_init\\downloads\\20261004_223817_7wxb8xoh",
+    "sftp_browser": true,
+    "diagnostic_logs": "pass"
+  },
+  "gui_ssh_cancel": {
+    "status": "pass",
+    "mode": "ssh_cancel",
+    "code": 130,
+    "seconds_after_cancel": 0.83,
+    "vendor_processes_stopped": 2,
+    "remote_fixture": "/root/wave_init/build/gui_cancel_48167ae87f234460ac590be4e8f8b46b",
+    "local_report": "C:\\Users\\1\\AppData\\Local\\wave_init\\downloads\\20261004_223832_pv12kyls"
+  },
+  "frozen_gui": {
+    "status": "pass",
+    "mode": "frozen_gui_local",
+    "signals": 5,
+    "interface_alias_case": true,
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "tool_version": "1.3.3",
+    "responsive_ui_queries": 57,
+    "assign_preview": true,
+    "detailed_logs": true,
+    "release": "/root/wave_init/build/linux_package_7_dq_na3/stage/wave_init-linux-x86_64",
+    "evidence_directory": "/root/wave_init/build/frozen_gui_f02bhul1"
+  },
+  "portable": {
+    "evidence": "runs/logging_portable_results.json",
+    "checks": [
+      "CentOS 7 GUI",
+      "Ubuntu Base 22.04.5 userspace, glibc 2.35 on CentOS kernel",
+      "UID 65534",
+      "no system Python",
+      "read-only install, relocated path with spaces",
+      "16 NPI values",
+      "VCS assign replay"
+    ]
+  },
+  "additional_contracts": [
+    "ASCII console prints Chinese without failing extraction",
+    "SSH connection failure journal retains redacted stack",
+    "credentials/license values excluded from application environment report",
+    "cancelled Verdi process group stopped",
+    "nonempty output remains untouched",
+    "split UTF-8 trace decoded incrementally"
+  ],
+  "samples": {
+    "deep_trace": "runs/logging_deep_trace.jsonl",
+    "missing_kdb_trace": "runs/logging_missing_kdb_trace.jsonl",
+    "runtime": "runs/logging_runtime.json"
+  },
+  "archive": {
+    "file": "dist/wave_init-1.3.3-linux-x86_64.tar.gz",
+    "sha256": "b3beafef78a904c7a06295620f87c4adbf4101c872fee402505739d9786dfac6",
+    "size_bytes": 26985278,
+    "source_hashes_match": true
+  }
+}

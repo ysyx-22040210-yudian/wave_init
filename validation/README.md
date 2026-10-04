@@ -2,7 +2,9 @@
 
 最新验证日期：2026-10-04；下方 1.1.0～1.3.0 记录保留自 2026-10-02。验证环境：`192.168.31.116`，CentOS 7、Python 3.6.8 / 3.8.13、Verdi/VCS O-2018.09-SP2。交付源码位于 `D:\wave_init`，VM 副本位于 `/root/wave_init`。
 
-当前版本 **1.3.2** 补充深层 interface / generate 连接追踪和数组声明范围解析。[深层验证记录](deep_interface_results.json) 保存复现、两种 SV 仿真及便携包验证证据。
+当前版本 **1.3.3** 增加持久化运行日志、详细 NPI 追踪、GUI/SSH 日志、环境与版本记录，以及实时调试选项。[日志验证记录](logging_results.json) 保存源码、GUI 与便携包验证证据。
+
+版本 **1.3.2** 补充深层 interface / generate 连接追踪和数组声明范围解析。[深层验证记录](deep_interface_results.json) 保存复现、两种 SV 仿真及便携包验证证据。
 
 版本 **1.3.1** 修复 interface FSDB 路径别名的误报缺失，补充分文件 KDB 诊断。[该版修复验证记录](interface_fix_results.json) 包含复现前后对比、回归及便携包校验。
 
@@ -13,6 +15,15 @@
 下方核心功能记录对应 **1.1.0**：独立 `tb_snapshot.sv` 改用常量 `assign`，普通连接保留 RTL 端口名；现有 TB 的 `snapshot.svh` 提供可选的 force/release 任务。版本 1.2.0 的 CLI 取消机制另经过进程组清理测试，并复测普通端口及现有 TB 的 force/release 接入。
 
 [results.json](results.json) 汇总 1.1.0 每个测试组的最后结果和当时核心源码 SHA-256。[runs](runs/) 保留原始各轮结果，包括修正前的测试失败记录；最终各组均通过。测试检查和样例生成都实际调用了 VM 上的 NPI/VCS。
+
+## 日志与跨设备诊断（1.3.3）
+
+- 源码及便携 CLI 各验证 6 个真实 Verdi 场景：13 层模块/23 段层次的默认与 debug 输出、未 dump 的 interface、缺失 interface 分析 KDB、错误 scope、时间越界。核对四态值、日志事件、失败堆栈、候选路径和 run_id。
+- 真实 Tk 界面验证本机及 Windows→Linux SSH 提取，各取得 16 个正确值，实时日志显示和日志自动下载通过。实际 GUI 取消按钮清理远端两个 vendor 进程，0.83 秒内确认取消，本机保留日志。
+- 便携 GUI 在最深层查询取得 5 个正确值，并验证新增详细日志控件。28 项 Python 3.8 单元/GUI 测试全部通过，包含连接失败日志、密码脱敏、ASCII locale 中文输出、分段 UTF-8、取消和旧结果保护。10 组原有 NPI/VCS 核心回归通过。
+- 便携包在 CentOS 7 及 Ubuntu Base 22.04.5 用户空间验证 GUI，后者沿用 CentOS 内核；普通 UID、无系统 Python、只读安装与含空格路径通过。冻结 CLI 提取 16 项后通过 VCS assign 回放。归档内源码校验与交付源码一致。
+
+真实日志样本：[深层绑定/查询](runs/logging_deep_trace.jsonl)、[缺失 KDB 堆栈](runs/logging_missing_kdb_trace.jsonl)、[运行环境](runs/logging_runtime.json)。汇总与原始记录链接见 [logging_results.json](logging_results.json)。交付包：[wave_init-1.3.3-linux-x86_64.tar.gz](../dist/wave_init-1.3.3-linux-x86_64.tar.gz)。
 
 ## Interface 深层及 generate 连接验证（1.3.2）
 

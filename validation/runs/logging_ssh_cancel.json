@@ -1,0 +1,9 @@
+{
+  "status": "pass",
+  "mode": "ssh_cancel",
+  "code": 130,
+  "seconds_after_cancel": 0.83,
+  "vendor_processes_stopped": 2,
+  "remote_fixture": "/root/wave_init/build/gui_cancel_48167ae87f234460ac590be4e8f8b46b",
+  "local_report": "C:\\Users\\1\\AppData\\Local\\wave_init\\downloads\\20261004_223832_pv12kyls"
+}

@@ -1,0 +1,13 @@
+{
+  "status": "pass",
+  "mode": "frozen_gui_local",
+  "signals": 5,
+  "interface_alias_case": true,
+  "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+  "tool_version": "1.3.3",
+  "responsive_ui_queries": 57,
+  "assign_preview": true,
+  "detailed_logs": true,
+  "release": "/root/wave_init/build/linux_package_7_dq_na3/stage/wave_init-linux-x86_64",
+  "evidence_directory": "/root/wave_init/build/frozen_gui_f02bhul1"
+}

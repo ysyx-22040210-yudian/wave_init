@@ -417,6 +417,14 @@ Exit codes: 0 = values and SV generated completely; 2 = partial report;
 1 = invalid request, vendor/runtime failure, or invalid global timestamp.
 Directions may remain unknown with exit 0 when that was the requested policy.
 Generation is not itself compilation verification for a new customer design.
+
+Troubleshooting: wave_init.log records stages and failures; npi_trace.log always
+records detailed interface forwarding, direction decisions and FSDB candidates.
+runtime.json records this run's ID, versions, environment paths and input metadata.
+verdi.log is the vendor log; npi_records.jsonl preserves raw query records.
+Send these files together with snapshot.json (or error.json) and diagnostics.txt.
+GUI SSH jobs also keep gui.log locally, including connection/download failures.
+Use --debug, or the GUI detailed-log checkbox, to display NPI details live.
 """.format(**result)
     (out / "README.txt").write_text(text, encoding="utf-8")
     diagnostics = sorted(set(task_errors + bench_errors))

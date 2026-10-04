@@ -1,0 +1,44 @@
+[
+  {
+    "case": "deep_default",
+    "status": "pass",
+    "exit_code": 0,
+    "trace_events": 197,
+    "out": "/root/wave_init/build/logging_k27tfkvg/deep_default"
+  },
+  {
+    "case": "deep_debug",
+    "status": "pass",
+    "exit_code": 0,
+    "trace_events": 197,
+    "out": "/root/wave_init/build/logging_k27tfkvg/deep_debug"
+  },
+  {
+    "case": "deep_not_dumped",
+    "status": "pass",
+    "exit_code": 2,
+    "trace_events": 198,
+    "out": "/root/wave_init/build/logging_k27tfkvg/deep_not_dumped"
+  },
+  {
+    "case": "missing_interface_kdb",
+    "status": "pass",
+    "exit_code": 2,
+    "trace_events": 25,
+    "out": "/root/wave_init/build/logging_k27tfkvg/missing_interface_kdb"
+  },
+  {
+    "case": "bad_scope",
+    "status": "pass",
+    "exit_code": 1,
+    "trace_events": 8,
+    "out": "/root/wave_init/build/logging_k27tfkvg/bad_scope"
+  },
+  {
+    "case": "time_out_of_range",
+    "status": "pass",
+    "exit_code": 1,
+    "trace_events": 4,
+    "out": "/root/wave_init/build/logging_k27tfkvg/time_out_of_range"
+  }
+]

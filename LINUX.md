@@ -3,12 +3,12 @@
 便携包内置 Python 3.8、Tk、SSH 依赖和中文字体。解压到任意目录，不需要安装 Python、Tk 或 pip 包，也不需要 root 权限。
 
 ```bash
-tar -xzf wave_init-1.3.2-linux-x86_64.tar.gz
+tar -xzf wave_init-1.3.3-linux-x86_64.tar.gz
 cd wave_init-linux-x86_64
 ./start_gui.sh
 ```
 
-升级到 1.3.2 时请完整解压新包，再运行 `./start_gui.sh --version` 确认版本。1.3.2 修复了 interface 跨层端口及 generate 分支的绑定和数组范围解析，并包含 1.3.1 的 FSDB 别名修复与 KDB 分步编译诊断。便携可执行文件使用内置代码，仅替换外层 Python/Tcl 文件不会更新它。
+升级到 1.3.3 时请完整解压新包，再运行 `./start_gui.sh --version` 确认版本。1.3.3 增加默认持久化的详细 NPI 日志、环境/版本记录、GUI/SSH 日志与实时调试选项，并保留此前深层 interface、generate、数组和 FSDB 别名修复。便携可执行文件使用内置代码，仅替换外层 Python/Tcl 文件不会更新它。
 
 适用平台：**Linux x86_64、glibc 2.17 或更新版本、可用的图形桌面/X11（含 XWayland）**。请保留整个解压目录，尤其是 `_internal`。ARM、Alpine/musl 不适用本二进制包；源码启动方式仍可使用对应平台的 Python/Tk。
 
@@ -36,6 +36,8 @@ source /your/site/eda_setup.sh
 ```
 
 纯 SSH 终端没有图形显示时，请在 Linux 桌面启动或使用可用的 X11 转发。`--check` 会明确报告显示环境缺失；不会静默开启后台不可见窗口。
+
+提取命令添加 `--debug`，或勾选 GUI 高级页的“实时显示详细日志”，可在界面看到逐层 interface 绑定和 FSDB 路径查询。即使未勾选，输出目录也会默认保存完整 `npi_trace.log`、`wave_init.log`、`runtime.json`、`verdi.log` 和原始 NPI 记录。SSH 会自动下载日志，连接失败时本机缓存仍保存 `gui.log`。其他设备出现问题时，可直接提供本次报告及这些日志；详见 [README 日志说明](README.md#其他设备出错时的日志)。
 
 ## 源码目录启动
 

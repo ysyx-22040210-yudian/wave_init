@@ -8,12 +8,34 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import patch
 
 from waveinit.gui import WaveInitApp, read_profile, save_profile
-from waveinit.gui_runner import ROOT, SSHSettings, Task, collect_result, load_report, remote_command, run_local
+from waveinit.gui_runner import ROOT, SSHSettings, Task, collect_result, load_report, remote_command, run_local, run_ssh, ARTIFACTS
 
 
 class GUIContracts(unittest.TestCase):
+    def test_ssh_failure_retains_local_journal_and_redacts_password(self):
+        with tempfile.TemporaryDirectory() as directory:
+            settings = SSHSettings(password="test-secret-do-not-log")
+            events = []
+            with patch("waveinit.gui_runner.connect_ssh", side_effect=RuntimeError("failed test-secret-do-not-log")):
+                with self.assertRaisesRegex(RuntimeError, "gui.log"):
+                    run_ssh(Task(mode="ssh"), settings, threading.Event(),
+                            lambda kind, text: events.append(text), cache_root=directory)
+            journal, = Path(directory).glob("*/gui.log")
+            text = journal.read_text(encoding="utf-8")
+            self.assertIn("gui.failed", text)
+            self.assertNotIn(settings.password, text + "".join(events))
+            self.assertTrue({"wave_init.log", "npi_trace.log", "npi_records.jsonl", "runtime.json"}.issubset(ARTIFACTS))
+
+    def test_debug_option_survives_profile_and_remote_arguments(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "profile.json"
+            save_profile(path, {"debug": True, "password": "secret"})
+            self.assertTrue(read_profile(path)["debug"])
+            self.assertIn("--debug", Task(debug=True).arguments("/tmp/cancel"))
+
     def test_profile_never_saves_or_loads_password(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory)/"profile.json"
@@ -105,6 +127,9 @@ time.sleep(60)
             self.assertEqual(result[0]["code"], 130)
             error = json.loads((base/"result/error.json").read_text())
             self.assertEqual(error["status"], "cancelled")
+            self.assertIn("verdi.terminate", (base/"result/wave_init.log").read_text())
+            self.assertIn("gui.finished", (base/"result/gui.log").read_text())
+            self.assertEqual(json.loads((base/"result/runtime.json").read_text())["exit_code"], 130)
             for pid in json.loads(marker.read_text()):
                 status = Path("/proc")/str(pid)/"stat"
                 self.assertTrue(not status.exists() or status.read_text().split(") ", 1)[1].startswith("Z"),

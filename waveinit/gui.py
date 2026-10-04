@@ -19,7 +19,7 @@ from .gui_runner import (ROOT, SSHSettings, Task, list_remote, load_report,
 from .portable import external_environment, output_root
 
 PROFILE_KEYS = ("mode", "fsdb", "kdb", "scope", "time_value", "time_unit", "out",
-                "timeout", "verdi", "sv_target", "interface_maps", "force_unknown",
+                "timeout", "verdi", "sv_target", "interface_maps", "force_unknown", "debug",
                 "host", "port", "user", "directory", "python", "environment")
 PREVIEW_LIMIT = 1024 * 1024
 
@@ -37,7 +37,7 @@ def read_profile(path):
         raise ValueError("请选择 wave_init GUI 保存的配置 JSON。")
     values = {key: data["settings"][key] for key in PROFILE_KEYS if key in data["settings"]}
     for key, value in values.items():
-        if (key == "force_unknown" and not isinstance(value, bool)) or (key != "force_unknown" and not isinstance(value, str)):
+        if (key in ("force_unknown", "debug") and not isinstance(value, bool)) or (key not in ("force_unknown", "debug") and not isinstance(value, str)):
             raise ValueError("配置字段类型错误：" + key)
     if values.get("mode", "local") not in ("local", "ssh") or values.get("time_unit", "ns") not in ("fs", "ps", "ns", "us", "ms", "s", "ticks"):
         raise ValueError("配置中的执行方式或时间单位无效。")
@@ -185,6 +185,7 @@ class WaveInitApp:
                         directory="", python="python3", environment="")
         self.vars = {key: tk.StringVar(root, value=value) for key, value in defaults.items()}
         self.vars["force_unknown"] = tk.BooleanVar(root, value=False)
+        self.vars["debug"] = tk.BooleanVar(root, value=False)
         self.status = tk.StringVar(root, value="就绪 · 选择文件并填写完整模块实例层次")
         self.result_summary = tk.StringVar(root, value="尚未加载快照")
         self.filter_text = tk.StringVar(root, value="")
@@ -396,8 +397,11 @@ class WaveInitApp:
         unknown = ttk.Checkbutton(body, text="驱动未知方向成员（无 modport）", variable=self.vars["force_unknown"])
         unknown.grid(row=row, column=0, sticky="w", pady=8)
         self.controls.append(unknown)
+        detailed = ttk.Checkbutton(body, text="实时显示详细日志（绑定 / FSDB 查询）", variable=self.vars["debug"])
+        detailed.grid(row=row+1, column=0, sticky="w", pady=8)
+        self.controls.append(detailed)
         ttk.Label(body, text="提取时使用本设备的 Verdi 环境。\nSSH 只取回报告，不传输 FSDB / KDB。",
-                  wraplength=285, style="Muted.TLabel").grid(row=row+1, column=0, sticky="w", pady=8)
+                  wraplength=285, style="Muted.TLabel").grid(row=row+2, column=0, sticky="w", pady=8)
 
     def text_widget(self, parent, height=None, wrap="none"):
         frame = ttk.Frame(parent)
@@ -451,7 +455,7 @@ class WaveInitApp:
                     out=self.vars["out"].get().strip(), timeout=float(self.vars["timeout"].get()),
                     verdi=self.vars["verdi"].get().strip(), sv_target=self.vars["sv_target"].get().strip(),
                     interface_maps=tuple(x.strip() for x in self.vars["interface_maps"].get().split(";") if x.strip()),
-                    force_unknown=self.vars["force_unknown"].get())
+                    force_unknown=self.vars["force_unknown"].get(), debug=self.vars["debug"].get())
         task.validate()
         return task
 
@@ -593,6 +597,8 @@ class WaveInitApp:
                             self.status.set("提取失败 · 请查看日志")
                         if data.get("remote_directory"):
                             self.append_log("虚拟机结果目录：" + data["remote_directory"] + "\n")
+                        if data.get("gui_log"):
+                            self.append_log("GUI / SSH 日志：" + data["gui_log"] + "\n")
                         if data.get("error"):
                             self.append_log(data["error"] + "\n")
                             self.set_text(self.diagnostics, data["error"])
@@ -625,6 +631,9 @@ class WaveInitApp:
         messages += report.get("sv", {}).get("skipped", [])
         messages += ["{}: {} {}".format(r["logical_path"], r["status"], r.get("detail", ""))
                      for r in report["signals"] if r["status"] != "ok"]
+        if report.get("log_files"):
+            messages += ["诊断日志目录：" + str(directory), "run_id: " + report.get("run_id", ""),
+                         "排查时请提供：" + ", ".join(report["log_files"]) + "（SSH 模式另含 gui.log）。"]
         self.set_text(self.diagnostics, "\n".join(messages) if messages else "没有发现不完整项。SV 的编译验证需要使用该设计原始 RTL / package / filelist。")
         self.filter_signals()
         self.show_preview()

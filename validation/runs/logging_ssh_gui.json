@@ -1,0 +1,12 @@
+{
+  "status": "pass",
+  "mode": "ssh",
+  "python": "3.11.5 | packaged by Anaconda, Inc. | (main, Sep 11 2023, 13:26:23) [MSC v.1916 64 bit (AMD64)]",
+  "tk": "8.6.12",
+  "signals": 16,
+  "responsive_heartbeats": 102,
+  "output": "/root/wave_init/out/gui_acceptance_154d2cb6738e4ee5a48e7fc4d8c03102",
+  "local_report": "C:\\Users\\1\\AppData\\Local\\wave_init\\downloads\\20261004_223817_7wxb8xoh",
+  "sftp_browser": true,
+  "diagnostic_logs": "pass"
+}

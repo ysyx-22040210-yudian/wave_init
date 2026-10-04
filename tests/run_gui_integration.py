@@ -43,6 +43,7 @@ def main():
     values = {"mode": "ssh" if args.ssh else "local", "fsdb": base+"/build/fixture/waves.fsdb",
               "kdb": base+"/build/fixture/simv.daidir", "scope": "snapshot_top.dut", "time_value": "7",
               "time_unit": "ns", "out": output}
+    values["debug"] = True
     if args.ssh:
         values["password"] = os.environ.get("WAVE_INIT_SSH_PASSWORD", "")
     for key, value in values.items():
@@ -74,6 +75,10 @@ def main():
         assert signals["snapshot_top.dut.bus.wdata"]["value_bin"] == "10100101"
         assert "assign scalar = 8'b10010110;" in app.preview_text
         assert "assign bus.wdata = 8'b10100101;" in app.preview_text
+        for name in ("wave_init.log", "npi_trace.log", "npi_records.jsonl", "runtime.json", "gui.log"):
+            assert (app.result_directory/name).is_file(), name
+        assert "npi.fsdb.candidates" in app.log.get("1.0", "end")
+        assert "interface.bound" in (app.result_directory/"npi_trace.log").read_text()
         assert heartbeat[0] >= 5, "Tk event loop did not remain responsive"
         assert not errors, errors
         if args.screenshot:
@@ -90,6 +95,7 @@ def main():
         evidence = {"status": "pass", "mode": "ssh" if args.ssh else "local", "python": sys.version,
                     "tk": root.tk.call("info", "patchlevel"), "signals": 16, "responsive_heartbeats": heartbeat[0],
                     "output": output, "local_report": str(app.result_directory), "sftp_browser": bool(args.ssh)}
+        evidence["diagnostic_logs"] = "pass"
         (evidence_dir/"results.json").write_text(json.dumps(evidence, indent=2)+"\n", encoding="utf-8")
         (evidence_dir/"gui.log").write_text(app.log.get("1.0", "end"), encoding="utf-8")
         print(json.dumps(evidence, indent=2))
