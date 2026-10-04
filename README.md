@@ -4,14 +4,14 @@
 
 运行环境：Linux、Python 3.6+、可用 Verdi 及许可证。Python 运行部分仅使用标准库；运行生成的 testbench 另需 VCS、原始 RTL/package/filelist。开发验证环境为 Verdi/VCS O-2018.09-SP2。
 
-**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.0。
+**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.1。
 
 ## 其他 Linux 设备直接启动
 
-使用 `dist/wave_init-1.3.0-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
+使用 `dist/wave_init-1.3.1-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
 
 ```bash
-tar -xzf wave_init-1.3.0-linux-x86_64.tar.gz
+tar -xzf wave_init-1.3.1-linux-x86_64.tar.gz
 cd wave_init-linux-x86_64
 ./start_gui.sh
 ```
@@ -89,9 +89,12 @@ python3 wave_init.py \
 | `tb_snapshot.sv` | 独立 DUT testbench，全部已采样 input/inout 用 `assign` 驱动，含参数和 interface 连接 |
 | `run_vcs.sh` | 使用原始 RTL filelist 编译、运行独立 testbench |
 | `README.txt` | 本次结果的接入说明 |
+| `diagnostics.txt` | interface 绑定、KDB/FSDB 路径区别及失败处理提示 |
 | `verdi.log`、`npi_*/records.jsonl` | Vendor 日志及原始 NPI 查询记录 |
 
 JSON 的 `signals` 是目标模块边界快照；`dependencies` 是生成独立 interface 实例所需的构造端口采样，不混入选中的 input/inout 集合。`ports` 还保留输出端口的连接元数据，用于构建完整 testbench。
+
+`design_paths` / `expression` 保留 KDB 中的实际设计对象，供 SV 驱动使用；`waveform_paths` 是本次查询实际找到的 FSDB 路径。`waveform_reads` 记录两者映射及尝试过的路径，JSON 与 CSV 均保留这些信息。
 
 `value_bin` 是保留 `0/1/x/z` 的无损二进制字符串。未找到或不可信的数据为 `null`，不能等同于真实的 `x`。`status` 区分 `ok`、`not_dumped`、`no_initial_value`、`dump_off`、`width_mismatch`、`unsupported_type`、`read_error`。
 
@@ -104,6 +107,26 @@ JSON 的 `signals` 是目标模块边界快照；`dependencies` 是生成独立 
 - modport 的 output 不进入快照；input/inout 按其绑定的真实对象采样。别名、固定切片和拼接通过 `npiExpr` 处理。
 - 没有 modport 时提取静态数据成员并标记 `unknown`。`ref` 单独记录，不伪装成 input/inout。
 - 默认 SV 只驱动已成功采样的 input/inout：独立 `tb_snapshot.sv` 使用 `assign`，现有 TB 的 `snapshot.svh` 使用 `force/release`。`--force-unknown` 才会额外驱动无 modport 的未知方向成员；ref 保持仅报告。
+
+## Interface 端口显示错误或缺失
+
+interface 与 DUT 可以放在不同文件中，不需要合并源码。版本 1.3.1 修复了 Verdi 2018 在只 dump DUT 时，FSDB 使用 `tb.dut.bus.data` 或 `tb.link.slv.data`、KDB 却指向 `tb.link.data` 的查询差异。工具按 NPI 证明的完整表达式查找别名，支持普通成员、重命名、切片/拼接、共享 interface 及数组；不会按信号短名称猜测绑定，也不会因波形路径不同而改变生成 SV 的目标。
+
+若仍有错误，请查看 GUI“诊断”或输出目录 `diagnostics.txt`：
+
+- `unresolved interface binding (npiModule/npiNIY)`：KDB 缺失或不支持 interface/modport 信息。分步编译时，interface 所在文件也必须在 **vlogan 分析阶段**使用 `-kdb`，然后重新执行 `vcs -kdb`；只给最终 vcs 命令加 `-kdb` 不能补齐缺失的数据。不要根据 `mst/slv` 名称猜方向。
+- `not_dumped`：已检查由 KDB 绑定确定的实例、端口及 modport 路径，仍未找到波形。对报告中的实际 interface 实例添加 `$fsdbDumpvars(0, tb.link, "+all");` 后重跑原仿真。已有 FSDB 没有保存的值不能恢复。
+- `width_mismatch`、`dump_off`、`no_initial_value`：沿用原有检查，不会通过选择另一个名字掩盖位宽或采样时间错误。
+
+分文件、分步编译示例（`design.f` 依次包含 package、interface、DUT、TB）：
+
+```bash
+vlogan -full64 -sverilog -debug_access+all -kdb -f design.f
+vcs -full64 -debug_access+all -kdb -lca tb_top -o simv
+# 沿用工程已有 FSDB PLI、宏和许可证设置，再运行 simv。
+```
+
+新增回归：`source tests/env.sh; python3 tests/run_split_interfaces.py`（开发 VM）。
 
 ## 两种 SV 用法
 

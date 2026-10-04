@@ -6,6 +6,10 @@ namespace eval wi {
     variable dump_off {}
     variable sampled [dict create]
     variable interfaces [dict create]
+    variable interface_bindings {}
+    variable expression_aliases [dict create]
+    variable defer_rows 0
+    variable pending_rows {}
     variable count 0
 }
 
@@ -308,17 +312,59 @@ proc wi::sample {path width} {
             dict set ret value ""
         }
     } why]} {dict set ret status read_error; dict set ret detail $why}
+    dict set ret path $path
+    if {[catch {npi_fsdb_sig_property_str -type npiFsdbSigFullName -sig $sig} full] == 0 && $full ne ""} {
+        dict set ret path $full
+    }
     # Keep only the compact sampled string, never all signals' VC histories.
     npi_fsdb_unload_vc -file $file
     dict set sampled $key $ret
     return $ret
 }
-proc wi::evaluate {e} {
+proc wi::expr_paths {e} {
     switch -- [dict get $e kind] {
-        signal {return [sample [dict get $e path] [dict get $e width]]}
-        constant {return [dict create status ok value [dict get $e value] change_tick ""]}
+        signal {return [list [dict get $e path]]}
+        select {return [expr_paths [dict get $e parent]]}
+        concat {
+            set xs {}; foreach sub [dict get $e operands] {lappend xs {*}[expr_paths $sub]}
+            return [lsort -unique $xs]
+        }
+        default {return {}}
+    }
+}
+proc wi::sample_candidates {e paths} {
+    set unique {}; foreach path $paths {if {$path ni $unique} {lappend unique $path}}
+    set result [dict create status not_dumped value "" change_tick ""]
+    set selected ""
+    foreach path $unique {
+        set result [sample $path [dict get $e width]]
+        # Existing signals remain authoritative for width errors, dump-off and
+        # missing initial data. Only absent paths use a known alias.
+        if {[dict get $result status] ne "not_dumped"} {
+            set selected [dict get $result path]
+            break
+        }
+    }
+    dict set result reads [list [obj design_paths [strings [expr_paths $e]] \
+        waveform_path [j $selected] candidates [strings $unique]]]
+    if {[dict get $result status] eq "not_dumped"} {
+        dict set result detail "FSDB signal not found; tried exact NPI-bound paths: [join $unique {, }]"
+    }
+    return $result
+}
+proc wi::evaluate {e} {
+    variable expression_aliases
+    set aliases {}
+    set key [expr_json $e]
+    if {[dict exists $expression_aliases $key]} {set aliases [dict get $expression_aliases $key]}
+    switch -- [dict get $e kind] {
+        signal {return [sample_candidates $e [concat [list [dict get $e path]] $aliases]]}
+        constant {return [dict create status ok value [dict get $e value] change_tick "" reads {}]}
         select {
             set result [evaluate [dict get $e parent]]
+            if {[dict get $result status] eq "not_dumped" && [llength $aliases]} {
+                return [sample_candidates $e $aliases]
+            }
             if {[dict get $result status] eq "ok"} {
                 set value ""; foreach i [dict get $e offsets] {append value [string index [dict get $result value] $i]}
                 dict set result value $value
@@ -326,28 +372,38 @@ proc wi::evaluate {e} {
             return $result
         }
         concat {
-            set value ""; set time ""
+            set value ""; set time ""; set reads {}
             foreach sub [dict get $e operands] {
                 set r [evaluate $sub]
+                if {[dict get $r status] eq "not_dumped" && [llength $aliases]} {
+                    return [sample_candidates $e $aliases]
+                }
                 if {[dict get $r status] ne "ok"} {return $r}
+                lappend reads {*}[dict get $r reads]
                 append value [dict get $r value]
                 set st [dict get $r change_tick]
                 if {$st ne "" && ($time eq "" || $st>$time)} {set time $st}
             }
-            return [dict create status ok value $value change_tick $time]
+            return [dict create status ok value $value change_tick $time reads $reads]
         }
     }
 }
 
 proc wi::row {h logical port dir modport interface_path {origin port} {problem ""}} {
+    variable defer_rows; variable pending_rows
+    if {$defer_rows} {
+        lappend pending_rows [list $h $logical $port $dir $modport $interface_path $origin $problem]
+        return
+    }
     variable count; incr count
-    set shp null; set ex null; set value null; set status unsupported_type; set change ""; set detail $problem
+    set shp null; set ex null; set value null; set status unsupported_type; set change ""; set detail $problem; set reads {}
     if {$problem eq "" && [catch {
         set hp [actual $h]
         set shp [shape_json [shape $hp]]
         set expr [expression $hp]
         set ex [expr_json $expr]
         set result [evaluate $expr]
+        set reads [dict get $result reads]
         set status [dict get $result status]
         if {$status eq "ok"} {set value [j [dict get $result value]]}
         set change [dict get $result change_tick]
@@ -355,7 +411,32 @@ proc wi::row {h logical port dir modport interface_path {origin port} {problem "
     } failure]} {set status unsupported_type; set detail $failure}
     emit [obj kind [j signal] logical_path [j $logical] port [j $port] direction [j $dir] \
         direction_source [j $origin] modport [j $modport] interface_path [j $interface_path] \
-        shape $shp expression $ex status [j $status] value_bin $value change_tick [j $change] detail [j $detail]]
+        shape $shp expression $ex waveform_reads [arr $reads] status [j $status] value_bin $value change_tick [j $change] detail [j $detail]]
+}
+
+# Register only aliases whose complete expression is proven by the KDB.
+# Blind prefix replacement is unsafe: modport .a(b) can give the same short
+# name a different meaning. Preparing every row also covers shared ports and
+# interface constructor inputs whose values exist only under a formal port.
+proc wi::prepare_aliases {} {
+    variable pending_rows; variable expression_aliases; variable interface_bindings
+    foreach job $pending_rows {
+        lassign $job h logical port dir mp ip origin problem
+        if {$ip eq "" || $problem ne ""} {continue}
+        if {[catch {set key [expr_json [expression [actual $h]]]}]} {continue}
+        set candidates [list $logical]
+        foreach binding $interface_bindings {
+            lassign $binding formal instance view
+            if {$instance eq $ip && $view eq $mp && $mp ne "" && [string first "$formal." $logical] == 0} {
+                lappend candidates "$ip.$mp[string range $logical [string length $formal] end]"
+            }
+        }
+        foreach path $candidates {
+            if {![dict exists $expression_aliases $key] || $path ni [dict get $expression_aliases $key]} {
+                dict lappend expression_aliases $key $path
+            }
+        }
+    }
 }
 proc wi::expand {h logical port dir mp ip origin {depth 0}} {
     if {$depth>32} {row $h $logical $port $dir $mp $ip $origin "array nesting exceeds 32"; return}
@@ -405,7 +486,9 @@ proc wi::interface_port {low logical port {depth 0} {instance ""}} {
     }
     set act [actual $low]; set kind [s $act npiType]; set mp ""
     if {$kind eq "npiModport"} {set mp [s $act npiName]; set itf [r $act npiScope]} \
-    elseif {$kind eq "npiInterface"} {set itf $act} else {error "unresolved interface binding ($kind)"}
+    elseif {$kind eq "npiInterface"} {set itf $act} else {
+        error "unresolved interface binding ($kind): KDB interface/modport information is missing or unsupported. For separate-file builds, analyze the interface files AND DUT files with vlogan -sverilog -kdb, then elaborate again with vcs -kdb; using -kdb only for vcs is insufficient."
+    }
     if {[valid $instance]} {
         set itf $instance
         if {$mp ne ""} {
@@ -418,6 +501,8 @@ proc wi::interface_port {low logical port {depth 0} {instance ""}} {
     }
     interface_metadata $itf
     set ip [s $itf npiFullName]
+    variable interface_bindings
+    lappend interface_bindings [list $logical $ip $mp]
     emit [obj kind [j binding] port [j $port] logical_path [j $logical] interface_path [j $ip] modport [j $mp]]
     if {$mp ne ""} {
         set members [children $act npiMpPort]
@@ -443,6 +528,7 @@ proc wi::interface_port {low logical port {depth 0} {instance ""}} {
 
 proc wi::main {} {
     variable file; variable tick; variable dump_off
+    variable defer_rows; variable pending_rows
     global env
     set file [npi_fsdb_open -name $env(WI_FSDB)]
     if {![valid $file]} {error "cannot open FSDB"}
@@ -463,6 +549,7 @@ proc wi::main {} {
     emit [obj kind [j metadata] scope [j [s $scope npiFullName]] definition [j [s $scope npiDefName]] \
         parameters [params $scope] timescale [j $scale] tick [j $tick] min_tick [j $lo] max_tick [j $hi] \
         dump_off_ranges [ranges_json $dump_off] source_file [j [s $scope npiDefFile]]]
+    set defer_rows 1
     foreach port [children $scope npiPort] {
         set name [s $port npiName]; set low [r $port npiLowConn]
         emit [obj kind [j port] description [port_description $port]]
@@ -474,6 +561,9 @@ proc wi::main {} {
             if {$dir ne "output"} {expand $low $logical $name $dir "" "" port}
         }
     }
+    prepare_aliases
+    set defer_rows 0
+    foreach job $pending_rows {row {*}$job}
     npi_fsdb_close -file $file
     emit [obj kind [j done] count $wi::count]
 }

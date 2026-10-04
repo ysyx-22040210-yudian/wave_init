@@ -1,0 +1,10 @@
+{
+  "status": "pass",
+  "mode": "frozen_gui_local",
+  "signals": 5,
+  "interface_alias_case": true,
+  "responsive_ui_queries": 116,
+  "assign_preview": true,
+  "release": "/root/wave_init/build/linux_package_pfzlvjhu/stage/wave_init-linux-x86_64",
+  "evidence_directory": "/root/wave_init/build/frozen_gui_2md2wlqa"
+}

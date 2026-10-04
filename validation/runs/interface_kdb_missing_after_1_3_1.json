@@ -1,0 +1,154 @@
+{
+  "ports": [
+    {
+      "name": "rst_n",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "bus",
+      "direction": "unknown",
+      "port_type": "npiInterfacePort",
+      "shape": {
+        "width": -1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiInterfaceTypespec",
+        "hdl_type": "npiRefObj",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "seen",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    }
+  ],
+  "interfaces": [],
+  "bindings": [],
+  "signals": [
+    {
+      "logical_path": "split_top.dut.bus",
+      "port": "bus",
+      "direction": "unknown",
+      "direction_source": "unresolved_binding",
+      "modport": "",
+      "interface_path": "",
+      "shape": null,
+      "expression": null,
+      "waveform_reads": [],
+      "status": "unsupported_type",
+      "value_bin": null,
+      "change_tick": "",
+      "detail": "unresolved interface binding (npiModule): KDB interface/modport information is missing or unsupported. For separate-file builds, analyze the interface files AND DUT files with vlogan -sverilog -kdb, then elaborate again with vcs -kdb; using -kdb only for vcs is insufficient.",
+      "design_paths": [],
+      "waveform_paths": [],
+      "width": null
+    },
+    {
+      "logical_path": "split_top.dut.rst_n",
+      "port": "rst_n",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "split_top.dut.rst_n"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "split_top.dut.rst_n"
+          ],
+          "waveform_path": "split_top.dut.rst_n",
+          "candidates": [
+            "split_top.dut.rst_n"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "split_top.dut.rst_n"
+      ],
+      "waveform_paths": [
+        "split_top.dut.rst_n"
+      ],
+      "width": 1
+    }
+  ],
+  "dependencies": [],
+  "scope": "split_top.dut",
+  "definition": "split_slave",
+  "parameters": [],
+  "timescale": "1ps",
+  "tick": "1000",
+  "min_tick": "0",
+  "max_tick": "4000",
+  "dump_off_ranges": [],
+  "source_file": "/root/wave_init/tests/fixtures/split_interface/dut.sv",
+  "values_complete": false,
+  "directions_complete": false,
+  "diagnostics": [
+    "KDB 未能提供完整的 interface/modport 绑定信息。分文件编译时，interface、DUT 和 TB 的 vlogan 分析阶段都需使用 -sverilog -kdb，随后用 vcs -kdb 重新 elaboration。仅在最后 vcs 命令添加 -kdb，无法补回此前未生成的 interface 数据。"
+  ],
+  "schema_version": 1,
+  "tool_version": "1.3.1",
+  "fsdb": "/root/wave_init/build/split_interfaces_zmkwjgam/missing_interface_kdb/waves.fsdb",
+  "kdb": "/root/wave_init/build/split_interfaces_zmkwjgam/missing_interface_kdb/simv.daidir/kdb.elab++",
+  "requested_time": "1ns",
+  "elapsed_seconds": 4.048,
+  "sv": {
+    "complete": false,
+    "existing_tb_complete": false,
+    "standalone_complete": false,
+    "diagnostics": [
+      "no interface binding for bus",
+      "split_top.dut.bus: unsupported_type unresolved interface binding (npiModule): KDB interface/modport information is missing or unsupported. For separate-file builds, analyze the interface files AND DUT files with vlogan -sverilog -kdb, then elaborate again with vcs -kdb; using -kdb only for vcs is insufficient."
+    ],
+    "standalone_drive": "assign",
+    "skipped": [],
+    "forced_targets": 1,
+    "force_unknown": false
+  },
+  "complete": false
+}

@@ -1,0 +1,26 @@
+wave_init 1.3.1
+scope: split_top.dut
+time: 1ns
+KDB: /root/wave_init/build/split_dump_scope_48_1esf_/simv.daidir/kdb.elab++
+FSDB: /root/wave_init/build/split_dump_scope_48_1esf_/waves.fsdb
+
+
+Interface bindings:
+split_top.dut.bus -> split_top.link (modport: slv)
+
+Signal lookups (design and waveform paths can differ):
+split_top.dut.bus.clk [input] ok
+  KDB: split_top.link.clk
+  FSDB: split_top.dut.bus.clk
+split_top.dut.bus.data [input] ok
+  KDB: split_top.link.data
+  FSDB: split_top.dut.bus.data
+split_top.dut.bus.pad [inout] ok
+  KDB: split_top.link.pad
+  FSDB: split_top.dut.bus.pad
+split_top.dut.bus.req [input] ok
+  KDB: split_top.link.req
+  FSDB: split_top.dut.bus.req
+split_top.dut.rst_n [input] ok
+  KDB: split_top.dut.rst_n
+  FSDB: split_top.dut.rst_n

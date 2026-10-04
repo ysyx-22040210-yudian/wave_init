@@ -1,3 +1,4 @@
+import csv
 import json
 from pathlib import Path
 import tempfile
@@ -34,6 +35,46 @@ class BoundaryContracts(unittest.TestCase):
             write_reports({"signals": [row]}, Path(d))
             saved = json.loads((Path(d)/"snapshot.json").read_text(encoding="utf-8"))
             self.assertIsNone(saved["signals"][0]["value_bin"])
+
+    def test_interface_alias_reports_the_waveform_path_without_changing_sv_target(self):
+        row = {"kind": "signal", "logical_path": "tb.dut.bus.data", "port": "bus",
+               "interface_path": "tb.link", "modport": "slv", "direction": "input",
+               "direction_source": "modport", "shape": {}, "status": "ok", "value_bin": "10xz",
+               "change_tick": "0", "detail": "",
+               "expression": {"kind": "signal", "path": "tb.link.data", "width": 4},
+               "waveform_reads": [{"design_paths": ["tb.link.data"], "waveform_path": "tb.dut.bus.data",
+                                   "candidates": ["tb.link.data", "tb.dut.bus.data"]}]}
+        with tempfile.TemporaryDirectory() as directory:
+            out = Path(directory)
+            path = out/"records.jsonl"
+            path.write_text("\n".join(json.dumps(x) for x in (
+                {"kind": "metadata", "scope": "tb.dut"}, row, {"kind": "done", "count": 1}))+"\n")
+            report = read_backend(path)
+            signal, = report["signals"]
+            self.assertEqual(signal["waveform_paths"], ["tb.dut.bus.data"])
+            self.assertEqual(signal["design_paths"], ["tb.link.data"])
+            self.assertEqual(targets(signal["expression"], signal["value_bin"]), [("tb.link.data", "10xz")])
+            write_reports(report, out)
+            with (out/"snapshot.csv").open(newline="") as stream:
+                saved, = csv.DictReader(stream)
+            self.assertEqual(json.loads(saved["waveform_paths"]), signal["waveform_paths"])
+            self.assertEqual(json.loads(saved["waveform_reads"]), signal["waveform_reads"])
+            self.assertIn("FSDB: tb.dut.bus.data", (out/"diagnostics.txt").read_text(encoding="utf-8"))
+
+    def test_unresolved_interface_is_not_reported_as_an_absent_waveform(self):
+        row = {"kind": "signal", "logical_path": "tb.dut.bus", "port": "bus", "interface_path": "",
+               "direction": "unknown", "direction_source": "unresolved_binding", "modport": "",
+               "expression": None, "waveform_reads": [], "status": "unsupported_type", "value_bin": None,
+               "detail": "unresolved interface binding (npiModule)"}
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/"records.jsonl"
+            path.write_text("\n".join(json.dumps(x) for x in (
+                {"kind": "metadata", "scope": "tb.dut"}, row, {"kind": "done", "count": 1}))+"\n")
+            report = read_backend(path)
+            self.assertFalse(report["values_complete"])
+            self.assertFalse(report["directions_complete"])
+            self.assertEqual(report["signals"][0]["waveform_paths"], [])
+            self.assertIn("vlogan", report["diagnostics"][0])
 
     def test_alias_literal_partition_preserves_xz(self):
         expr = {"kind": "concat", "width": 6, "operands": [

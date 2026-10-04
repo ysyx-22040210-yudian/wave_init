@@ -18,6 +18,8 @@ ROOT = Path(__file__).resolve().parent.parent
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--release", required=True)
+    parser.add_argument("--split-case", help="DUT-only split-interface fixture directory containing waves.fsdb")
+    parser.add_argument("--split-kdb", help="matching split-interface simv.daidir")
     args = parser.parse_args()
     release = Path(args.release).resolve()
     evidence = Path(tempfile.mkdtemp(prefix="frozen_gui_", dir=str(ROOT / "build")))
@@ -77,9 +79,12 @@ def main():
         interpreter = wait_until(lambda: next(iter(set(root.tk.splitlist(
             root.tk.call("winfo", "interps"))) - before), None), 15)
         wait_until(lambda: len(descendants(".")) > 40, 15)
-        set_field("FSDB 波形文件", ROOT / "build/fixture/waves.fsdb")
-        set_field("KDB 目录 / simv.daidir", ROOT / "build/fixture/simv.daidir")
-        set_field("模块实例层次", "snapshot_top.dut")
+        split = Path(args.split_case).resolve() if args.split_case else None
+        set_field("FSDB 波形文件", split/"waves.fsdb" if split else ROOT / "build/fixture/waves.fsdb")
+        set_field("KDB 目录 / simv.daidir", Path(args.split_kdb).resolve() if split else ROOT / "build/fixture/simv.daidir")
+        set_field("模块实例层次", "split_top.dut" if split else "snapshot_top.dut")
+        if split:
+            set_field("采样时刻", "1")
         set_field("输出目录（新目录或空目录）", output)
         button = find_text("提取快照并生成 SV")
         remote(button, "invoke")
@@ -93,25 +98,33 @@ def main():
             return "disabled" not in root.tk.splitlist(remote(button, "state"))
 
         wait_until(complete, 90)
-        report = json.loads((output / "snapshot.json").read_text())
-        expected = json.loads((ROOT / "examples/snapshot/snapshot.json").read_text())
+        report = json.loads((output / "snapshot.json").read_text(encoding="utf-8"))
         assert report["complete"]
-        assert {r["logical_path"]: r["value_bin"] for r in report["signals"]} == {
-            r["logical_path"]: r["value_bin"] for r in expected["signals"]}
+        if split:
+            expected = {"split_top.dut.rst_n": "1", "split_top.dut.bus.clk": "1", "split_top.dut.bus.req": "1",
+                        "split_top.dut.bus.pad": "z", "split_top.dut.bus.data": "10xz0101"}
+            assert any(r["waveform_paths"] != r["design_paths"] for r in report["signals"])
+        else:
+            expected = {r["logical_path"]: r["value_bin"] for r in json.loads(
+                (ROOT / "examples/snapshot/snapshot.json").read_text())["signals"]}
+        assert {r["logical_path"]: r["value_bin"] for r in report["signals"]} == expected
         widgets = descendants(".")
         tree, = [w for w in widgets if remote("winfo", "class", w) == "Treeview"]
-        assert len(root.tk.splitlist(remote(tree, "children", ""))) == 16
+        assert len(root.tk.splitlist(remote(tree, "children", ""))) == len(expected)
         previews = [remote(w, "get", "1.0", "end") for w in widgets
                     if remote("winfo", "class", w) == "Text"]
-        assert any("assign scalar = 8'b10010110;" in text and
-                   "assign bus.wdata = 8'b10100101;" in text for text in previews)
+        if split:
+            assert any("assign bus.data = 8'b10xz0101;" in text for text in previews)
+        else:
+            assert any("assign scalar = 8'b10010110;" in text and
+                       "assign bus.wdata = 8'b10100101;" in text for text in previews)
         assert responses[0] >= 5
-        proof = {"status": "pass", "mode": "frozen_gui_local", "signals": 16,
+        proof = {"status": "pass", "mode": "frozen_gui_local", "signals": len(expected), "interface_alias_case": bool(split),
                  "responsive_ui_queries": responses[0], "assign_preview": True,
                  "release": str(release), "evidence_directory": str(evidence)}
         (evidence / "results.json").write_text(json.dumps(proof, indent=2) + "\n")
         print(json.dumps(proof, indent=2))
-        print("FROZEN_GUI_PASS: Run button, bundled CLI child, 16 real NPI values and assign preview")
+        print("FROZEN_GUI_PASS: Run button, bundled CLI child, {} real NPI values and assign preview".format(len(expected)))
     finally:
         if interpreter and proc.poll() is None:
             try:

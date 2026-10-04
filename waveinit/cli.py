@@ -81,7 +81,12 @@ def read_backend(path):
             elif kind == "binding":
                 result["bindings"].append(row)
             elif kind == "signal":
-                row["waveform_paths"] = paths_in_expression(row["expression"])
+                row["design_paths"] = paths_in_expression(row["expression"])
+                if "waveform_reads" in row:
+                    row["waveform_paths"] = sorted({read["waveform_path"] for read in row["waveform_reads"]
+                                                    if read.get("waveform_path")})
+                else:
+                    row["waveform_paths"] = list(row["design_paths"])
                 row["width"] = row["expression"]["width"] if row["expression"] else None
                 key = "dependencies" if row["direction_source"] == "interface_constructor" else "signals"
                 result[key].append(row)
@@ -97,6 +102,19 @@ def read_backend(path):
     result["signals"].sort(key=lambda r: r["logical_path"])
     result["values_complete"] = all(r["status"] == "ok" for r in result["signals"])
     result["directions_complete"] = all(r["direction"] != "unknown" for r in result["signals"])
+    result["diagnostics"] = []
+    if any(r["direction_source"] == "unresolved_binding" for r in result["signals"]):
+        result["diagnostics"].append(
+            "KDB 未能提供完整的 interface/modport 绑定信息。分文件编译时，interface、DUT 和 TB 的 "
+            "vlogan 分析阶段都需使用 -sverilog -kdb，随后用 vcs -kdb 重新 elaboration。"
+            "仅在最后 vcs 命令添加 -kdb，无法补回此前未生成的 interface 数据。")
+    missing_interfaces = sorted({r["interface_path"] for r in result["signals"] + result["dependencies"]
+                                 if r["interface_path"] and r["status"] == "not_dumped"})
+    for instance in missing_interfaces:
+        result["diagnostics"].append(
+            "在当前 FSDB 中未找到 interface {} 的部分值；已检查 KDB 证明的实际实例、形式端口和 modport 路径。"
+            "请核对 FSDB/KDB 是否匹配；必要时在原仿真中加入 $fsdbDumpvars(0, {}, \"+all\"); 并重新生成 FSDB。"
+            "已有 FSDB 中不存在的值不能恢复。".format(instance, instance))
     return result
 
 
@@ -170,15 +188,32 @@ def run_backend(args, out, mode, num, den):
 def write_reports(result, out):
     (out / "snapshot.json").write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     fields = ["logical_path", "port", "interface_path", "modport", "direction", "direction_source",
-              "waveform_paths", "width", "shape", "value_bin", "status", "change_tick", "detail"]
+              "waveform_paths", "design_paths", "waveform_reads", "width", "shape", "value_bin", "status", "change_tick", "detail"]
     with (out / "snapshot.csv").open("w", encoding="utf-8", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
         writer.writeheader()
         for row in result["signals"]:
             csv_row = dict(row)
-            for name in ("shape", "waveform_paths"):
-                csv_row[name] = json.dumps(row[name], ensure_ascii=False, separators=(",", ":"))
+            for name in ("shape", "waveform_paths", "design_paths", "waveform_reads"):
+                csv_row[name] = json.dumps(row.get(name, []), ensure_ascii=False, separators=(",", ":"))
             writer.writerow(csv_row)
+    lines = ["wave_init {}".format(result.get("tool_version", __version__)),
+             "scope: " + result.get("scope", ""),
+             "time: " + result.get("requested_time", ""),
+             "KDB: " + result.get("kdb", ""), "FSDB: " + result.get("fsdb", ""), ""]
+    lines.extend(result.get("diagnostics", []))
+    lines.extend("SV: " + d for d in result.get("sv", {}).get("diagnostics", []))
+    lines.extend(["", "Interface bindings:"])
+    for binding in result.get("bindings", []):
+        lines.append("{} -> {} (modport: {})".format(binding["logical_path"], binding["interface_path"], binding["modport"] or "unknown"))
+    lines.extend(["", "Signal lookups (design and waveform paths can differ):"])
+    for row in result["signals"]:
+        lines.append("{} [{}] {}".format(row["logical_path"], row["direction"], row["status"]))
+        lines.append("  KDB: " + ", ".join(row.get("design_paths", paths_in_expression(row.get("expression")))))
+        lines.append("  FSDB: " + ", ".join(row.get("waveform_paths", [])))
+        if row.get("detail"):
+            lines.append("  " + row["detail"])
+    (out/"diagnostics.txt").write_text("\n".join(lines)+"\n", encoding="utf-8")
 
 
 def parser():
@@ -225,6 +260,8 @@ def main(argv=None):
             if len(val) > 72:
                 val = val[:32] + "..." + val[-24:]
             print("  {:7} {:48} {}".format(r["direction"], r["logical_path"], val))
+        for problem in result.get("diagnostics", []):
+            print("Diagnostic: " + problem, file=sys.stderr)
         for problem in result["sv"]["diagnostics"]:
             print("SV: " + problem, file=sys.stderr)
         print("Reports: {}".format(out))

@@ -620,7 +620,8 @@ class WaveInitApp:
         unknown = sum(row["direction"] in ("unknown", "ref") for row in report["signals"])
         self.result_summary.set("{}  @ {}  |  {}/{} 个值读取成功  |  {} 个未知/ref\n{}".format(
             report["scope"], report.get("requested_time", ""), ok, len(report["signals"]), unknown, directory))
-        messages = list(report.get("sv", {}).get("diagnostics", []))
+        messages = list(report.get("diagnostics", []))
+        messages += report.get("sv", {}).get("diagnostics", [])
         messages += report.get("sv", {}).get("skipped", [])
         messages += ["{}: {} {}".format(r["logical_path"], r["status"], r.get("detail", ""))
                      for r in report["signals"] if r["status"] != "ok"]

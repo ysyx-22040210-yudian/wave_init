@@ -1,14 +1,28 @@
 # 验证记录
 
-日期：2026-10-02。验证环境：`192.168.31.116`，CentOS 7、Python 3.6.8、Verdi/VCS O-2018.09-SP2。交付源码位于 `D:\wave_init`，VM 副本位于 `/root/wave_init`。
+最新验证日期：2026-10-04；下方 1.1.0～1.3.0 记录保留自 2026-10-02。验证环境：`192.168.31.116`，CentOS 7、Python 3.6.8 / 3.8.13、Verdi/VCS O-2018.09-SP2。交付源码位于 `D:\wave_init`，VM 副本位于 `/root/wave_init`。
 
-当前版本 **1.3.0** 提供内置 Python 3.8 / Tk 的 Linux x86_64 便携包。[便携包验证记录](linux_portable_results.json) 保存归档 SHA-256、跨 Linux 启动结果和打包后的 GUI 实测；[构建信息](linux_bundle_info.json) 保存运行时版本、原生库审计和交付源码校验值。
+当前版本 **1.3.1** 修复 interface FSDB 路径别名的误报缺失，补充分文件 KDB 诊断。[修复验证记录](interface_fix_results.json) 包含复现前后对比、回归及新版便携包校验。
+
+版本 **1.3.0** 提供内置 Python 3.8 / Tk 的 Linux x86_64 便携包。[该版便携包验证记录](linux_portable_results.json) 保存归档 SHA-256、跨 Linux 启动结果和打包后的 GUI 实测；[该版构建信息](linux_bundle_info.json) 保存运行时版本、原生库审计和源码校验值。
 
 版本 **1.2.0** 添加 Python 3.8 / Tkinter GUI。[GUI 验证记录](gui_results.json) 单独记录该版的本机/SSH 真实提取、SFTP 浏览、远端取消和界面响应；[界面截图](gui_preview.png) 来自实际生成的结果。
 
 下方核心功能记录对应 **1.1.0**：独立 `tb_snapshot.sv` 改用常量 `assign`，普通连接保留 RTL 端口名；现有 TB 的 `snapshot.svh` 提供可选的 force/release 任务。版本 1.2.0 的 CLI 取消机制另经过进程组清理测试，并复测普通端口及现有 TB 的 force/release 接入。
 
 [results.json](results.json) 汇总 1.1.0 每个测试组的最后结果和当时核心源码 SHA-256。[runs](runs/) 保留原始各轮结果，包括修正前的测试失败记录；最终各组均通过。测试检查和样例生成都实际调用了 VM 上的 NPI/VCS。
+
+## Interface 分文件及局部 dump 修复（1.3.1）
+
+- 在真实 Verdi/VCS 2018.09 上复现：interface、DUT、TB 分文件且只 dump DUT 时，FSDB 存在 `split_top.dut.bus.data`，旧版只查找 KDB 指向的 `split_top.link.data`。同一波形的旧版报告为 1/5 项成功；修复后为 5/5 项成功。
+- 新版先用完整 NPI 表达式建立 FSDB 别名映射，再取值。以 `.req(ack)` / `.ack(req)` 的相反数值验证不会按成员短名称误取；切片、拼接、共享接口和 interface 数组的局部 dump 均验证值和输出端口排除，并运行生成的 assign SV。
+- 分文件的一步 filelist 编译、逐文件 vlogan 分步编译、非 ANSI 声明、连接处选择 modport，以及原始源码路径不可用均有覆盖。
+- 另复现 interface 文件未使用 `vlogan -kdb`、仅 DUT/TB 与最终 vcs 使用 `-kdb`：NPI 返回 `npiModule` 或 `npiNIY`，新版明确提示重建完整 KDB，保留空值和非零退出码。真正没有 dump 的信号也保留缺失状态，不作名称猜测或填值。
+- JSON/CSV 区分 `design_paths` 和实际 `waveform_paths`，`waveform_reads` 记录查询路径；`diagnostics.txt` 及 GUI 诊断提供对应处理提示。
+
+新测试入口为 `tests/run_split_interfaces.py`。22 项 Python 3.8 单元/GUI 测试、10 组原有核心回归和 20 个新增场景全部通过；其中 4 个局部 dump 场景的 assign SV 均通过 VCS 仿真。1.3.1 便携 GUI 实际点击提取按钮取得全部 5 项输入，CentOS 7 与 Ubuntu Base 22.04.5 用户空间的便携启动检查通过。证据、测试计数和 1.3.1 归档 SHA-256 见 [interface_fix_results.json](interface_fix_results.json)。历史失败报告仍保留为复现证据，不标为当前版本失败。
+
+交付包：[wave_init-1.3.1-linux-x86_64.tar.gz](../dist/wave_init-1.3.1-linux-x86_64.tar.gz)。用户出问题的原始设计未提供，本轮独立复现并验证了上述两类原因，未直接测试另一台设备。
 
 ## Linux 便携包验证（1.3.0）
 
@@ -50,7 +64,7 @@
 | `test_partial_sv_parameter_diagnostic` | 普通取值仍完整时，不支持的 string 参数使独立 TB 明确标为不完整；现有 TB 快照仍有效 |
 | `test_constant_assign_connections` | 明确的 `input var`、同名普通连接、辅助名字与端口冲突、interface 构造端口、inout；生成内容使用 assign，独立观察器验证 DUT 输入与组合输出持续 20 ns 正确，output 未被误驱动 |
 
-当前版本回归日志留在 VM 的 `/root/wave_init/build/acceptance_zdq54owv` 和 `/root/wave_init/build/acceptance_u1lawfik`，各组的具体证据路径见汇总 JSON。工程测试日志在 `/root/wave_init/build/datasets_atcdiji6`。
+1.1.0 的回归日志留在 VM 的 `/root/wave_init/build/acceptance_zdq54owv` 和 `/root/wave_init/build/acceptance_u1lawfik`，各组的具体证据路径见汇总 JSON。工程测试日志在 `/root/wave_init/build/datasets_atcdiji6`。
 
 ## 示例
 

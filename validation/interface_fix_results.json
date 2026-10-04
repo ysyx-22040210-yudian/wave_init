@@ -1,0 +1,154 @@
+{
+  "date": "2026-10-04",
+  "tool_version": "1.3.1",
+  "status": "pass",
+  "environment": {
+    "vm": "192.168.31.116",
+    "os": "CentOS 7",
+    "verdi_vcs": "O-2018.09-SP2",
+    "python": [
+      "3.6.8",
+      "3.8.13"
+    ],
+    "tk": "8.5.13"
+  },
+  "reproduction": {
+    "trigger": "Separate interface/DUT/TB source files; dump only split_top.dut with +all",
+    "same_fsdb_and_kdb_inputs": true,
+    "scope": "split_top.dut",
+    "time": "1ns",
+    "design_path": "split_top.link.data",
+    "actual_fsdb_path": "split_top.dut.bus.data",
+    "before": {
+      "version": "1.3.0",
+      "signals": 5,
+      "values_ok": 1,
+      "interface_not_dumped": 4,
+      "evidence": "runs/interface_alias_before_1_3_0.json"
+    },
+    "after": {
+      "version": "1.3.1",
+      "runner": "frozen Linux executable",
+      "signals": 5,
+      "values_ok": 5,
+      "data": "10xz0101",
+      "inout": "z",
+      "evidence": "runs/interface_alias_after_1_3_1.json"
+    }
+  },
+  "unit_tests": {
+    "tests": 22,
+    "failures": 0,
+    "skipped": 0,
+    "python": "3.8.13",
+    "evidence": "runs/interface_fix_unittest_python38.log"
+  },
+  "core_regression": {
+    "groups": 10,
+    "passed": 10,
+    "evidence": "runs/interface_fix_core_regression.json"
+  },
+  "split_interface_regression": {
+    "cases": 20,
+    "passed": 20,
+    "evidence": "runs/interface_fix_split_cases.json",
+    "vcs_assign_replays": 4,
+    "coverage": [
+      "filelist and separate vlogan analysis",
+      "ANSI and non-ANSI declarations",
+      "connection-selected modports",
+      "unavailable original RTL paths",
+      "DUT-only FSDB aliases",
+      "modport renamed members with opposite values",
+      "static slices and concatenations",
+      "interface arrays",
+      "shared interface dumped through only one formal port",
+      "genuinely absent waveform",
+      "missing interface vlogan -kdb metadata"
+    ],
+    "vcs_logs": [
+      "runs/interface_fix_dut_only_vcs.log",
+      "runs/interface_fix_remap_only_vcs.log",
+      "runs/interface_fix_array_only_vcs.log",
+      "runs/interface_fix_shared_only_vcs.log"
+    ]
+  },
+  "missing_kdb": {
+    "status": "diagnosed without fabricated directions or values",
+    "before": "runs/interface_kdb_missing_before_1_3_0.json",
+    "after": "runs/interface_kdb_missing_after_1_3_1.json"
+  },
+  "frozen_gui": {
+    "status": "pass",
+    "mode": "frozen_gui_local",
+    "signals": 5,
+    "interface_alias_case": true,
+    "responsive_ui_queries": 116,
+    "assign_preview": true,
+    "release": "/root/wave_init/build/linux_package_pfzlvjhu/stage/wave_init-linux-x86_64",
+    "evidence_directory": "/root/wave_init/build/frozen_gui_2md2wlqa"
+  },
+  "portable_acceptance": {
+    "tool_version": "1.3.1",
+    "status": "pass",
+    "centos_gui": {
+      "tool_version": "1.3.1",
+      "frozen": true,
+      "python": "3.8.13",
+      "platform": "Linux-3.10.0-1160.53.1.el7.x86_64-x86_64-with-glibc2.14",
+      "resource_root": "/root/wave_init/build/linux_package_pfzlvjhu/stage/wave_init-linux-x86_64/_internal",
+      "output_root": "/root/wave_init_output",
+      "gui_ready": true,
+      "verdi": null,
+      "errors": [],
+      "glibc": "glibc 2.17",
+      "tk": "8.5.13",
+      "cjk_font_found": true,
+      "example_signals": 7,
+      "default_mode": "local",
+      "ssh_ready": true,
+      "paramiko": "3.5.1"
+    },
+    "ubuntu_gui": {
+      "tool_version": "1.3.1",
+      "frozen": true,
+      "python": "3.8.13",
+      "platform": "Linux-3.10.0-1160.53.1.el7.x86_64-x86_64-with-glibc2.14",
+      "resource_root": "/opt/wave init relocated/_internal",
+      "output_root": "/tmp/gui-user/wave_init_output",
+      "gui_ready": true,
+      "verdi": null,
+      "errors": [],
+      "glibc": "glibc 2.35",
+      "tk": "8.5.13",
+      "cjk_font_found": true,
+      "example_signals": 7,
+      "default_mode": "local",
+      "ssh_ready": true,
+      "paramiko": "3.5.1"
+    },
+    "ubuntu_userspace": "Ubuntu Base 22.04.5 / glibc 2.35",
+    "ubuntu_rootfs_sha256": "242cd8898b33ea806ef5f13b1076ed7c76f9f989d18384452f7166692438ff1a",
+    "ubuntu_uid": 65534,
+    "system_python_installed": false,
+    "installation_read_only": true,
+    "directory_contains_spaces": true,
+    "frozen_npi_signals": 16,
+    "vcs_assign_replay": "pass",
+    "evidence_directory": "/root/wave_init/build/portable_acceptance_a2enxo0n"
+  },
+  "archive": "dist/wave_init-1.3.1-linux-x86_64.tar.gz",
+  "archive_bytes": 26961720,
+  "archive_sha256": "a58e5a80379bb7501965f837d3566a336a8aa5b2cfa2b3a42ccdc60315d4b48e",
+  "bundle_info": "interface_fix_bundle_info.json",
+  "build_manifest": "interface_fix_build.json",
+  "source_files_verified": 9,
+  "notes": [
+    "The failing user design was not supplied. These are independently reproduced failures on the authorized Verdi 2018 VM, not a claim that the other device or user design was directly tested.",
+    "Ubuntu verification uses Ubuntu Base 22.04.5 userspace in a private mount/PID namespace on the CentOS host kernel, not an independent Ubuntu VM.",
+    "The portable GUI and bundled CLI successfully extract the formerly missing interface values; JSON/CSV preserve actual FSDB paths separately from canonical SV design targets.",
+    "Missing KDB metadata requires rebuilding all relevant analysis steps with -kdb. A value genuinely absent from the FSDB remains null and produces an incomplete-result exit code.",
+    "The first concurrently launched Xvfb GUI harness lost its X connection when another harness ended; rerunning it with its own Xvfb session passed. No application change was needed.",
+    "Checked-in VCS logs trim trailing whitespace only; original logs remain in the VM evidence directories."
+  ]
+}

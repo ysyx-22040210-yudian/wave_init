@@ -21,7 +21,7 @@ from .portable import cli_command, download_root, resource_root
 
 ROOT = resource_root()
 ARTIFACTS = ("snapshot.json", "snapshot.csv", "tb_snapshot.sv", "snapshot.svh",
-             "README.txt", "run_vcs.sh", "error.json", "verdi.log")
+             "README.txt", "run_vcs.sh", "error.json", "verdi.log", "diagnostics.txt")
 
 
 @dataclass

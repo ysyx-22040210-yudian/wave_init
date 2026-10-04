@@ -1,0 +1,62 @@
+[
+  {
+    "test": "test_plain_and_shapes",
+    "status": "pass",
+    "seconds": 11.49,
+    "error": ""
+  },
+  {
+    "test": "test_modports_and_generics",
+    "status": "pass",
+    "seconds": 40.45,
+    "error": ""
+  },
+  {
+    "test": "test_interface_array_and_aliases",
+    "status": "pass",
+    "seconds": 19.56,
+    "error": ""
+  },
+  {
+    "test": "test_time_and_xz",
+    "status": "pass",
+    "seconds": 31.83,
+    "error": ""
+  },
+  {
+    "test": "test_dump_gaps_and_missing",
+    "status": "pass",
+    "seconds": 27.98,
+    "error": ""
+  },
+  {
+    "test": "test_existing_include_and_release",
+    "status": "pass",
+    "seconds": 5.17,
+    "error": ""
+  },
+  {
+    "test": "test_parameters_struct_union_shared_interface",
+    "status": "pass",
+    "seconds": 8.41,
+    "error": ""
+  },
+  {
+    "test": "test_sparse_fsdb_and_glitches",
+    "status": "pass",
+    "seconds": 23.79,
+    "error": ""
+  },
+  {
+    "test": "test_partial_sv_parameter_diagnostic",
+    "status": "pass",
+    "seconds": 6.38,
+    "error": ""
+  },
+  {
+    "test": "test_constant_assign_connections",
+    "status": "pass",
+    "seconds": 11.11,
+    "error": ""
+  }
+]
