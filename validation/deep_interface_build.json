@@ -1,0 +1,6 @@
+{
+  "release_directory": "/root/wave_init/build/linux_package_f7a0vut4/stage/wave_init-linux-x86_64",
+  "archive": "/root/wave_init/dist/release_1_3_2/wave_init-1.3.2-linux-x86_64.tar.gz",
+  "sha256": "81bde92976a4224219bf19b983de694091cdba62dd245d290a7ec5e2d4bed222",
+  "work_directory": "/root/wave_init/build/linux_package_f7a0vut4"
+}

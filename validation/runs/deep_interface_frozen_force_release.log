@@ -1,0 +1,17 @@
+Chronologic VCS simulator copyright 1991-2018
+Contains Synopsys proprietary information.
+Compiler version O-2018.09-SP2_Full64; Runtime version O-2018.09-SP2_Full64;  Oct  4 21:45 2026
+*Verdi* Loading libsscore_vcs201809.so
+FSDB Dumper for VCS, Release Verdi_O-2018.09-SP2, Linux x86_64/64bit, 02/21/2019
+(C) 1996 - 2019 by Synopsys, Inc.
+*Verdi* : Create FSDB file 'waves.fsdb'
+*Verdi* : Begin traversing the scope (existing_replay.original), layer (0).
+*Verdi* : Enable +all dumping.
+*Verdi* : End of traversing.
+DEEP_FORCE_RELEASE_PASS
+$finish called from file "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/dut_only/force_release/existing.sv", line 18.
+$finish at simulation time                 8001
+           V C S   S i m u l a t i o n   R e p o r t
+Time: 8001 ps
+CPU Time:      0.180 seconds;       Data structure size:   0.0Mb
+Sun Oct  4 21:45:01 2026

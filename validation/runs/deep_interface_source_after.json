@@ -1,0 +1,455 @@
+{
+  "ports": [
+    {
+      "name": "rst_n",
+      "direction": "input",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "bus",
+      "direction": "unknown",
+      "port_type": "npiModportPort",
+      "shape": {
+        "width": -1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiInterfaceTypespec",
+        "hdl_type": "npiRefObj",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "seen",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    }
+  ],
+  "interfaces": [
+    {
+      "path": "deep_top.soc.g_tile[1].tile.link",
+      "definition": "split_bus",
+      "parameters": [
+        {
+          "name": "W",
+          "value": "32'sb00000000000000000000000000001000"
+        }
+      ],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "port_type": "npiPort",
+          "shape": {
+            "width": 1,
+            "signed": 0,
+            "packed_ranges": [],
+            "unpacked_ranges": [],
+            "type": "npiLogicTypespec",
+            "hdl_type": "npiNet",
+            "typedef": "",
+            "unpacked_struct": 0
+          },
+          "shape_error": ""
+        }
+      ],
+      "array_path": "",
+      "array_ranges": []
+    }
+  ],
+  "bindings": [
+    {
+      "port": "bus",
+      "logical_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus",
+      "interface_path": "deep_top.soc.g_tile[1].tile.link",
+      "modport": "slv"
+    }
+  ],
+  "signals": [
+    {
+      "logical_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.clk",
+      "port": "bus",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "deep_top.soc.g_tile[1].tile.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "deep_top.soc.g_tile[1].tile.link.clk"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "deep_top.soc.g_tile[1].tile.link.clk"
+          ],
+          "waveform_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.clk",
+          "candidates": [
+            "deep_top.soc.g_tile[1].tile.link.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.clk",
+            "deep_top.soc.g_tile[1].tile.link.slv.clk"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "deep_top.soc.g_tile[1].tile.link.clk"
+      ],
+      "waveform_paths": [
+        "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.clk"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.data",
+      "port": "bus",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "deep_top.soc.g_tile[1].tile.link",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "deep_top.soc.g_tile[1].tile.link.data"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "deep_top.soc.g_tile[1].tile.link.data"
+          ],
+          "waveform_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.data",
+          "candidates": [
+            "deep_top.soc.g_tile[1].tile.link.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.data",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.data",
+            "deep_top.soc.g_tile[1].tile.link.slv.data"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "10xz0101",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "deep_top.soc.g_tile[1].tile.link.data"
+      ],
+      "waveform_paths": [
+        "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.data"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.pad",
+      "port": "bus",
+      "direction": "inout",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "deep_top.soc.g_tile[1].tile.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "deep_top.soc.g_tile[1].tile.link.pad"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "deep_top.soc.g_tile[1].tile.link.pad"
+          ],
+          "waveform_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.pad",
+          "candidates": [
+            "deep_top.soc.g_tile[1].tile.link.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.pad",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.pad",
+            "deep_top.soc.g_tile[1].tile.link.slv.pad"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "z",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "deep_top.soc.g_tile[1].tile.link.pad"
+      ],
+      "waveform_paths": [
+        "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.pad"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.req",
+      "port": "bus",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "deep_top.soc.g_tile[1].tile.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "deep_top.soc.g_tile[1].tile.link.req"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "deep_top.soc.g_tile[1].tile.link.req"
+          ],
+          "waveform_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.req",
+          "candidates": [
+            "deep_top.soc.g_tile[1].tile.link.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.req",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.req",
+            "deep_top.soc.g_tile[1].tile.link.slv.req"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "deep_top.soc.g_tile[1].tile.link.req"
+      ],
+      "waveform_paths": [
+        "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.req"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.rst_n",
+      "port": "rst_n",
+      "direction": "input",
+      "direction_source": "port",
+      "modport": "",
+      "interface_path": "",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.rst_n"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.rst_n"
+          ],
+          "waveform_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.rst_n",
+          "candidates": [
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.rst_n"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.rst_n"
+      ],
+      "waveform_paths": [
+        "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.rst_n"
+      ],
+      "width": 1
+    }
+  ],
+  "dependencies": [
+    {
+      "logical_path": "deep_top.soc.g_tile[1].tile.link.clk",
+      "port": "clk",
+      "direction": "input",
+      "direction_source": "interface_constructor",
+      "modport": "",
+      "interface_path": "deep_top.soc.g_tile[1].tile.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "deep_top.soc.g_tile[1].tile.link.clk"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "deep_top.soc.g_tile[1].tile.link.clk"
+          ],
+          "waveform_path": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.clk",
+          "candidates": [
+            "deep_top.soc.g_tile[1].tile.link.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.upstream.clk",
+            "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.clk",
+            "deep_top.soc.g_tile[1].tile.link.slv.clk"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "deep_top.soc.g_tile[1].tile.link.clk"
+      ],
+      "waveform_paths": [
+        "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut.bus.clk"
+      ],
+      "width": 1
+    }
+  ],
+  "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+  "definition": "split_slave",
+  "parameters": [],
+  "timescale": "1ps",
+  "tick": "1000",
+  "min_tick": "0",
+  "max_tick": "9000",
+  "dump_off_ranges": [],
+  "source_file": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/rtl/dut.sv",
+  "values_complete": true,
+  "directions_complete": true,
+  "diagnostics": [],
+  "schema_version": 1,
+  "tool_version": "1.3.1",
+  "fsdb": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/dut_only/waves.fsdb",
+  "kdb": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/simv.daidir/kdb.elab++",
+  "requested_time": "1ns",
+  "elapsed_seconds": 2.719,
+  "sv": {
+    "complete": true,
+    "existing_tb_complete": true,
+    "standalone_complete": true,
+    "diagnostics": [],
+    "standalone_drive": "assign",
+    "skipped": [],
+    "forced_targets": 5,
+    "force_unknown": false
+  },
+  "complete": true
+}

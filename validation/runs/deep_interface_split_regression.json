@@ -1,0 +1,138 @@
+[
+  {
+    "case": "original_dut",
+    "scope": "dut",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "filelist"
+  },
+  {
+    "case": "original_legacy",
+    "scope": "legacy",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "filelist"
+  },
+  {
+    "case": "original_connected",
+    "scope": "connected",
+    "status": "pass",
+    "signals": 3,
+    "compile_mode": "filelist"
+  },
+  {
+    "case": "DUT_ONLY",
+    "scope": "dut",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "filelist",
+    "vcs_replay": "pass"
+  },
+  {
+    "case": "REMAP_ONLY",
+    "scope": "aliases",
+    "status": "pass",
+    "signals": 6,
+    "compile_mode": "filelist",
+    "vcs_replay": "pass"
+  },
+  {
+    "case": "ARRAY_ONLY",
+    "scope": "array_dut",
+    "status": "pass",
+    "signals": 8,
+    "compile_mode": "filelist",
+    "vcs_replay": "pass"
+  },
+  {
+    "case": "SHARED_ONLY",
+    "scope": "shared",
+    "status": "pass",
+    "signals": 8,
+    "compile_mode": "filelist",
+    "vcs_replay": "pass"
+  },
+  {
+    "case": "genuinely_missing_interface",
+    "status": "pass",
+    "missing": 4
+  },
+  {
+    "case": "missing_source_dut",
+    "scope": "dut",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "filelist"
+  },
+  {
+    "case": "missing_source_legacy",
+    "scope": "legacy",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "filelist"
+  },
+  {
+    "case": "missing_source_connected",
+    "scope": "connected",
+    "status": "pass",
+    "signals": 3,
+    "compile_mode": "filelist"
+  },
+  {
+    "case": "original_dut",
+    "scope": "dut",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "three_step"
+  },
+  {
+    "case": "original_legacy",
+    "scope": "legacy",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "three_step"
+  },
+  {
+    "case": "original_connected",
+    "scope": "connected",
+    "status": "pass",
+    "signals": 3,
+    "compile_mode": "three_step"
+  },
+  {
+    "case": "missing_source_dut",
+    "scope": "dut",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "three_step"
+  },
+  {
+    "case": "missing_source_legacy",
+    "scope": "legacy",
+    "status": "pass",
+    "signals": 5,
+    "compile_mode": "three_step"
+  },
+  {
+    "case": "missing_source_connected",
+    "scope": "connected",
+    "status": "pass",
+    "signals": 3,
+    "compile_mode": "three_step"
+  },
+  {
+    "case": "missing_interface_kdb",
+    "scope": "dut",
+    "status": "pass"
+  },
+  {
+    "case": "missing_interface_kdb",
+    "scope": "legacy",
+    "status": "pass"
+  },
+  {
+    "case": "missing_interface_kdb",
+    "scope": "connected",
+    "status": "pass"
+  }
+]

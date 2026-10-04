@@ -1,0 +1,326 @@
+[
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[0].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "full",
+    "time": "1ns",
+    "signals": 5,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "0",
+      "rst_n": "1",
+      "bus.req": "0",
+      "bus.data": "00110110"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/full/dut_lane0_1ns/snapshot.json",
+    "alias_reads": 0
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "full",
+    "time": "1ns",
+    "signals": 5,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "rst_n": "1",
+      "bus.req": "1",
+      "bus.data": "10xz0101"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/full/dut_lane1_1ns/snapshot.json",
+    "alias_reads": 0
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.connected",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "full",
+    "time": "1ns",
+    "signals": 3,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "bus.ack": "0"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/full/connected_lane1_1ns/snapshot.json",
+    "alias_reads": 0
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.aliases",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "full",
+    "time": "1ns",
+    "signals": 6,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "bus.req": "0",
+      "bus.ack": "1",
+      "bus.nibble": "xz01",
+      "bus.mix": "0110"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/full/aliases_lane1_1ns/snapshot.json",
+    "alias_reads": 0,
+    "vcs_assign_replay": "pass"
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.array_dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "full",
+    "time": "1ns",
+    "signals": 8,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "buses[0].clk": "1",
+      "buses[0].pad": "1",
+      "buses[0].req": "0",
+      "buses[0].data": "01101001",
+      "buses[1].clk": "1",
+      "buses[1].pad": "0",
+      "buses[1].req": "1",
+      "buses[1].data": "10100110"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/full/array_dut_lane1_1ns/snapshot.json",
+    "alias_reads": 0
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.shared",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "full",
+    "time": "1ns",
+    "signals": 8,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus_a.clk": "1",
+      "bus_a.pad": "z",
+      "bus_a.req": "1",
+      "bus_a.data": "10xz0101",
+      "bus_b.clk": "1",
+      "bus_b.pad": "z",
+      "bus_b.req": "1",
+      "bus_b.data": "10xz0101"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/full/shared_lane1_1ns/snapshot.json",
+    "alias_reads": 0
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "dut_only",
+    "time": "1ns",
+    "signals": 5,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "rst_n": "1",
+      "bus.req": "1",
+      "bus.data": "10xz0101"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/dut_only/dut_lane1_1ns/snapshot.json",
+    "alias_reads": 4
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "dut_only",
+    "time": "5ns",
+    "signals": 5,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "rst_n": "1",
+      "bus.req": "0",
+      "bus.data": "z01x1010"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/dut_only/dut_lane1_5ns/snapshot.json",
+    "alias_reads": 4,
+    "vcs_assign_replay": "pass"
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "dut_only",
+    "time": "7ns",
+    "signals": 5,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "rst_n": "1",
+      "bus.req": "0",
+      "bus.data": "z01x1010"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/dut_only/dut_lane1_7ns/snapshot.json",
+    "alias_reads": 4
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[0].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "dut_only",
+    "time": "1ns",
+    "signals": 5,
+    "negative_missing_case": true,
+    "missing_kind": "all",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "0",
+      "rst_n": "1",
+      "bus.req": "0",
+      "bus.data": "00110110"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/dut_only/dut_lane0_1ns/snapshot.json",
+    "alias_reads": 5
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "middle_only",
+    "time": "7ns",
+    "signals": 5,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "rst_n": "1",
+      "bus.req": "0",
+      "bus.data": "z01x1010"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/middle_only/dut_lane1_7ns/snapshot.json",
+    "alias_reads": 0
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.aliases",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "middle_only",
+    "time": "1ns",
+    "signals": 6,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "bus.req": "0",
+      "bus.ack": "1",
+      "bus.nibble": "xz01",
+      "bus.mix": "0110"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/middle_only/aliases_lane1_1ns/snapshot.json",
+    "alias_reads": 0
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "middle_proxy_only",
+    "time": "1ns",
+    "signals": 5,
+    "negative_missing_case": true,
+    "missing_kind": "interface",
+    "expected_values": {
+      "bus.clk": "1",
+      "bus.pad": "z",
+      "rst_n": "1",
+      "bus.req": "1",
+      "bus.data": "10xz0101"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/middle_proxy_only/dut_lane1_1ns/snapshot.json",
+    "alias_reads": 4
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.array_dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "array_only",
+    "time": "7ns",
+    "signals": 8,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "buses[0].clk": "1",
+      "buses[0].pad": "1",
+      "buses[0].req": "1",
+      "buses[0].data": "10010011",
+      "buses[1].clk": "1",
+      "buses[1].pad": "0",
+      "buses[1].req": "0",
+      "buses[1].data": "01001100"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/array_only/array_dut_lane1_7ns/snapshot.json",
+    "alias_reads": 8,
+    "vcs_assign_replay": "pass"
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.shared",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "dump": "shared_only",
+    "time": "7ns",
+    "signals": 8,
+    "negative_missing_case": false,
+    "missing_kind": "",
+    "expected_values": {
+      "bus_a.clk": "1",
+      "bus_a.pad": "z",
+      "bus_a.req": "0",
+      "bus_a.data": "z01x1010",
+      "bus_b.clk": "1",
+      "bus_b.pad": "z",
+      "bus_b.req": "0",
+      "bus_b.data": "z01x1010"
+    },
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/shared_only/shared_lane1_7ns/snapshot.json",
+    "alias_reads": 8,
+    "vcs_assign_replay": "pass"
+  },
+  {
+    "status": "pass",
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "vcs_force_release": "pass",
+    "snapshot": "/root/wave_init/build/deep_interfaces__oijc4su/depth_8/dut_only/force_release/snapshot.json"
+  }
+]

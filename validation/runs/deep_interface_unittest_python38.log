@@ -1,0 +1,27 @@
+test_cancel_terminates_vendor_process_group (test_gui.GUIContracts) ... ok
+test_failed_run_does_not_display_a_stale_report (test_gui.GUIContracts) ... ok
+test_missing_success_report_is_an_error (test_gui.GUIContracts) ... ok
+test_profile_never_saves_or_loads_password (test_gui.GUIContracts) ... ok
+test_remote_shell_preserves_literal_paths_and_scope (test_gui.GUIContracts) ... ok
+test_ssh_paths_time_and_timeout_are_validated (test_gui.GUIContracts) ... ok
+test_filter_details_and_assign_preview_keep_four_states (test_gui.TkContracts) ... ok
+test_partial_report_remains_inspectable (test_gui.TkContracts) ... ok
+test_frozen_cli_uses_executable_without_a_python_script (test_portable.PortableContracts) ... ok
+test_frozen_external_process_gets_original_eda_libraries (test_portable.PortableContracts) ... ok
+test_relative_input_paths_remain_bound_to_launch_directory (test_portable.PortableContracts) ... ok
+test_source_launcher_resolves_symlink_from_another_directory (test_portable.PortableContracts) ... ok
+test_user_data_locations_are_independent_of_install_directory (test_portable.PortableContracts) ... ok
+test_alias_literal_partition_preserves_xz (test_unit.BoundaryContracts) ... ok
+test_bad_time_is_rejected (test_unit.BoundaryContracts) ... ok
+test_escaped_identifier_is_not_split_at_embedded_dot (test_unit.BoundaryContracts) ... ok
+test_incomplete_backend_is_not_success (test_unit.BoundaryContracts) ... ok
+test_interface_alias_reports_the_waveform_path_without_changing_sv_target (test_unit.BoundaryContracts) ... ok
+test_missing_value_does_not_become_x (test_unit.BoundaryContracts) ... ok
+test_partial_snapshot_cannot_be_applied_silently (test_unit.BoundaryContracts) ... ok
+test_time_exact_decimal_and_units (test_unit.BoundaryContracts) ... ok
+test_unresolved_interface_is_not_reported_as_an_absent_waveform (test_unit.BoundaryContracts) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.464s
+
+OK

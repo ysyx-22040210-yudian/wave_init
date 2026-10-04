@@ -1,0 +1,161 @@
+{
+  "date": "2026-10-04",
+  "tool_version": "1.3.2",
+  "status": "pass",
+  "environment": {
+    "vm": "192.168.31.116",
+    "os": "CentOS 7",
+    "verdi_vcs": "O-2018.09-SP2",
+    "source_python": "3.6.8",
+    "frozen_python": "3.8.13",
+    "tk": "8.5.13"
+  },
+  "reproduction": {
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "time": "1ns",
+    "same_fsdb_kdb_inputs": true,
+    "fsdb": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/dut_only/waves.fsdb",
+    "kdb": "/root/wave_init/build/deep_interfaces_nc3uw9bx/depth_8/simv.daidir/kdb.elab++",
+    "cause": "Forwarded interface/modport references inside generate scopes return definition-level proxies without generate indices; the old backend used these proxies for direction, members and instance paths.",
+    "before": {
+      "version": "1.3.1",
+      "runner": "frozen Linux CLI",
+      "signals": 6,
+      "values_ok": 1,
+      "directions_complete": false,
+      "evidence": "runs/deep_interface_before_1_3_1.json"
+    },
+    "after": {
+      "version": "1.3.2",
+      "runner": "actual frozen GUI Run button and bundled CLI",
+      "signals": 5,
+      "values_ok": 5,
+      "directions_complete": true,
+      "evidence": "runs/deep_interface_after_1_3_2.json"
+    }
+  },
+  "source_deep_cases": {
+    "cases": 32,
+    "module_levels": [
+      7,
+      13
+    ],
+    "hierarchy_segments": [
+      11,
+      23
+    ],
+    "vcs_assign_replays": 8,
+    "vcs_force_release_replays": 2,
+    "evidence": "runs/deep_interface_source_cases.json"
+  },
+  "frozen_deep_cases": {
+    "cases": 16,
+    "module_levels": [
+      13
+    ],
+    "hierarchy_segments": [
+      23
+    ],
+    "vcs_assign_replays": 4,
+    "vcs_force_release_replays": 1,
+    "evidence": "runs/deep_interface_frozen_cases.json"
+  },
+  "unit_tests": {
+    "tests": 22,
+    "failed": 0,
+    "skipped": 0,
+    "python": "3.8.13",
+    "evidence": "runs/deep_interface_unittest_python38.log"
+  },
+  "core_regression": {
+    "groups": 10,
+    "evidence": "runs/deep_interface_core_regression.json"
+  },
+  "split_regression": {
+    "cases": 20,
+    "evidence": "runs/deep_interface_split_regression.json"
+  },
+  "frozen_gui": {
+    "status": "pass",
+    "mode": "frozen_gui_local",
+    "signals": 5,
+    "interface_alias_case": true,
+    "scope": "deep_top.soc.g_tile[1].tile.u_chain.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_next.u_child.g_leaf.dut",
+    "tool_version": "1.3.2",
+    "responsive_ui_queries": 59,
+    "assign_preview": true,
+    "release": "/root/wave_init/build/linux_package_f7a0vut4/stage/wave_init-linux-x86_64",
+    "evidence_directory": "/root/wave_init/build/frozen_gui_y8qd6wf0"
+  },
+  "portable_acceptance": {
+    "tool_version": "1.3.2",
+    "status": "pass",
+    "centos_gui": {
+      "tool_version": "1.3.2",
+      "frozen": true,
+      "python": "3.8.13",
+      "platform": "Linux-3.10.0-1160.53.1.el7.x86_64-x86_64-with-glibc2.14",
+      "resource_root": "/root/wave_init/build/linux_package_f7a0vut4/stage/wave_init-linux-x86_64/_internal",
+      "output_root": "/root/wave_init_output",
+      "gui_ready": true,
+      "verdi": null,
+      "errors": [],
+      "glibc": "glibc 2.17",
+      "tk": "8.5.13",
+      "cjk_font_found": true,
+      "example_signals": 7,
+      "default_mode": "local",
+      "ssh_ready": true,
+      "paramiko": "3.5.1"
+    },
+    "ubuntu_gui": {
+      "tool_version": "1.3.2",
+      "frozen": true,
+      "python": "3.8.13",
+      "platform": "Linux-3.10.0-1160.53.1.el7.x86_64-x86_64-with-glibc2.14",
+      "resource_root": "/opt/wave init relocated/_internal",
+      "output_root": "/tmp/gui-user/wave_init_output",
+      "gui_ready": true,
+      "verdi": null,
+      "errors": [],
+      "glibc": "glibc 2.35",
+      "tk": "8.5.13",
+      "cjk_font_found": true,
+      "example_signals": 7,
+      "default_mode": "local",
+      "ssh_ready": true,
+      "paramiko": "3.5.1"
+    },
+    "ubuntu_userspace": "Ubuntu Base 22.04.5 / glibc 2.35",
+    "ubuntu_rootfs_sha256": "242cd8898b33ea806ef5f13b1076ed7c76f9f989d18384452f7166692438ff1a",
+    "ubuntu_uid": 65534,
+    "system_python_installed": false,
+    "installation_read_only": true,
+    "directory_contains_spaces": true,
+    "frozen_npi_signals": 16,
+    "vcs_assign_replay": "pass",
+    "evidence_directory": "/root/wave_init/build/portable_acceptance_l0denpna"
+  },
+  "reviewable_examples": {
+    "directory": "examples/deep",
+    "assign": "runs/deep_example_assign.log",
+    "force_release": "runs/deep_example_force_release.log"
+  },
+  "archive": "dist/wave_init-1.3.2-linux-x86_64.tar.gz",
+  "archive_bytes": 26963428,
+  "archive_sha256": "81bde92976a4224219bf19b983de694091cdba62dd245d290a7ec5e2d4bed222",
+  "bundle_info": "deep_interface_bundle_info.json",
+  "build_manifest": "deep_interface_build.json",
+  "source_files_verified": 9,
+  "notes": [
+    "All successful snapshots check the exact input/inout set, independent expected four-state values, design hierarchy and JSON/CSV agreement. Output members are excluded.",
+    "Two generate lanes contain identically named leaf instances but different data and opposite req/ack values. A lane with no dumped signals remains incomplete and never borrows the other lane values.",
+    "The generic-interface-proxy-only FSDB dump did not save interface members in this Verdi 2018 environment; this is retained as a negative case with null values and not_dumped statuses.",
+    "The source deep, split and core regressions ran after the final backend change but before the version string was bumped. Their snapshot reports say 1.3.1. Frozen acceptance, GUI and archive report 1.3.2; bundled production source hashes match the workspace.",
+    "Ubuntu verification uses Ubuntu Base 22.04.5 userspace in private namespaces on the CentOS host kernel, not an independent Ubuntu VM.",
+    "The other Linux device and original failing user design were not directly tested. The failures were independently reproduced on the authorized VM.",
+    "Checked-in vendor logs trim trailing whitespace only; unmodified originals remain in VM evidence directories."
+  ]
+}

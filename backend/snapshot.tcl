@@ -7,6 +7,8 @@ namespace eval wi {
     variable sampled [dict create]
     variable interfaces [dict create]
     variable interface_bindings {}
+    variable alias_bindings [dict create]
+    variable binding_cache [dict create]
     variable expression_aliases [dict create]
     variable defer_rows 0
     variable pending_rows {}
@@ -153,7 +155,20 @@ proc wi::params {scope} {
 proc wi::port_description {p} {
     set low [r $p npiLowConn]
     set sh null; set why ""
-    if {[catch {set sh [shape_json [shape $low]]} why]} {set sh null} else {set why ""}
+    if {[catch {
+        if {[s $p npiPortType] in {npiInterfacePort npiModportPort}} {
+            set ts [r $low npiTypespec]
+            if {![valid $ts]} {set ts [r [byname "[s [r $p npiScope] npiFullName].[s $p npiName]"] npiTypespec]}
+            if {![valid $ts]} {error "interface type unavailable"}
+            set rs {}
+            if {[s $ts npiType] eq "npiArrayTypespec"} {set rs [ranges $ts]}
+            # Interfaces have no packed bit width. Their formal array ranges
+            # come directly from the declaration, without resolving elements
+            # through a definition-level proxy with flattened names.
+            set sh [shape_json [dict create width -1 signed 0 packed {} unpacked $rs \
+                hdl_type npiRefObj type npiInterfaceTypespec typedef "" unpacked_struct 0]]
+        } else {set sh [shape_json [shape $low]]}
+    } why]} {set sh null} else {set why ""}
     return [obj name [j [s $p npiName]] direction [j [direction $p]] \
         port_type [j [s $p npiPortType]] shape $sh shape_error [j $why]]
 }
@@ -420,6 +435,22 @@ proc wi::row {h logical port dir modport interface_path {origin port} {problem "
 # interface constructor inputs whose values exist only under a formal port.
 proc wi::prepare_aliases {} {
     variable pending_rows; variable expression_aliases; variable interface_bindings
+    variable alias_bindings
+    foreach binding [dict keys $alias_bindings] {
+        lassign $binding logical itf mp
+        if {$mp ne ""} {
+            set view [interface_view $itf $mp]
+            set members [children $view npiMpPort]
+            if {![llength $members]} {set members [children $view npiIODecl]}
+            foreach m $members {
+                catch {alias_leaf [r $m npiExpr] "$logical.[s $m npiName]"}
+            }
+        } else {
+            foreach category {npiNet npiArrayNet npiVariables} {
+                foreach m [children $itf $category] {catch {alias_leaf $m "$logical.[s $m npiName]"}}
+            }
+        }
+    }
     foreach job $pending_rows {
         lassign $job h logical port dir mp ip origin problem
         if {$ip eq "" || $problem ne ""} {continue}
@@ -435,6 +466,29 @@ proc wi::prepare_aliases {} {
             if {![dict exists $expression_aliases $key] || $path ni [dict get $expression_aliases $key]} {
                 dict lappend expression_aliases $key $path
             }
+        }
+    }
+}
+proc wi::alias_leaf {h logical {depth 0}} {
+    variable expression_aliases
+    if {$depth>32} {error "alias array nesting exceeds 32"}
+    set h [actual $h]; set ts [r $h npiTypespec]
+    if {[s $ts npiType] eq "npiArrayTypespec"} {
+        if {[n $ts npiArrayType]!=1} {return}
+        foreach idx [indices [lindex [ranges $ts] 0]] {
+            set child [npi_handle_by_index -object $h -index $idx]
+            if {![valid $child]} {set child [byname "[s $h npiFullName]\[$idx\]"]}
+            alias_leaf $child "$logical\[$idx\]" [expr {$depth+1}]
+        }
+    } elseif {[s $ts npiType] in {npiStructTypespec npiUnionTypespec} && ![n $ts npiPacked]} {
+        foreach m [children $ts npiTypespecMember] {
+            set name [s $m npiName]
+            alias_leaf [byname "[s $h npiFullName].$name"] "$logical.$name" [expr {$depth+1}]
+        }
+    } else {
+        set key [expr_json [expression $h]]
+        if {![dict exists $expression_aliases $key] || $logical ni [dict get $expression_aliases $key]} {
+            dict lappend expression_aliases $key $logical
         }
     }
 }
@@ -461,44 +515,139 @@ proc wi::expand {h logical port dir mp ip origin {depth 0}} {
     } else {row $h $logical $port $dir $mp $ip $origin}
 }
 
-proc wi::interface_port {low logical port {depth 0} {instance ""}} {
-    if {$depth>32} {error "interface array nesting exceeds 32"}
-    set ts [r $low npiTypespec]
-    if {[s $ts npiType] eq "npiArrayTypespec"} {
-        set array $instance
-        if {![valid $array]} {
-            set array [actual $low]
-            if {[s $array npiType] eq "npiModport"} {set array [r $array npiScope]}
-        }
-        if {[s $array npiType] ne "npiInterfaceArray"} {error "interface array binding unavailable"}
-        set formal_indices [indices [lindex [ranges $ts] 0]]
-        set actual_indices [indices [lindex [ranges $array] 0]]
-        if {[llength $formal_indices] != [llength $actual_indices]} {error "interface array size mismatch"}
-        foreach idx $formal_indices actual_index $actual_indices {
-            set name "[s $low npiFullName]\[$idx\]"
-            set child [byname $name]
-            if {![valid $child]} {error "interface array element unavailable: $name"}
-            set child_instance [npi_handle_by_index -object $array -index $actual_index]
-            if {![valid $child_instance]} {error "actual interface element unavailable"}
-            interface_port $child "$logical\[$idx\]" $port [expr {$depth+1}] $child_instance
-        }
-        return
+# Verdi 2018 can return definition-level proxy objects for forwarded interfaces
+# inside generate blocks. Their full names omit generate indices. Follow each
+# actual high connection in its lexical instance scope instead of using those
+# proxy names as design or waveform paths.
+proc wi::interface_view {itf mp} {
+    foreach view [children $itf npiModport] {
+        if {[s $view npiName] eq $mp} {return $view}
     }
-    set act [actual $low]; set kind [s $act npiType]; set mp ""
-    if {$kind eq "npiModport"} {set mp [s $act npiName]; set itf [r $act npiScope]} \
-    elseif {$kind eq "npiInterface"} {set itf $act} else {
-        error "unresolved interface binding ($kind): KDB interface/modport information is missing or unsupported. For separate-file builds, analyze the interface files AND DUT files with vlogan -sverilog -kdb, then elaborate again with vcs -kdb; using -kdb only for vcs is insufficient."
+    error "modport $mp unavailable on [s $itf npiFullName]"
+}
+proc wi::interface_error {kind} {
+    error "unresolved interface binding ($kind): KDB interface/modport information is missing or unsupported. For separate-file builds, analyze the interface files AND DUT files with vlogan -sverilog -kdb, then elaborate again with vcs -kdb; using -kdb only for vcs is insufficient."
+}
+proc wi::connection_object {h} {
+    set h [actual $h]; set mp ""
+    if {[s $h npiType] eq "npiModport"} {set mp [s $h npiName]; set h [actual [r $h npiScope]]}
+    set kind [s $h npiType]
+    if {$kind eq "npiInterface"} {
+        set items [list $h]; set idxs {}
+    } elseif {$kind eq "npiInterfaceArray"} {
+        set rs [ranges $h]
+        if {[llength $rs]!=1} {error "interface array range unavailable or multidimensional"}
+        set idxs [indices [lindex $rs 0]]; set items {}
+        foreach idx $idxs {
+            set child [npi_handle_by_index -object $h -index $idx]
+            if {[s $child npiType] ne "npiInterface"} {error "actual interface array element unavailable"}
+            lappend items $child
+        }
+    } else {interface_error $kind}
+    return [dict create items $items indices $idxs view $mp aliases {}]
+}
+proc wi::connection_high {high context visited} {
+    set name [s $high npiName]; set mp ""
+    if {![catch {set act [actual $high]}] && [s $act npiType] eq "npiModport"} {
+        set mp [s $act npiName]
+        set suffix ".$mp"
+        if {[string range $name end-[expr {[string length $suffix]-1}] end] eq $suffix} {
+            set name [string range $name 0 end-[string length $suffix]]
+        }
     }
-    if {[valid $instance]} {
-        set itf $instance
-        if {$mp ne ""} {
-            set act ""
-            foreach candidate [children $itf npiModport] {
-                if {[s $candidate npiName] eq $mp} {set act $candidate; break}
+    # A port is resolved in the nearest declaring scope, including generate
+    # scopes. This is lexical lookup of the NPI high-connection expression;
+    # there is no global search by signal name or generate-index removal.
+    set base $name; set selected ""
+    if {[regexp {^([^\.\[\]]+)\[(-?[0-9]+)\]$} $name -> base selected]} {}
+    set scopes {}
+    while {[valid $context] && $context ni $scopes} {
+        lappend scopes $context
+        foreach p [children $context npiPort] {
+            if {[s $p npiName] ne $base || [s $p npiPortType] ni {npiInterfacePort npiModportPort}} {continue}
+            set result [connection_port $p $visited]
+            if {$selected ne ""} {
+                set pos [lsearch -exact [dict get $result indices] $selected]
+                if {$pos<0} {error "interface port array index out of range: $name"}
+                dict set result items [list [lindex [dict get $result items] $pos]]
+                dict set result indices {}
             }
-            if {![valid $act]} {error "modport $mp unavailable on array element"}
+            if {$mp ne ""} {dict set result view $mp}
+            return $result
+        }
+        set found ""
+        catch {set found [npi_handle_by_name -name $name -scope $context]}
+        if {[valid $found]} {
+            set result [connection_object $found]
+            if {$mp ne ""} {dict set result view $mp}
+            return $result
+        }
+        set context [r $context npiScope]
+    }
+    # Already elaborated direct references can include escaped or absolute
+    # names that require no lexical traversal.
+    return [connection_object $high]
+}
+proc wi::connection_port {p {visited {}}} {
+    variable binding_cache
+    set owner [r $p npiScope]; set logical "[s $owner npiFullName].[s $p npiName]"
+    if {$logical in $visited || [llength $visited]>256} {error "cyclic or excessive interface forwarding at $logical"}
+    if {[dict exists $binding_cache $logical]} {return [dict get $binding_cache $logical]}
+    lappend visited $logical
+    set low [r $p npiLowConn]
+    # The named declaration supplies ranges/modport metadata when low-conn
+    # itself is npiNIY; it is never trusted for its flattened instance path.
+    set declaration [byname $logical]
+    set ts [r $low npiTypespec]
+    if {![valid $ts]} {set ts [r $declaration npiTypespec]}
+    set mp ""
+    foreach ref [list $low $declaration] {
+        if {![catch {set act [actual $ref]}] && [s $act npiType] eq "npiModport"} {
+            set mp [s $act npiName]; break
         }
     }
+    set high [r $p npiHighConn]
+    if {![valid $high]} {interface_error "unconnected port $logical"}
+    set result [connection_high $high [r $owner npiScope] $visited]
+    if {$mp eq ""} {set mp [dict get $result view]}
+    set idxs {}
+    if {[s $ts npiType] eq "npiArrayTypespec"} {
+        set rs [ranges $ts]
+        if {[llength $rs]!=1} {error "formal interface array range unavailable: $logical"}
+        set idxs [indices [lindex $rs 0]]
+    }
+    set items [dict get $result items]
+    set count [expr {[llength $idxs] ? [llength $idxs] : 1}]
+    if {$count != [llength $items]} {error "interface array size mismatch at $logical"}
+    dict set result indices $idxs
+    dict set result view $mp
+    set i 0
+    foreach itf $items {
+        if {$mp ne ""} {interface_view $itf $mp}
+        set alias $logical
+        if {[llength $idxs]} {append alias "\[[lindex $idxs $i]\]"}
+        dict lappend result aliases [list $alias $itf $mp]
+        incr i
+    }
+    dict set binding_cache $logical $result
+    return $result
+}
+proc wi::connected_interface {p logical port} {
+    variable alias_bindings
+    set result [connection_port $p]
+    foreach binding [dict get $result aliases] {dict set alias_bindings $binding 1}
+    set idxs [dict get $result indices]; set mp [dict get $result view]; set i 0
+    foreach itf [dict get $result items] {
+        set name $logical
+        if {[llength $idxs]} {append name "\[[lindex $idxs $i]\]"}
+        interface_instance $itf $name $port $mp
+        incr i
+    }
+}
+
+proc wi::interface_instance {itf logical port mp} {
+    set act ""
+    if {$mp ne ""} {set act [interface_view $itf $mp]}
     interface_metadata $itf
     set ip [s $itf npiFullName]
     variable interface_bindings
@@ -555,7 +704,7 @@ proc wi::main {} {
         emit [obj kind [j port] description [port_description $port]]
         set logical "$env(WI_SCOPE).$name"
         if {[s $port npiPortType] in {npiInterfacePort npiModportPort}} {
-            if {[catch {interface_port $low $logical $name} why]} {row $low $logical $name unknown "" "" unresolved_binding $why}
+            if {[catch {connected_interface $port $logical $name} why]} {row $low $logical $name unknown "" "" unresolved_binding $why}
         } else {
             set dir [direction $port]
             if {$dir ne "output"} {expand $low $logical $name $dir "" "" port}

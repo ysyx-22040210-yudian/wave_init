@@ -20,6 +20,7 @@ def main():
     parser.add_argument("--release", required=True)
     parser.add_argument("--split-case", help="DUT-only split-interface fixture directory containing waves.fsdb")
     parser.add_argument("--split-kdb", help="matching split-interface simv.daidir")
+    parser.add_argument("--scope", default="split_top.dut", help="scope override for the split/deep fixture")
     args = parser.parse_args()
     release = Path(args.release).resolve()
     evidence = Path(tempfile.mkdtemp(prefix="frozen_gui_", dir=str(ROOT / "build")))
@@ -82,7 +83,7 @@ def main():
         split = Path(args.split_case).resolve() if args.split_case else None
         set_field("FSDB 波形文件", split/"waves.fsdb" if split else ROOT / "build/fixture/waves.fsdb")
         set_field("KDB 目录 / simv.daidir", Path(args.split_kdb).resolve() if split else ROOT / "build/fixture/simv.daidir")
-        set_field("模块实例层次", "split_top.dut" if split else "snapshot_top.dut")
+        set_field("模块实例层次", args.scope if split else "snapshot_top.dut")
         if split:
             set_field("采样时刻", "1")
         set_field("输出目录（新目录或空目录）", output)
@@ -101,8 +102,8 @@ def main():
         report = json.loads((output / "snapshot.json").read_text(encoding="utf-8"))
         assert report["complete"]
         if split:
-            expected = {"split_top.dut.rst_n": "1", "split_top.dut.bus.clk": "1", "split_top.dut.bus.req": "1",
-                        "split_top.dut.bus.pad": "z", "split_top.dut.bus.data": "10xz0101"}
+            expected = {args.scope+"."+name: value for name, value in (
+                ("rst_n", "1"), ("bus.clk", "1"), ("bus.req", "1"), ("bus.pad", "z"), ("bus.data", "10xz0101"))}
             assert any(r["waveform_paths"] != r["design_paths"] for r in report["signals"])
         else:
             expected = {r["logical_path"]: r["value_bin"] for r in json.loads(
@@ -120,6 +121,7 @@ def main():
                        "assign bus.wdata = 8'b10100101;" in text for text in previews)
         assert responses[0] >= 5
         proof = {"status": "pass", "mode": "frozen_gui_local", "signals": len(expected), "interface_alias_case": bool(split),
+                 "scope": report["scope"], "tool_version": report["tool_version"],
                  "responsive_ui_queries": responses[0], "assign_preview": True,
                  "release": str(release), "evidence_directory": str(evidence)}
         (evidence / "results.json").write_text(json.dumps(proof, indent=2) + "\n")

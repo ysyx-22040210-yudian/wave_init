@@ -2,7 +2,9 @@
 
 最新验证日期：2026-10-04；下方 1.1.0～1.3.0 记录保留自 2026-10-02。验证环境：`192.168.31.116`，CentOS 7、Python 3.6.8 / 3.8.13、Verdi/VCS O-2018.09-SP2。交付源码位于 `D:\wave_init`，VM 副本位于 `/root/wave_init`。
 
-当前版本 **1.3.1** 修复 interface FSDB 路径别名的误报缺失，补充分文件 KDB 诊断。[修复验证记录](interface_fix_results.json) 包含复现前后对比、回归及新版便携包校验。
+当前版本 **1.3.2** 补充深层 interface / generate 连接追踪和数组声明范围解析。[深层验证记录](deep_interface_results.json) 保存复现、两种 SV 仿真及便携包验证证据。
+
+版本 **1.3.1** 修复 interface FSDB 路径别名的误报缺失，补充分文件 KDB 诊断。[该版修复验证记录](interface_fix_results.json) 包含复现前后对比、回归及便携包校验。
 
 版本 **1.3.0** 提供内置 Python 3.8 / Tk 的 Linux x86_64 便携包。[该版便携包验证记录](linux_portable_results.json) 保存归档 SHA-256、跨 Linux 启动结果和打包后的 GUI 实测；[该版构建信息](linux_bundle_info.json) 保存运行时版本、原生库审计和源码校验值。
 
@@ -11,6 +13,18 @@
 下方核心功能记录对应 **1.1.0**：独立 `tb_snapshot.sv` 改用常量 `assign`，普通连接保留 RTL 端口名；现有 TB 的 `snapshot.svh` 提供可选的 force/release 任务。版本 1.2.0 的 CLI 取消机制另经过进程组清理测试，并复测普通端口及现有 TB 的 force/release 接入。
 
 [results.json](results.json) 汇总 1.1.0 每个测试组的最后结果和当时核心源码 SHA-256。[runs](runs/) 保留原始各轮结果，包括修正前的测试失败记录；最终各组均通过。测试检查和样例生成都实际调用了 VM 上的 NPI/VCS。
+
+## Interface 深层及 generate 连接验证（1.3.2）
+
+- 新测试 `tests/run_deep_interfaces.py` 把 DUT 放在 7 / 13 层模块实例中，完整层次路径分别含 11 / 23 段，interface / DUT / 包装层 / TB 继续分文件。
+- 两个 generate 分支使用相反 req/ack 和不同 data；逐项核对确切 input/inout 集合、四态值和实际 interface 路径，确保 output 不误收、分支不串读。包含声明处 slv、连接处 mst、成员重命名/切片/拼接、数组和共享 interface。
+- 复现 1.3.1 在多层传递时使用缺少 generate 索引的 NPI 定义引用，导致 unknown 方向和 unsupported_type。1.3.2 从 npiHighConn 沿词法层次追踪实际连接，最终使用真实实例的 modport 和成员表达式。数组范围直接取自声明，不依赖定义引用的元素层次。
+- 完整 dump、深层 DUT-only、仅中间层子树、数组 DUT 和单个共享端口 dump，均核对 JSON/CSV；采样覆盖变化前、5 ns 变化时刻和保持区间。两个深度都编译运行 assign SV 与现有 TB 的 force/release，使用四态比较并验证 release 后的原始驱动。
+- 2018 版本对仅 dump generic interface 代理对象的用例未保存成员；作为负例保留 not_dumped 和空值。另一个分支未 dump 时也不得借用已 dump 分支的值。
+
+32 个深层源码场景、16 个最深层便携执行文件场景、20 个分文件 interface 场景、10 组原有核心回归以及 22 项 Python 3.8 单元/GUI 测试全部通过。源码深层测试包括 8 次 assign SV 与 2 次 force/release 仿真；便携执行文件包括 4 次 assign SV 与 1 次 force/release 仿真。便携 GUI 在最深的 23 段路径实际点击提取按钮取得 5/5 项值，安装目录只读和 Ubuntu Base 用户空间启动验证也通过。
+
+可查看 [13 层模块示例](../examples/deep/README.md)、[生成的 assign SV](../examples/deep/tb_snapshot.sv)。最终测试计数、便携 GUI 和归档校验见 [deep_interface_results.json](deep_interface_results.json)。交付包：[wave_init-1.3.2-linux-x86_64.tar.gz](../dist/wave_init-1.3.2-linux-x86_64.tar.gz)。
 
 ## Interface 分文件及局部 dump 修复（1.3.1）
 

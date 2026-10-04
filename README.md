@@ -4,14 +4,14 @@
 
 运行环境：Linux、Python 3.6+、可用 Verdi 及许可证。Python 运行部分仅使用标准库；运行生成的 testbench 另需 VCS、原始 RTL/package/filelist。开发验证环境为 Verdi/VCS O-2018.09-SP2。
 
-**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.1。
+**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.2。
 
 ## 其他 Linux 设备直接启动
 
-使用 `dist/wave_init-1.3.1-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
+使用 `dist/wave_init-1.3.2-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
 
 ```bash
-tar -xzf wave_init-1.3.1-linux-x86_64.tar.gz
+tar -xzf wave_init-1.3.2-linux-x86_64.tar.gz
 cd wave_init-linux-x86_64
 ./start_gui.sh
 ```
@@ -112,6 +112,8 @@ JSON 的 `signals` 是目标模块边界快照；`dependencies` 是生成独立 
 
 interface 与 DUT 可以放在不同文件中，不需要合并源码。版本 1.3.1 修复了 Verdi 2018 在只 dump DUT 时，FSDB 使用 `tb.dut.bus.data` 或 `tb.link.slv.data`、KDB 却指向 `tb.link.data` 的查询差异。工具按 NPI 证明的完整表达式查找别名，支持普通成员、重命名、切片/拼接、共享 interface 及数组；不会按信号短名称猜测绑定，也不会因波形路径不同而改变生成 SV 的目标。
 
+版本 1.3.2 进一步修复 interface 跨多层端口、generate 分支传递时的绑定：逐层追踪 NPI 的实际连接，保留 generate 索引，再从最终 interface 实例的 modport 判断方向。某些 2018 版本返回的引用会省略 generate 层次，工具不再将这些定义引用当成实际实例，也不会按短名称合并两个分支。Interface 数组的声明范围单独解析，供独立 SV 重建连接。
+
 若仍有错误，请查看 GUI“诊断”或输出目录 `diagnostics.txt`：
 
 - `unresolved interface binding (npiModule/npiNIY)`：KDB 缺失或不支持 interface/modport 信息。分步编译时，interface 所在文件也必须在 **vlogan 分析阶段**使用 `-kdb`，然后重新执行 `vcs -kdb`；只给最终 vcs 命令加 `-kdb` 不能补齐缺失的数据。不要根据 `mst/slv` 名称猜方向。
@@ -127,6 +129,8 @@ vcs -full64 -debug_access+all -kdb -lca tb_top -o simv
 ```
 
 新增回归：`source tests/env.sh; python3 tests/run_split_interfaces.py`（开发 VM）。
+
+深层回归：`source tests/env.sh; python3 tests/run_deep_interfaces.py`。默认递归深度为 2 / 8，对应 7 / 13 层模块实例（含 generate 的完整路径为 11 / 23 段）；检查分支隔离、方向、四态值、时间变化、局部 dump、JSON/CSV 一致性及两种 SV 的仿真。
 
 ## 两种 SV 用法
 
