@@ -1,8 +1,10 @@
 # 验证记录
 
-最新验证日期：2026-10-04；下方 1.1.0～1.3.0 记录保留自 2026-10-02。验证环境：`192.168.31.116`，CentOS 7、Python 3.6.8 / 3.8.13、Verdi/VCS O-2018.09-SP2。交付源码位于 `D:\wave_init`，VM 副本位于 `/root/wave_init`。
+最新验证日期：2026-10-06；下方历史记录保留各次验证日期。验证环境：`192.168.31.116`，CentOS 7、Python 3.6.8 / 3.8.13、Verdi/VCS O-2018.09-SP2。交付源码位于 `D:\wave_init`，VM 副本位于 `/root/wave_init`。
 
-当前版本 **1.3.3** 增加持久化运行日志、详细 NPI 追踪、GUI/SSH 日志、环境与版本记录，以及实时调试选项。[日志验证记录](logging_results.json) 保存源码、GUI 与便携包验证证据。
+当前版本 **1.3.4** 优先按模块端口的 `a.slv` / `a.mst` 声明解析成员方向，取消 FSDB 起始时间作为查询下限。[方向/时间验证记录](modport_direction_results.json) 保存源码、GUI 与便携包证据。
+
+版本 **1.3.3** 增加持久化运行日志、详细 NPI 追踪、GUI/SSH 日志、环境与版本记录，以及实时调试选项。[日志验证记录](logging_results.json) 保存源码、GUI 与便携包验证证据。
 
 版本 **1.3.2** 补充深层 interface / generate 连接追踪和数组声明范围解析。[深层验证记录](deep_interface_results.json) 保存复现、两种 SV 仿真及便携包验证证据。
 
@@ -15,6 +17,17 @@
 下方核心功能记录对应 **1.1.0**：独立 `tb_snapshot.sv` 改用常量 `assign`，普通连接保留 RTL 端口名；现有 TB 的 `snapshot.svh` 提供可选的 force/release 任务。版本 1.2.0 的 CLI 取消机制另经过进程组清理测试，并复测普通端口及现有 TB 的 force/release 接入。
 
 [results.json](results.json) 汇总 1.1.0 每个测试组的最后结果和当时核心源码 SHA-256。[runs](runs/) 保留原始各轮结果，包括修正前的测试失败记录；最终各组均通过。测试检查和样例生成都实际调用了 VM 上的 NPI/VCS。
+
+## 声明 modport 方向与时间下限（1.3.4）
+
+- 使用分文件 `interface a`、`a.slv xxx` / `a.mst xxx` DUT 和包装层，验证同一实际 interface 在两种声明下的 input/inout 集合及 output 排除，保留 X/Z。
+- 受控测试只让 NPI 的形式引用丢失 modport 类型，其余查询仍使用真实 FSDB/KDB。1.3.3 后端在该条件下读取 5 个值却全部为 unknown；新版通过端口 `npiDefName` 选择 slv，得到正确的 4 个 input/inout。该测试模拟元数据差异，不作为已取得用户设备日志的声明。
+- 当端口定义属性不带后缀时，使用形式 typespec/ref 中的声明信息；候选必须属于对应实际 interface 的 modport。fixture 额外声明与端口实例名相同的 `xxx` modport，验证不会拿端口名替代端口类型。方向字符串不可用时，验证 NPI 整数方向属性的兼容。
+- 0us、1ns、1us、59.999us、60us 及之后的采样正确。波形在 60us 才开始 dump 时，查询更早时间仍完成并保存报告，已存在但尚无历史值的成员返回 no_initial_value / 空值，方向仍可解析。
+- 源码 18 个场景（包括旧后端受控对照），冻结 CLI 17 个场景，各通过 3 次 VCS assign 回放。13 层模块/23 段层次的 16 个深层场景通过；原有核心回归 10 组最终均通过，30 项 Python 3.8 单元/GUI 检查通过。初轮测试脚本的 ASCII JSON 解码失败记录保留，UTF-8 修正后的时间组单独复测通过。
+- 便携 GUI 实际点击按钮，在 0us 获得 4 个正确值、完整方向及 assign 预览。便携包另通过 CentOS 7 和 Ubuntu Base 22.04.5 用户空间启动、普通 UID、只读安装/含空格路径、16 项 NPI 提取和 VCS 回放；后者沿用 CentOS 内核。
+
+快照示例：[slv @ 0us](runs/modport_slv_0us.json)、[mst @ 1us](runs/modport_mst_1us.json)、[60us 才开始 dump 的 0us 查询](runs/modport_before_dump.json)。测试 RTL 位于 [fixtures/modport_direction](../tests/fixtures/modport_direction)。交付包：[wave_init-1.3.4-linux-x86_64.tar.gz](../dist/wave_init-1.3.4-linux-x86_64.tar.gz)。
 
 ## 日志与跨设备诊断（1.3.3）
 

@@ -41,7 +41,7 @@ def extract(name, scope, when="7ns", fsdb=None, kdb=None, expect=0, extra=()):
     if expect == 1:
         assert (out/"error.json").is_file()
         return None
-    result = json.loads((out/"snapshot.json").read_text())
+    result = json.loads((out/"snapshot.json").read_text(encoding="utf-8"))
     with (out/"snapshot.csv").open(newline="") as f:
         rows = list(csv.DictReader(f))
     assert len(rows) == len(result["signals"])
@@ -158,9 +158,9 @@ def test_dump_gaps_and_missing():
             assert signals(r)["data"]["value_bin"] is None
     r = extract("missing", "timing_top.dut", "20ps", fixture/"missing/waves.fsdb", kdb, 2)
     assert signals(r)["absent"]["status"] == "not_dumped"
-    # The O-2018 dumper moves the global minimum to the later dumpvars call.
-    # A writer-built fixture below tests a per-signal missing initial value.
-    extract("late_signal", "timing_top.dut", "10ps", fixture/"late_signal/waves.fsdb", kdb, 1)
+    # A later first FSDB record must not impose a minimum query time.
+    r = extract("late_signal", "timing_top.dut", "10ps", fixture/"late_signal/waves.fsdb", kdb, 2)
+    assert all(s["status"] in ("no_initial_value", "not_dumped") and s["value_bin"] is None for s in r["signals"])
     # Late dumping may expose an earlier global range with an explicit dump-off
     # interval, or make the initial time the file minimum. Neither may use future data.
     out = RUN/"late_before"
@@ -168,10 +168,9 @@ def test_dump_gaps_and_missing():
             "--scope", "timing_top.dut", "--time", "10ps", "--out", out]
     with (RUN/"late_before.log").open("w") as f:
         p = subprocess.run([str(x) for x in argv], stdout=f, stderr=subprocess.STDOUT)
-    assert p.returncode in (1,2)
-    if p.returncode == 2:
-        r = json.loads((out/"snapshot.json").read_text())
-        assert all(s["value_bin"] is None for s in r["signals"])
+    assert p.returncode == 2
+    r = json.loads((out/"snapshot.json").read_text(encoding="utf-8"))
+    assert all(s["value_bin"] is None for s in r["signals"])
 
 
 def test_existing_include_and_release():

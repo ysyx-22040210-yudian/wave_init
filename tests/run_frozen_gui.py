@@ -6,6 +6,7 @@ use the bundled Python runtime. Run this harness under a fresh xvfb-run.
 """
 import argparse
 import json
+import re
 from pathlib import Path
 import subprocess
 import tempfile
@@ -21,6 +22,8 @@ def main():
     parser.add_argument("--split-case", help="DUT-only split-interface fixture directory containing waves.fsdb")
     parser.add_argument("--split-kdb", help="matching split-interface simv.daidir")
     parser.add_argument("--scope", default="split_top.dut", help="scope override for the split/deep fixture")
+    parser.add_argument("--time", help="GUI time override, e.g. 0us")
+    parser.add_argument("--expected-report", help="source reference snapshot for a custom declaration/time case")
     args = parser.parse_args()
     release = Path(args.release).resolve()
     evidence = Path(tempfile.mkdtemp(prefix="frozen_gui_", dir=str(ROOT / "build")))
@@ -86,6 +89,17 @@ def main():
         set_field("模块实例层次", args.scope if split else "snapshot_top.dut")
         if split:
             set_field("采样时刻", "1")
+        if args.time:
+            number, unit = re.fullmatch(r"(\d+(?:\.\d+)?)(fs|ps|ns|us|ms|s|ticks)", args.time).groups()
+            set_field("采样时刻", number)
+            for widget in descendants("."):
+                if remote("winfo", "class", widget) != "TCombobox":
+                    continue
+                if "us" in root.tk.splitlist(remote(widget, "cget", "-values")):
+                    remote("set", remote(widget, "cget", "-textvariable"), unit)
+                    break
+            else:
+                raise AssertionError("Time unit selector missing")
         set_field("输出目录（新目录或空目录）", output)
         detailed = find_text("实时显示详细日志（绑定 / FSDB 查询）")
         remote(detailed, "invoke")
@@ -105,7 +119,13 @@ def main():
         assert report["complete"]
         for name in ("wave_init.log", "npi_trace.log", "npi_records.jsonl", "runtime.json", "gui.log"):
             assert (output/name).is_file(), name
-        if split:
+        if args.expected_report:
+            reference = json.loads(Path(args.expected_report).read_text(encoding="utf-8"))
+            expected = {r["logical_path"]: r["value_bin"] for r in reference["signals"]}
+            assert {(r["logical_path"], r["direction"], r["modport"]) for r in report["signals"]} == {
+                (r["logical_path"], r["direction"], r["modport"]) for r in reference["signals"]}
+            assert report["directions_complete"]
+        elif split:
             expected = {args.scope+"."+name: value for name, value in (
                 ("rst_n", "1"), ("bus.clk", "1"), ("bus.req", "1"), ("bus.pad", "z"), ("bus.data", "10xz0101"))}
             assert any(r["waveform_paths"] != r["design_paths"] for r in report["signals"])
@@ -119,7 +139,9 @@ def main():
         previews = [remote(w, "get", "1.0", "end") for w in widgets
                     if remote("winfo", "class", w) == "Text"]
         assert any("npi.fsdb.candidates" in text for text in previews)
-        if split:
+        if args.expected_report:
+            assert any("assign xxx.data = 8'b10xz0101;" in text for text in previews)
+        elif split:
             assert any("assign bus.data = 8'b10xz0101;" in text for text in previews)
         else:
             assert any("assign scalar = 8'b10010110;" in text and
@@ -127,6 +149,7 @@ def main():
         assert responses[0] >= 5
         proof = {"status": "pass", "mode": "frozen_gui_local", "signals": len(expected), "interface_alias_case": bool(split),
                  "scope": report["scope"], "tool_version": report["tool_version"],
+                 "requested_time": report["requested_time"], "directions_complete": report["directions_complete"],
                  "responsive_ui_queries": responses[0], "assign_preview": True,
                  "detailed_logs": True,
                  "release": str(release), "evidence_directory": str(evidence)}

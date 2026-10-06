@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-06",
+  "tool_version": "1.3.4",
+  "status": "pass",
+  "environment": {
+    "vm": "192.168.31.116",
+    "os": "CentOS 7 / glibc 2.17",
+    "verdi_vcs": "O-2018.09-SP2",
+    "python_source": "3.6.8 / 3.8.13",
+    "python_bundled": "3.8.13"
+  },
+  "implementation": [
+    "formal npiDefName a.slv/a.mst selects the exact view before actual binding",
+    "validated formal typespec/ref fallback",
+    "integer npiDirection fallback and IODecl lookup",
+    "record modport_source in bindings and logs",
+    "accept requests from zero, independent of reported FSDB minimum",
+    "read each signal VCT; no recorded earlier value remains null/no_initial_value",
+    "unresolved declared direction results in incomplete exit 2"
+  ],
+  "controlled_reproduction": {
+    "user_device_logs_available": false,
+    "control": "only the formal npiActual modport type is suppressed; real Verdi values and declarations retained",
+    "before_backend": "1.3.3 backend with current CLI harness",
+    "before_values_read": 5,
+    "before_all_unknown": true,
+    "after_values_read": 4,
+    "after_directions_complete": true,
+    "after_outputs_excluded": true,
+    "before_evidence": "runs/modport_control_before.json",
+    "after_evidence": "runs/modport_control_after.json"
+  },
+  "source_checks": {
+    "cases": 18,
+    "vcs_assign_replays": 3,
+    "evidence": "runs/modport_source_results.json"
+  },
+  "frozen_checks": {
+    "cases": 17,
+    "vcs_assign_replays": 3,
+    "evidence": "runs/modport_frozen_results.json",
+    "port_name_matching_other_modport_does_not_override_type": true
+  },
+  "time_checks": {
+    "times_with_values": [
+      "0us",
+      "1ns",
+      "1us",
+      "59.999us",
+      "60us",
+      "60.001us"
+    ],
+    "late_dump_start": "60us",
+    "earlier_requests_saved_as_partial": true,
+    "status": "no_initial_value",
+    "no_future_value_substitution": true,
+    "sample": "runs/modport_before_dump.json"
+  },
+  "unit_gui": {
+    "tests": 30,
+    "vm_passed": 30,
+    "skipped_on_vm": 0
+  },
+  "core_regression": {
+    "groups": 10,
+    "status": "pass",
+    "evidence": "runs/modport_core_final.json",
+    "initial_trace_retained": "runs/modport_core_initial.json",
+    "time_group_retest": "runs/modport_core_time_final.json",
+    "harness_fix": "read UTF-8 JSON explicitly under LANG=C"
+  },
+  "deep_regression": {
+    "cases": 16,
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "status": "pass",
+    "evidence": "runs/modport_deep_results.json"
+  },
+  "frozen_gui": {
+    "status": "pass",
+    "mode": "frozen_gui_local",
+    "signals": 4,
+    "interface_alias_case": true,
+    "scope": "direction_top.u_wrap.dut",
+    "tool_version": "1.3.4",
+    "requested_time": "0us",
+    "directions_complete": true,
+    "responsive_ui_queries": 80,
+    "assign_preview": true,
+    "detailed_logs": true,
+    "release": "/root/wave_init/build/linux_package_qk6qjqgt/stage/wave_init-linux-x86_64",
+    "evidence_directory": "/root/wave_init/build/frozen_gui_p4ftz0yq"
+  },
+  "ssh_gui": {
+    "status": "pass",
+    "mode": "ssh",
+    "python": "3.11.5 | packaged by Anaconda, Inc. | (main, Sep 11 2023, 13:26:23) [MSC v.1916 64 bit (AMD64)]",
+    "tk": "8.6.12",
+    "signals": 16,
+    "responsive_heartbeats": 100,
+    "output": "/root/wave_init/out/gui_acceptance_12623b9063b6467abc660f74e752fafb",
+    "local_report": "C:\\Users\\1\\AppData\\Local\\wave_init\\downloads\\20261006_162933_q5nar2zt",
+    "sftp_browser": true,
+    "diagnostic_logs": "pass"
+  },
+  "portable": {
+    "evidence": "runs/modport_portable_results.json",
+    "status": "pass",
+    "platforms": [
+      "CentOS 7",
+      "Ubuntu Base 22.04.5 userspace / glibc 2.35 on CentOS kernel"
+    ],
+    "non_root": true,
+    "read_only_and_spaces": true,
+    "system_python_required": false,
+    "signals": 16,
+    "vcs_assign_replay": "pass"
+  },
+  "archive": {
+    "file": "dist/wave_init-1.3.4-linux-x86_64.tar.gz",
+    "sha256": "81beb32fcbd07b7715d0b7d989c292ade6250da2e5e7a8b3b949e9046c0e8bdd",
+    "size_bytes": 26988590,
+    "source_hashes_match": true
+  }
+}

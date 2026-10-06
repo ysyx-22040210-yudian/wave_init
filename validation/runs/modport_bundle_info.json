@@ -1,0 +1,27 @@
+{
+  "tool_version": "1.3.4",
+  "python": "3.8.13",
+  "tk_target": "8.5",
+  "build_glibc": "glibc 2.17",
+  "architecture": "x86_64",
+  "build_platform": "Linux-3.10.0-1160.53.1.el7.x86_64-x86_64-with-glibc2.2.5",
+  "pyinstaller": "6.18.0",
+  "paramiko": "3.5.1",
+  "minimum_glibc": "2.17",
+  "native_audit": {
+    "elf_files": 76,
+    "max_glibc_required": "2.17"
+  },
+  "source_sha256": {
+    "wave_init_gui.py": "f1b6957fe09b8b4ab291900ddc9a346fd0e09f8d451e171e4b969cac9d87e252",
+    "start_gui.sh": "b679918219464435308d8d9eb46c9807f8e4be7f595f1c75b2c1ee1c0d1a4400",
+    "waveinit/__init__.py": "19cdb83401ceb939f441c5d0fa4ba01373d0f9ee7985e3cec8ddfa96050ea25e",
+    "waveinit/cli.py": "ac686ab80390f536b1ff101c02c32a7f095768bb18805583da2a626d0804550a",
+    "waveinit/diagnostics.py": "0c450aafa63709c7e72e9222560282e1b9099ee2da0439f296868cd846150771",
+    "waveinit/gui.py": "182eed8dfb92dccf760089d01c1a7a894db718dc393ddcbe981ffffc090d7af3",
+    "waveinit/gui_runner.py": "63e27874ba6fea1fe137b9b92e8beaa16d22e7bfbbce5fce26feb1b0863aeef2",
+    "waveinit/portable.py": "78302a2b241318776c37c12eff74302fec77bfb2e80d30ce7c218b5747efaf47",
+    "waveinit/sv.py": "ac8e207f662a63d8a26ffe89241a1f3f267e9134b5ae55b0a74114a33b0c8f63",
+    "backend/snapshot.tcl": "0ed0a680b9f72d7688bdaf0356d72f113e3cb36d9895822c31181d616d55d124"
+  }
+}

@@ -3,12 +3,12 @@
 便携包内置 Python 3.8、Tk、SSH 依赖和中文字体。解压到任意目录，不需要安装 Python、Tk 或 pip 包，也不需要 root 权限。
 
 ```bash
-tar -xzf wave_init-1.3.3-linux-x86_64.tar.gz
+tar -xzf wave_init-1.3.4-linux-x86_64.tar.gz
 cd wave_init-linux-x86_64
 ./start_gui.sh
 ```
 
-升级到 1.3.3 时请完整解压新包，再运行 `./start_gui.sh --version` 确认版本。1.3.3 增加默认持久化的详细 NPI 日志、环境/版本记录、GUI/SSH 日志与实时调试选项，并保留此前深层 interface、generate、数组和 FSDB 别名修复。便携可执行文件使用内置代码，仅替换外层 Python/Tcl 文件不会更新它。
+升级到 1.3.4 时请完整解压新包，再运行 `./start_gui.sh --version` 确认版本。1.3.4 优先从模块端口的 `a.slv` / `a.mst` 声明选择 modport 成员方向，取消查询时间必须晚于第一条 FSDB 记录的下限；没有记录的值保留无初值状态。默认详细日志及此前深层 interface、generate、数组和 FSDB 别名修复继续保留。便携可执行文件使用内置代码，仅替换外层 Python/Tcl 文件不会更新它。
 
 适用平台：**Linux x86_64、glibc 2.17 或更新版本、可用的图形桌面/X11（含 XWayland）**。请保留整个解压目录，尤其是 `_internal`。ARM、Alpine/musl 不适用本二进制包；源码启动方式仍可使用对应平台的 Python/Tk。
 

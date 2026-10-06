@@ -9,6 +9,28 @@ from waveinit.sv import hierarchy, targets, task_source
 
 
 class BoundaryContracts(unittest.TestCase):
+    def test_missing_declared_direction_is_incomplete_but_unqualified_is_distinct(self):
+        for origin, expected in (("modport", False), ("unqualified_interface", True)):
+            row = {"kind": "signal", "logical_path": "tb.dut.bus.data", "direction": "unknown",
+                   "direction_source": origin, "interface_path": "tb.link", "expression": None,
+                   "status": "ok", "value_bin": "1", "waveform_reads": []}
+            with tempfile.TemporaryDirectory() as directory:
+                path = Path(directory)/"records.jsonl"
+                path.write_text("\n".join(json.dumps(x) for x in (
+                    {"kind": "metadata", "scope": "tb.dut"}, row, {"kind": "done", "count": 1}))+"\n")
+                report = read_backend(path)
+                self.assertEqual(report["declared_directions_complete"], expected)
+                self.assertEqual(bool(report["diagnostics"]), not expected)
+
+    def test_time_before_first_fsdb_record_retains_a_partial_report(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)/"records.jsonl"
+            path.write_text('{"kind":"metadata","scope":"tb.dut","tick":"0","min_tick":"60000"}\n'
+                            '{"kind":"done","count":0}\n')
+            report = read_backend(path)
+            self.assertEqual(report["tick"], "0")
+            self.assertIn("no_initial_value", report["diagnostics"][0])
+
     def test_time_exact_decimal_and_units(self):
         self.assertEqual(parse_time("125.5ns"), ("physical", 125500000, 1))
         self.assertEqual(parse_time(".0001ps"), ("physical", 1, 10))

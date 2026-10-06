@@ -1,0 +1,62 @@
+[
+  {
+    "test": "test_plain_and_shapes",
+    "status": "pass",
+    "seconds": 4.75,
+    "error": ""
+  },
+  {
+    "test": "test_modports_and_generics",
+    "status": "pass",
+    "seconds": 22.59,
+    "error": ""
+  },
+  {
+    "test": "test_interface_array_and_aliases",
+    "status": "pass",
+    "seconds": 9.1,
+    "error": ""
+  },
+  {
+    "test": "test_time_and_xz",
+    "status": "pass",
+    "seconds": 21.67,
+    "error": ""
+  },
+  {
+    "test": "test_dump_gaps_and_missing",
+    "status": "fail",
+    "seconds": 19.8,
+    "error": "'ascii' codec can't decode byte 0xe9 in position 5653: ordinal not in range(128)"
+  },
+  {
+    "test": "test_existing_include_and_release",
+    "status": "pass",
+    "seconds": 4.71,
+    "error": ""
+  },
+  {
+    "test": "test_parameters_struct_union_shared_interface",
+    "status": "pass",
+    "seconds": 6.34,
+    "error": ""
+  },
+  {
+    "test": "test_sparse_fsdb_and_glitches",
+    "status": "pass",
+    "seconds": 18.09,
+    "error": ""
+  },
+  {
+    "test": "test_partial_sv_parameter_diagnostic",
+    "status": "pass",
+    "seconds": 4.56,
+    "error": ""
+  },
+  {
+    "test": "test_constant_assign_connections",
+    "status": "pass",
+    "seconds": 8.02,
+    "error": ""
+  }
+]

@@ -3,6 +3,7 @@ namespace eval wi {
     variable output
     variable file
     variable tick
+    variable min_tick 0
     variable dump_off {}
     variable sampled [dict create]
     variable interfaces [dict create]
@@ -113,6 +114,13 @@ proc wi::direction {h} {
         npiOutput {return output}
         npiInout {return inout}
         npiRef {return ref}
+    }
+    # Some older NPI builds expose the integer property but not its spelling.
+    switch -- [n $h npiDirection -1] {
+        1 {return input}
+        2 {return output}
+        3 {return inout}
+        6 {return ref}
         default {return unknown}
     }
 }
@@ -325,7 +333,7 @@ proc wi::read_bits {sig {depth 0}} {
     return $result
 }
 proc wi::sample {path width} {
-    variable file; variable tick; variable sampled; variable dump_off
+    variable file; variable tick; variable min_tick; variable sampled; variable dump_off
     set key [list $path $width]
     if {[dict exists $sampled $key]} {
         trace DEBUG fsdb.cache path $path width $width status [dict get $sampled $key status]
@@ -357,6 +365,10 @@ proc wi::sample {path width} {
     }
     if {[catch {
         set ret [read_bits $sig]
+        if {[dict get $ret status] eq "no_initial_value"} {
+            dict set ret detail "no recorded signal value at or before tick $tick (FSDB reported first tick: $min_tick)"
+            trace WARNING fsdb.no_initial_value path $path requested_tick $tick first_tick $min_tick
+        }
         if {[dict get $ret status] eq "ok" && [string length [dict get $ret value]] != $width} {
             dict set ret detail "expected $width bits, FSDB returned [string length [dict get $ret value]] bits"
             dict set ret status width_mismatch
@@ -570,6 +582,63 @@ proc wi::interface_view {itf mp} {
     }
     error "modport $mp unavailable on [s $itf npiFullName]"
 }
+proc wi::declared_modport {p} {
+    # The port's definition describes the FORMAL declaration (a.slv xxx),
+    # independently of the actual interface bound through npiLowConn.
+    # Never infer a role from a name such as slv/mst, or from the signal names.
+    set definition [s $p npiDefName]
+    if {[regexp {\.([^\.[:space:]]+)$} $definition -> name]} {
+        trace DEBUG modport.declaration port [s $p npiName] definition $definition modport $name source npiDefName
+        return $name
+    }
+    return ""
+}
+proc wi::modport_direction {member view} {
+    set dir [direction $member]
+    if {$dir ne "unknown"} {return $dir}
+    # npiIODecl is supported by older Language Model versions as well.
+    set name [s $member npiName]
+    foreach category {npiIODecl npiMpPort} {
+        foreach declaration [children $view $category] {
+            if {[s $declaration npiName] ne $name} {continue}
+            set dir [direction $declaration]
+            if {$dir ne "unknown"} {
+                trace DEBUG modport.direction_fallback member $name direction $dir category $category
+                return $dir
+            }
+        }
+    }
+    return unknown
+}
+proc wi::typed_modport {p low declaration items} {
+    # If npiDefName on the port omits the suffix, interface typespec/ref
+    # metadata can still name it. Accept it only for a formally typed modport
+    # port and only when the actual interface declares that exact view.
+    if {[s $p npiPortType] ne "npiModportPort"} {return ""}
+    set names {}
+    foreach h [list $low $declaration [r $low npiTypespec] [r $declaration npiTypespec]] {
+        set properties {npiDefName}
+        if {[s $h npiType] eq "npiInterfaceTypespec"} {lappend properties npiName}
+        foreach property $properties {
+            set name [s $h $property]
+            if {[regexp {\.([^\.[:space:]]+)$} $name -> suffix]} {set name $suffix}
+            if {$name eq "" || $name in $names} {continue}
+            lappend names $name
+        }
+    }
+    set matches {}
+    foreach name $names {
+        set matched 1
+        foreach itf $items {if {[catch {interface_view $itf $name}]} {set matched 0; break}}
+        if {$matched} {lappend matches $name}
+    }
+    if {[llength $matches]>1} {error "ambiguous formal modport metadata: $matches"}
+    if {[llength $matches]==1} {
+        trace DEBUG modport.declaration port [s $p npiName] modport [lindex $matches 0] source formal_typespec
+        return [lindex $matches 0]
+    }
+    return ""
+}
 proc wi::interface_error {kind} {
     error "unresolved interface binding ($kind): KDB interface/modport information is missing or unsupported. For separate-file builds, analyze the interface files AND DUT files with vlogan -sverilog -kdb, then elaborate again with vcs -kdb; using -kdb only for vcs is insufficient."
 }
@@ -648,20 +717,27 @@ proc wi::connection_port {p {visited {}}} {
     set declaration [byname $logical]
     set ts [r $low npiTypespec]
     if {![valid $ts]} {set ts [r $declaration npiTypespec]}
-    set mp ""
-    foreach ref [list $low $declaration] {
-        if {![catch {set act [actual $ref]}] && [s $act npiType] eq "npiModport"} {
-            set mp [s $act npiName]; break
+    set mp [declared_modport $p]
+    set mp_source [expr {$mp ne "" ? "formal_npiDefName" : ""}]
+    if {$mp eq ""} {
+        foreach ref [list $low $declaration] {
+            if {![catch {set act [actual $ref]}] && [s $act npiType] eq "npiModport"} {
+                set mp [s $act npiName]; set mp_source formal_npiActual; break
+            }
         }
     }
     set high [r $p npiHighConn]
     trace DEBUG binding.port logical_path $logical port_type [s $p npiPortType] \
         low_type [s $low npiType] low_name [s $low npiFullName] \
-        declaration_type [s $declaration npiType] formal_modport $mp \
+        declaration_type [s $declaration npiType] formal_definition [s $p npiDefName] formal_modport $mp modport_source $mp_source \
         high_type [s $high npiType] high_name [s $high npiName] forwarding_depth [llength $visited]
     if {![valid $high]} {interface_error "unconnected port $logical"}
     set result [connection_high $high [r $owner npiScope] $visited]
-    if {$mp eq ""} {set mp [dict get $result view]}
+    if {$mp eq ""} {
+        set mp [typed_modport $p $low $declaration [dict get $result items]]
+        if {$mp ne ""} {set mp_source formal_typespec}
+    }
+    if {$mp eq ""} {set mp [dict get $result view]; set mp_source actual_connection}
     set idxs {}
     if {[s $ts npiType] eq "npiArrayTypespec"} {
         set rs [ranges $ts]
@@ -673,6 +749,7 @@ proc wi::connection_port {p {visited {}}} {
     if {$count != [llength $items]} {error "interface array size mismatch at $logical"}
     dict set result indices $idxs
     dict set result view $mp
+    dict set result modport_source $mp_source
     set i 0
     foreach itf $items {
         if {$mp ne ""} {interface_view $itf $mp}
@@ -694,26 +771,28 @@ proc wi::connected_interface {p logical port} {
     foreach itf [dict get $result items] {
         set name $logical
         if {[llength $idxs]} {append name "\[[lindex $idxs $i]\]"}
-        interface_instance $itf $name $port $mp
+        interface_instance $itf $name $port $mp [dict get $result modport_source]
         incr i
     }
 }
 
-proc wi::interface_instance {itf logical port mp} {
+proc wi::interface_instance {itf logical port mp {mp_source ""}} {
     set act ""
     if {$mp ne ""} {set act [interface_view $itf $mp]}
     interface_metadata $itf
     set ip [s $itf npiFullName]
-    trace INFO interface.bound logical_path $logical interface_path $ip modport $mp definition [s $itf npiDefName]
+    trace INFO interface.bound logical_path $logical interface_path $ip modport $mp \
+        modport_source $mp_source definition [s $itf npiDefName]
     variable interface_bindings
     lappend interface_bindings [list $logical $ip $mp]
-    emit [obj kind [j binding] port [j $port] logical_path [j $logical] interface_path [j $ip] modport [j $mp]]
+    emit [obj kind [j binding] port [j $port] logical_path [j $logical] interface_path [j $ip] \
+        modport [j $mp] modport_source [j $mp_source]]
     if {$mp ne ""} {
         set members [children $act npiMpPort]
         if {![llength $members]} {set members [children $act npiIODecl]}
         if {![llength $members]} {error "modport members unavailable"}
         foreach m $members {
-            set dir [direction $m]
+            set dir [modport_direction $m $act]
             trace DEBUG modport.member logical_path "$logical.[s $m npiName]" direction $dir \
                 modport $mp expr_type [s [r $m npiExpr] npiType] action [expr {$dir eq "output" ? "skip_output" : "sample"}]
             if {$dir eq "output"} {continue}
@@ -733,7 +812,7 @@ proc wi::interface_instance {itf logical port mp} {
 }
 
 proc wi::main {} {
-    variable file; variable tick; variable dump_off
+    variable file; variable tick; variable min_tick; variable dump_off
     variable defer_rows; variable pending_rows
     global env
     trace INFO backend.start run_id $env(WI_RUN_ID) tcl_version [info patchlevel] \
@@ -749,9 +828,14 @@ proc wi::main {} {
     if {$env(WI_TIME_NUM) % $divisor != 0} {error "requested time is not an integral FSDB tick ($scale)"}
     set tick [expr {$env(WI_TIME_NUM)/$divisor}]
     set lo [npi_fsdb_min_time -file $file]; set hi [npi_fsdb_max_time -file $file]
+    set min_tick $lo
     trace INFO time.resolved timescale $scale mode $env(WI_TIME_MODE) numerator $env(WI_TIME_NUM) \
         denominator $env(WI_TIME_DEN) tick $tick min_tick $lo max_tick $hi
-    if {$tick < $lo || $tick > $hi || $tick>18446744073709551615} {error "time $tick outside FSDB range $lo..$hi ticks"}
+    if {$tick < 0 || $tick > $hi || $tick>18446744073709551615} {error "time $tick outside supported range 0..$hi ticks (first FSDB record: $lo)"}
+    if {$tick < $lo} {
+        trace WARNING time.before_first_record tick $tick first_tick $lo \
+            detail "query accepted; signals without an earlier recorded value return no_initial_value"
+    }
     set dumpstr [npi_fsdb_file_property_str -file $file -type npiFsdbFileDumpOffRange]
     foreach {whole start end} [regexp -all -inline {\(\s*([0-9]+)\s+([0-9]+)\s*\)} $dumpstr] {lappend dump_off [list $start $end]}
     trace DEBUG fsdb.dump_ranges ranges $dump_off

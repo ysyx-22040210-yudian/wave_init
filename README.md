@@ -4,14 +4,14 @@
 
 运行环境：Linux、Python 3.6+、可用 Verdi 及许可证。Python 运行部分仅使用标准库；运行生成的 testbench 另需 VCS、原始 RTL/package/filelist。开发验证环境为 Verdi/VCS O-2018.09-SP2。
 
-**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.3。
+**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.4。
 
 ## 其他 Linux 设备直接启动
 
-使用 `dist/wave_init-1.3.3-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
+使用 `dist/wave_init-1.3.4-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
 
 ```bash
-tar -xzf wave_init-1.3.3-linux-x86_64.tar.gz
+tar -xzf wave_init-1.3.4-linux-x86_64.tar.gz
 cd wave_init-linux-x86_64
 ./start_gui.sh
 ```
@@ -77,7 +77,7 @@ python3 wave_init.py \
 
 `--scope` 是完整的**实例路径**，不是 module 定义名。带方括号、空格或转义标识符的路径须在 shell 中引用，例如 `--scope 'tb.gen[2].u_dut'`。每次运行使用新的输出目录，防止误读上一次结果。
 
-时间必须带单位：`fs`、`ps`、`ns`、`us`、`ms`、`s`，或整数 `ticks`。按 FSDB 文件自身精度精确换算；不做浮点舍入。指定时刻取最后一次已经发生的值变化，包括该时刻的最后一次记录。全局越界和不足一个 tick 的时间直接报错。
+时间必须带单位：`fs`、`ps`、`ns`、`us`、`ms`、`s`，或整数 `ticks`。按 FSDB 文件自身精度精确换算；不做浮点舍入。指定时刻取最后一次已经发生的值变化，包括该时刻的最后一次记录。允许从 **0** 开始指定时间，没有 60us 或“必须晚于 FSDB 第一条记录”的下限。早于实际记录的查询仍保存报告，无记录的信号显示 `no_initial_value` / 空值并返回部分完成；不能从未来值补齐。超过 FSDB 末尾、负时间和不足一个 tick 的时间报错。
 
 ## 结果
 
@@ -102,7 +102,7 @@ JSON 的 `signals` 是目标模块边界快照；`dependencies` 是生成独立 
 
 `value_bin` 是保留 `0/1/x/z` 的无损二进制字符串。未找到或不可信的数据为 `null`，不能等同于真实的 `x`。`status` 区分 `ok`、`not_dumped`、`no_initial_value`、`dump_off`、`width_mismatch`、`unsupported_type`、`read_error`。
 
-返回码：`0` 表示所需值和 SV 均成功生成；`2` 表示有不完整项，但报告已保存；`1` 表示参数、时间范围、数据库或 Verdi 运行失败；`130` 表示响应 GUI 的取消请求。`values_complete` 与 `directions_complete` 分别表示值和方向是否完整。按用户选择保留的无 modport 成员可在方向未知时返回 `0`。
+返回码：`0` 表示所需值和 SV 均成功生成；`2` 表示有不完整项，但报告已保存；`1` 表示参数、时间范围、数据库或 Verdi 运行失败；`130` 表示响应 GUI 的取消请求。`values_complete` 与 `directions_complete` 分别表示值和方向是否完整。按用户选择保留的无 modport 成员可在方向未知时返回 `0`；已声明 modport 却缺少方向信息时返回 `2`，不会标成完整。
 
 ## 其他设备出错时的日志
 
@@ -126,7 +126,7 @@ SSH 模式自动下载上述日志，失败或部分完成时也会尝试下载�
 
 ## Interface 方向
 
-- 按 `npiPort → npiLowConn → npiActual` 找到实际 interface/modport，再读取成员 `npiDirection`。`mst`、`slv` 等名称没有内置方向假设。
+- 优先从目标模块端口的声明类型 `npiDefName`（例如 `a.slv xxx` 的 `a.slv`）选择实际 interface 中的对应 modport，再读取该 modport 每个成员的 `npiDirection`。也兼容通过 formal typespec/ref、实际连接处取得 modport；方向属性支持字符串及整数形式。`mst`、`slv` 等名称没有内置方向假设。
 - 支持 module 声明处选择 modport、实例连接处选择 modport、跨层传递、interface 数组及多个端口共享一个 interface。
 - modport 的 output 不进入快照；input/inout 按其绑定的真实对象采样。别名、固定切片和拼接通过 `npiExpr` 处理。
 - 没有 modport 时提取静态数据成员并标记 `unknown`。`ref` 单独记录，不伪装成 input/inout。
@@ -137,6 +137,8 @@ SSH 模式自动下载上述日志，失败或部分完成时也会尝试下载�
 interface 与 DUT 可以放在不同文件中，不需要合并源码。版本 1.3.1 修复了 Verdi 2018 在只 dump DUT 时，FSDB 使用 `tb.dut.bus.data` 或 `tb.link.slv.data`、KDB 却指向 `tb.link.data` 的查询差异。工具按 NPI 证明的完整表达式查找别名，支持普通成员、重命名、切片/拼接、共享 interface 及数组；不会按信号短名称猜测绑定，也不会因波形路径不同而改变生成 SV 的目标。
 
 版本 1.3.2 进一步修复 interface 跨多层端口、generate 分支传递时的绑定：逐层追踪 NPI 的实际连接，保留 generate 索引，再从最终 interface 实例的 modport 判断方向。某些 2018 版本返回的引用会省略 generate 层次，工具不再将这些定义引用当成实际实例，也不会按短名称合并两个分支。Interface 数组的声明范围单独解析，供独立 SV 重建连接。
+
+版本 1.3.4 在方向判断中优先使用模块端口的声明类型。例如端口为 `a.slv xxx` 时，选择 interface `a` 的 `slv` 声明，`input/inout` 进入快照，`output` 排除；同一个实际 interface 通过 `a.mst` 连接时按 `mst` 自己的方向表判断。即使低层引用被旧版 NPI 展开为普通 interface，仍可用形式声明保留的 modport 信息解析。日志中的 `modport_source` 标明 `formal_npiDefName`、`formal_typespec` 或实际连接依据。
 
 若仍有错误，请查看 GUI“诊断”或输出目录 `diagnostics.txt`：
 
@@ -155,6 +157,8 @@ vcs -full64 -debug_access+all -kdb -lca tb_top -o simv
 新增回归：`source tests/env.sh; python3 tests/run_split_interfaces.py`（开发 VM）。
 
 深层回归：`source tests/env.sh; python3 tests/run_deep_interfaces.py`。默认递归深度为 2 / 8，对应 7 / 13 层模块实例（含 generate 的完整路径为 11 / 23 段）；检查分支隔离、方向、四态值、时间变化、局部 dump、JSON/CSV 一致性及两种 SV 的仿真。
+
+声明方向与时间下限回归：`source tests/env.sh; python3 tests/run_modport_direction.py`。interface / DUT / TB 分文件，验证 `a.slv xxx` / `a.mst xxx`、受控模拟引用丢失 modport 信息及整数方向属性、60us 之前的正常采样，以及 60us 才开始 dump 时更早的“无初值”报告。
 
 ## 两种 SV 用法
 

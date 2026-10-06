@@ -105,7 +105,18 @@ def read_backend(path):
     result["signals"].sort(key=lambda r: r["logical_path"])
     result["values_complete"] = all(r["status"] == "ok" for r in result["signals"])
     result["directions_complete"] = all(r["direction"] != "unknown" for r in result["signals"])
+    result["declared_directions_complete"] = all(
+        r["direction"] != "unknown" or r["direction_source"] == "unqualified_interface"
+        for r in result["signals"])
     result["diagnostics"] = []
+    if any(r["direction"] == "unknown" and r["direction_source"] == "modport" for r in result["signals"]):
+        result["diagnostics"].append(
+            "存在已声明 modport 但仍未解析的成员方向，结果标为不完整。请查看 npi_trace.log 中的 "
+            "modport.declaration、modport.member 和 interface.unresolved；不能把这些成员当作 input 驱动。")
+    if int(result.get("tick", 0)) < int(result.get("min_tick", 0)):
+        result["diagnostics"].append(
+            "采样时间早于 FSDB 报告的起始时间（{} ticks）。查询已接受并逐信号读取；没有更早记录的信号显示 "
+            "no_initial_value 和空值，不使用后续时刻的值。".format(result["min_tick"]))
     if any(r["direction_source"] == "unresolved_binding" for r in result["signals"]):
         result["diagnostics"].append(
             "KDB 未能提供完整的 interface/modport 绑定信息。分文件编译时，interface、DUT 和 TB 的 "
@@ -245,6 +256,8 @@ def write_reports(result, out):
     lines.extend(["", "Interface bindings:"])
     for binding in result.get("bindings", []):
         lines.append("{} -> {} (modport: {})".format(binding["logical_path"], binding["interface_path"], binding["modport"] or "unknown"))
+        if binding.get("modport_source"):
+            lines.append("  Modport selected from: " + binding["modport_source"])
     lines.extend(["", "Signal lookups (design and waveform paths can differ):"])
     for row in result["signals"]:
         lines.append("{} [{}] {}".format(row["logical_path"], row["direction"], row["status"]))
@@ -304,7 +317,7 @@ def main(argv=None):
         save_runtime(out, runtime)
         log.event("INFO", "sv.generate", drive="assign", signals=len(result["signals"]))
         result["sv"] = generate(result, out, args)
-        result["complete"] = result["values_complete"] and result["sv"]["complete"]
+        result["complete"] = result["values_complete"] and result["sv"]["complete"] and result["declared_directions_complete"]
         write_reports(result, out)
         ok = sum(r["status"] == "ok" for r in result["signals"])
         console_text("{} @ {} ({} ticks, {}): {}/{} values read\n".format(

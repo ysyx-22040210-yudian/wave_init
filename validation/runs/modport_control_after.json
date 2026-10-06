@@ -1,0 +1,360 @@
+{
+  "ports": [
+    {
+      "name": "xxx",
+      "direction": "unknown",
+      "port_type": "npiModportPort",
+      "shape": {
+        "width": -1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiInterfaceTypespec",
+        "hdl_type": "npiRefObj",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "seen",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    }
+  ],
+  "interfaces": [
+    {
+      "path": "direction_top.link",
+      "definition": "a",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "port_type": "npiPort",
+          "shape": {
+            "width": 1,
+            "signed": 0,
+            "packed_ranges": [],
+            "unpacked_ranges": [],
+            "type": "npiLogicTypespec",
+            "hdl_type": "npiNet",
+            "typedef": "",
+            "unpacked_struct": 0
+          },
+          "shape_error": ""
+        }
+      ],
+      "array_path": "",
+      "array_ranges": []
+    }
+  ],
+  "bindings": [
+    {
+      "port": "xxx",
+      "logical_path": "direction_top.u_wrap.dut.xxx",
+      "interface_path": "direction_top.link",
+      "modport": "slv",
+      "modport_source": "formal_npiDefName"
+    }
+  ],
+  "signals": [
+    {
+      "logical_path": "direction_top.u_wrap.dut.xxx.clk",
+      "port": "xxx",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.clk"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.clk"
+          ],
+          "waveform_path": "direction_top.link.clk",
+          "candidates": [
+            "direction_top.link.clk",
+            "direction_top.u_wrap.bus.clk",
+            "direction_top.u_wrap.dut.xxx.clk",
+            "direction_top.link.slv.clk"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.clk"
+      ],
+      "waveform_paths": [
+        "direction_top.link.clk"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "direction_top.u_wrap.dut.xxx.data",
+      "port": "xxx",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 8,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            7,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 8,
+        "path": "direction_top.link.data"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.data"
+          ],
+          "waveform_path": "direction_top.link.data",
+          "candidates": [
+            "direction_top.link.data",
+            "direction_top.u_wrap.bus.data",
+            "direction_top.u_wrap.dut.xxx.data",
+            "direction_top.link.slv.data"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "10xz0101",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.data"
+      ],
+      "waveform_paths": [
+        "direction_top.link.data"
+      ],
+      "width": 8
+    },
+    {
+      "logical_path": "direction_top.u_wrap.dut.xxx.pad",
+      "port": "xxx",
+      "direction": "inout",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.pad"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.pad"
+          ],
+          "waveform_path": "direction_top.link.pad",
+          "candidates": [
+            "direction_top.link.pad",
+            "direction_top.u_wrap.bus.pad",
+            "direction_top.u_wrap.dut.xxx.pad",
+            "direction_top.link.slv.pad"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "z",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.pad"
+      ],
+      "waveform_paths": [
+        "direction_top.link.pad"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "direction_top.u_wrap.dut.xxx.req",
+      "port": "xxx",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "slv",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.req"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.req"
+          ],
+          "waveform_path": "direction_top.link.req",
+          "candidates": [
+            "direction_top.link.req",
+            "direction_top.u_wrap.bus.req",
+            "direction_top.u_wrap.dut.xxx.req",
+            "direction_top.link.slv.req"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.req"
+      ],
+      "waveform_paths": [
+        "direction_top.link.req"
+      ],
+      "width": 1
+    }
+  ],
+  "dependencies": [
+    {
+      "logical_path": "direction_top.link.clk",
+      "port": "clk",
+      "direction": "input",
+      "direction_source": "interface_constructor",
+      "modport": "",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.clk"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.clk"
+          ],
+          "waveform_path": "direction_top.link.clk",
+          "candidates": [
+            "direction_top.link.clk",
+            "direction_top.u_wrap.bus.clk",
+            "direction_top.u_wrap.dut.xxx.clk",
+            "direction_top.link.slv.clk"
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.clk"
+      ],
+      "waveform_paths": [
+        "direction_top.link.clk"
+      ],
+      "width": 1
+    }
+  ],
+  "scope": "direction_top.u_wrap.dut",
+  "definition": "direction_slave",
+  "parameters": [],
+  "timescale": "1ns",
+  "tick": "1000",
+  "min_tick": "0",
+  "max_tick": "65000",
+  "dump_off_ranges": [],
+  "source_file": "/root/wave_init/tests/fixtures/modport_direction/dut.sv",
+  "values_complete": true,
+  "directions_complete": true,
+  "declared_directions_complete": true,
+  "diagnostics": [],
+  "schema_version": 1,
+  "tool_version": "1.3.4",
+  "fsdb": "/root/wave_init/build/modport_direction_8j0ajs4d/full/waves.fsdb",
+  "kdb": "/root/wave_init/build/modport_direction_8j0ajs4d/simv.daidir/kdb.elab++",
+  "requested_time": "1us",
+  "elapsed_seconds": 6.494,
+  "run_id": "f03a1c427ecc43e58af4c65843c10927",
+  "log_files": [
+    "wave_init.log",
+    "npi_trace.log",
+    "npi_records.jsonl",
+    "runtime.json",
+    "verdi.log",
+    "diagnostics.txt"
+  ],
+  "sv": {
+    "complete": true,
+    "existing_tb_complete": true,
+    "standalone_complete": true,
+    "diagnostics": [],
+    "standalone_drive": "assign",
+    "skipped": [],
+    "forced_targets": 4,
+    "force_unknown": false
+  },
+  "complete": true
+}
