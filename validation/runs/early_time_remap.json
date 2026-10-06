@@ -1,0 +1,642 @@
+{
+  "ports": [
+    {
+      "name": "xxx",
+      "direction": "unknown",
+      "port_type": "npiModportPort",
+      "shape": {
+        "width": -1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiInterfaceTypespec",
+        "hdl_type": "npiRefObj",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    },
+    {
+      "name": "seen",
+      "direction": "output",
+      "port_type": "npiPort",
+      "shape": {
+        "width": 10,
+        "signed": 0,
+        "packed_ranges": [
+          [
+            9,
+            0
+          ]
+        ],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "shape_error": ""
+    }
+  ],
+  "interfaces": [
+    {
+      "path": "direction_top.link",
+      "definition": "a",
+      "parameters": [],
+      "ports": [
+        {
+          "name": "clk",
+          "direction": "input",
+          "port_type": "npiPort",
+          "shape": {
+            "width": 1,
+            "signed": 0,
+            "packed_ranges": [],
+            "unpacked_ranges": [],
+            "type": "npiLogicTypespec",
+            "hdl_type": "npiNet",
+            "typedef": "",
+            "unpacked_struct": 0
+          },
+          "shape_error": ""
+        }
+      ],
+      "array_path": "",
+      "array_ranges": []
+    }
+  ],
+  "bindings": [
+    {
+      "port": "xxx",
+      "logical_path": "direction_top.u_wrap.remap.xxx",
+      "interface_path": "direction_top.link",
+      "modport": "remap",
+      "modport_source": "formal_npiDefName"
+    }
+  ],
+  "signals": [
+    {
+      "logical_path": "direction_top.u_wrap.remap.xxx.ack",
+      "port": "xxx",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "remap",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.req"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.req"
+          ],
+          "waveform_path": "direction_top.u_wrap.remap.xxx.ack",
+          "candidates": [
+            "direction_top.link.req",
+            "direction_top.u_wrap.bus.req",
+            "direction_top.u_wrap.remap.xxx.ack",
+            "direction_top.link.remap.ack"
+          ],
+          "attempts": [
+            {
+              "path": "direction_top.link.req",
+              "status": "no_initial_value",
+              "first_tick": "60000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 60000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.bus.req",
+              "status": "no_initial_value",
+              "first_tick": "10000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 10000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.remap.xxx.ack",
+              "status": "ok",
+              "first_tick": "",
+              "change_tick": "0",
+              "read_method": "time_seek",
+              "detail": ""
+            }
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.req"
+      ],
+      "waveform_paths": [
+        "direction_top.u_wrap.remap.xxx.ack"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "direction_top.u_wrap.remap.xxx.clk",
+      "port": "xxx",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "remap",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.clk"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.clk"
+          ],
+          "waveform_path": "direction_top.u_wrap.remap.xxx.clk",
+          "candidates": [
+            "direction_top.link.clk",
+            "direction_top.u_wrap.bus.clk",
+            "direction_top.u_wrap.remap.xxx.clk",
+            "direction_top.link.remap.clk"
+          ],
+          "attempts": [
+            {
+              "path": "direction_top.link.clk",
+              "status": "no_initial_value",
+              "first_tick": "60000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 60000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.bus.clk",
+              "status": "no_initial_value",
+              "first_tick": "10000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 10000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.remap.xxx.clk",
+              "status": "ok",
+              "first_tick": "",
+              "change_tick": "0",
+              "read_method": "time_seek",
+              "detail": ""
+            }
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.clk"
+      ],
+      "waveform_paths": [
+        "direction_top.u_wrap.remap.xxx.clk"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "direction_top.u_wrap.remap.xxx.mix",
+      "port": "xxx",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "remap",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 4,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "",
+        "hdl_type": "npiOperation",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "concat",
+        "width": 4,
+        "operands": [
+          {
+            "kind": "select",
+            "width": 2,
+            "parent": {
+              "kind": "signal",
+              "width": 8,
+              "path": "direction_top.link.data"
+            },
+            "offsets": [
+              6,
+              7
+            ],
+            "suffix": "[1:0]"
+          },
+          {
+            "kind": "select",
+            "width": 2,
+            "parent": {
+              "kind": "signal",
+              "width": 8,
+              "path": "direction_top.link.data"
+            },
+            "offsets": [
+              0,
+              1
+            ],
+            "suffix": "[7:6]"
+          }
+        ]
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.data"
+          ],
+          "waveform_path": "direction_top.u_wrap.remap.xxx.mix",
+          "candidates": [
+            "direction_top.u_wrap.remap.xxx.mix",
+            "direction_top.link.remap.mix"
+          ],
+          "attempts": [
+            {
+              "path": "direction_top.u_wrap.remap.xxx.mix",
+              "status": "ok",
+              "first_tick": "",
+              "change_tick": "0",
+              "read_method": "time_seek",
+              "detail": ""
+            }
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "0110",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.data"
+      ],
+      "waveform_paths": [
+        "direction_top.u_wrap.remap.xxx.mix"
+      ],
+      "width": 4
+    },
+    {
+      "logical_path": "direction_top.u_wrap.remap.xxx.nibble",
+      "port": "xxx",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "remap",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 4,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "",
+        "hdl_type": "npiPartSelect",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "select",
+        "width": 4,
+        "parent": {
+          "kind": "signal",
+          "width": 8,
+          "path": "direction_top.link.data"
+        },
+        "offsets": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "suffix": "[5:2]"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.data"
+          ],
+          "waveform_path": "direction_top.u_wrap.remap.xxx.nibble",
+          "candidates": [
+            "direction_top.u_wrap.remap.xxx.nibble",
+            "direction_top.link.remap.nibble"
+          ],
+          "attempts": [
+            {
+              "path": "direction_top.u_wrap.remap.xxx.nibble",
+              "status": "ok",
+              "first_tick": "",
+              "change_tick": "0",
+              "read_method": "time_seek",
+              "detail": ""
+            }
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "xz01",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.data"
+      ],
+      "waveform_paths": [
+        "direction_top.u_wrap.remap.xxx.nibble"
+      ],
+      "width": 4
+    },
+    {
+      "logical_path": "direction_top.u_wrap.remap.xxx.pad",
+      "port": "xxx",
+      "direction": "inout",
+      "direction_source": "modport",
+      "modport": "remap",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.pad"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.pad"
+          ],
+          "waveform_path": "direction_top.u_wrap.remap.xxx.pad",
+          "candidates": [
+            "direction_top.link.pad",
+            "direction_top.u_wrap.bus.pad",
+            "direction_top.u_wrap.remap.xxx.pad",
+            "direction_top.link.remap.pad"
+          ],
+          "attempts": [
+            {
+              "path": "direction_top.link.pad",
+              "status": "no_initial_value",
+              "first_tick": "60000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 60000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.bus.pad",
+              "status": "no_initial_value",
+              "first_tick": "10000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 10000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.remap.xxx.pad",
+              "status": "ok",
+              "first_tick": "",
+              "change_tick": "0",
+              "read_method": "time_seek",
+              "detail": ""
+            }
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "z",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.pad"
+      ],
+      "waveform_paths": [
+        "direction_top.u_wrap.remap.xxx.pad"
+      ],
+      "width": 1
+    },
+    {
+      "logical_path": "direction_top.u_wrap.remap.xxx.req",
+      "port": "xxx",
+      "direction": "input",
+      "direction_source": "modport",
+      "modport": "remap",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiReg",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.ack"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.ack"
+          ],
+          "waveform_path": "direction_top.u_wrap.remap.xxx.req",
+          "candidates": [
+            "direction_top.link.ack",
+            "direction_top.u_wrap.bus.ack",
+            "direction_top.u_wrap.remap.xxx.req",
+            "direction_top.link.remap.req"
+          ],
+          "attempts": [
+            {
+              "path": "direction_top.link.ack",
+              "status": "no_initial_value",
+              "first_tick": "60000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 60000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.bus.ack",
+              "status": "no_initial_value",
+              "first_tick": "10000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 10000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.remap.xxx.req",
+              "status": "ok",
+              "first_tick": "",
+              "change_tick": "0",
+              "read_method": "time_seek",
+              "detail": ""
+            }
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "0",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.ack"
+      ],
+      "waveform_paths": [
+        "direction_top.u_wrap.remap.xxx.req"
+      ],
+      "width": 1
+    }
+  ],
+  "dependencies": [
+    {
+      "logical_path": "direction_top.link.clk",
+      "port": "clk",
+      "direction": "input",
+      "direction_source": "interface_constructor",
+      "modport": "",
+      "interface_path": "direction_top.link",
+      "shape": {
+        "width": 1,
+        "signed": 0,
+        "packed_ranges": [],
+        "unpacked_ranges": [],
+        "type": "npiLogicTypespec",
+        "hdl_type": "npiNet",
+        "typedef": "",
+        "unpacked_struct": 0
+      },
+      "expression": {
+        "kind": "signal",
+        "width": 1,
+        "path": "direction_top.link.clk"
+      },
+      "waveform_reads": [
+        {
+          "design_paths": [
+            "direction_top.link.clk"
+          ],
+          "waveform_path": "direction_top.u_wrap.remap.xxx.clk",
+          "candidates": [
+            "direction_top.link.clk",
+            "direction_top.u_wrap.bus.clk",
+            "direction_top.u_wrap.remap.xxx.clk",
+            "direction_top.link.remap.clk"
+          ],
+          "attempts": [
+            {
+              "path": "direction_top.link.clk",
+              "status": "no_initial_value",
+              "first_tick": "60000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 60000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.bus.clk",
+              "status": "no_initial_value",
+              "first_tick": "10000",
+              "change_tick": "",
+              "read_method": "first_scan",
+              "detail": "no recorded signal value at or before tick 1 (signal first tick: 10000; FSDB reported first tick: 0)"
+            },
+            {
+              "path": "direction_top.u_wrap.remap.xxx.clk",
+              "status": "ok",
+              "first_tick": "",
+              "change_tick": "0",
+              "read_method": "time_seek",
+              "detail": ""
+            }
+          ]
+        }
+      ],
+      "status": "ok",
+      "value_bin": "1",
+      "change_tick": "0",
+      "detail": "",
+      "design_paths": [
+        "direction_top.link.clk"
+      ],
+      "waveform_paths": [
+        "direction_top.u_wrap.remap.xxx.clk"
+      ],
+      "width": 1
+    }
+  ],
+  "scope": "direction_top.u_wrap.remap",
+  "definition": "direction_remap",
+  "parameters": [],
+  "timescale": "1ns",
+  "tick": "1",
+  "min_tick": "0",
+  "max_tick": "65000",
+  "dump_off_ranges": [],
+  "source_file": "/root/wave_init/tests/fixtures/modport_direction/dut.sv",
+  "values_complete": true,
+  "directions_complete": true,
+  "declared_directions_complete": true,
+  "diagnostics": [],
+  "schema_version": 1,
+  "tool_version": "1.3.5",
+  "fsdb": "/root/wave_init/build/early_time_p326og0u/aliases/waves.fsdb",
+  "kdb": "/root/wave_init/build/early_time_p326og0u/simv.daidir/kdb.elab++",
+  "requested_time": "1ns",
+  "elapsed_seconds": 3.631,
+  "run_id": "cdd1fa7d8d5642968844a390b90484a2",
+  "log_files": [
+    "wave_init.log",
+    "npi_trace.log",
+    "npi_records.jsonl",
+    "runtime.json",
+    "verdi.log",
+    "diagnostics.txt"
+  ],
+  "sv": {
+    "complete": true,
+    "existing_tb_complete": true,
+    "standalone_complete": true,
+    "diagnostics": [],
+    "standalone_drive": "assign",
+    "skipped": [],
+    "forced_targets": 7,
+    "force_unknown": false
+  },
+  "complete": true
+}

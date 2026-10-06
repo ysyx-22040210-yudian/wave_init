@@ -7,4 +7,6 @@ interface a(input logic clk);
   modport mst(input clk, ack, inout pad, output req, data);
   // A view matching the module's port NAME must never override its TYPE.
   modport xxx(input ack, output req, data);
+  modport remap(input clk, .req(ack), .ack(req),
+                .nibble(data[5:2]), .mix({data[1:0], data[7:6]}), inout pad);
 endinterface

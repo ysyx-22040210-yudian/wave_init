@@ -4,14 +4,14 @@
 
 运行环境：Linux、Python 3.6+、可用 Verdi 及许可证。Python 运行部分仅使用标准库；运行生成的 testbench 另需 VCS、原始 RTL/package/filelist。开发验证环境为 Verdi/VCS O-2018.09-SP2。
 
-**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.4。
+**GUI：Python 3.8+ / Tkinter**，支持 Linux 本机执行和 Windows/Linux 通过 SSH 调用 Verdi 服务器。源码 GUI 本机模式仅使用标准库；源码 SSH 模式另外需要 Paramiko。当前版本为 1.3.5。
 
 ## 其他 Linux 设备直接启动
 
-使用 `dist/wave_init-1.3.4-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
+使用 `dist/wave_init-1.3.5-linux-x86_64.tar.gz`：内置 Python 3.8、Tk、SSH 依赖及中文字体，不需要安装 Python/Tk，也不需要开发 VM 或 root 权限。
 
 ```bash
-tar -xzf wave_init-1.3.4-linux-x86_64.tar.gz
+tar -xzf wave_init-1.3.5-linux-x86_64.tar.gz
 cd wave_init-linux-x86_64
 ./start_gui.sh
 ```
@@ -140,11 +140,16 @@ interface 与 DUT 可以放在不同文件中，不需要合并源码。版本 1
 
 版本 1.3.4 在方向判断中优先使用模块端口的声明类型。例如端口为 `a.slv xxx` 时，选择 interface `a` 的 `slv` 声明，`input/inout` 进入快照，`output` 排除；同一个实际 interface 通过 `a.mst` 连接时按 `mst` 自己的方向表判断。即使低层引用被旧版 NPI 展开为普通 interface，仍可用形式声明保留的 modport 信息解析。日志中的 `modport_source` 标明 `formal_npiDefName`、`formal_typespec` 或实际连接依据。
 
+版本 1.3.5 修复早期采样误报 `no_initial_value`：同一个 KDB 绑定信号的实际实例、跨层端口和 modport 路径可能从不同时间开始记录。一个路径无初值时，继续查询已证明属于同一完整表达式的其他路径；静态切片及拼接也支持此恢复。NPI 按时间定位失败或停在请求时刻之后时，从该信号首条记录重新遍历，选取请求时刻及此前最后一次变化，保留同时间戳的最后一次记录。真正没有早期记录的信号仍报告空值。
+
+`snapshot.json` / CSV 的 `waveform_reads[].attempts`、`diagnostics.txt` 和 `npi_trace.log` 记录每个实际尝试路径的状态、信号首条记录时间、取值变化时间和定位方法（`time_seek` / `first_scan`）。首条记录时间只在需要恢复时查询；正常快速定位时显示 unavailable。可据此区分文件整体起始时间、单个路径的记录起点，以及其他绑定路径是否已有早期波形。
+
 若仍有错误，请查看 GUI“诊断”或输出目录 `diagnostics.txt`：
 
 - `unresolved interface binding (npiModule/npiNIY)`：KDB 缺失或不支持 interface/modport 信息。分步编译时，interface 所在文件也必须在 **vlogan 分析阶段**使用 `-kdb`，然后重新执行 `vcs -kdb`；只给最终 vcs 命令加 `-kdb` 不能补齐缺失的数据。不要根据 `mst/slv` 名称猜方向。
 - `not_dumped`：已检查由 KDB 绑定确定的实例、端口及 modport 路径，仍未找到波形。对报告中的实际 interface 实例添加 `$fsdbDumpvars(0, tb.link, "+all");` 后重跑原仿真。已有 FSDB 没有保存的值不能恢复。
-- `width_mismatch`、`dump_off`、`no_initial_value`：沿用原有检查，不会通过选择另一个名字掩盖位宽或采样时间错误。
+- `no_initial_value`：已从首条记录检查并尝试 KDB 证明的别名，仍没有请求时刻及此前的有效值。查看各路径的 `first_tick`，不会使用 60us 或其他未来时刻的值填充 1ns 快照。
+- `width_mismatch`、`dump_off`：保持原有位宽及 dump-off 检查。
 
 分文件、分步编译示例（`design.f` 依次包含 package、interface、DUT、TB）：
 
@@ -159,6 +164,8 @@ vcs -full64 -debug_access+all -kdb -lca tb_top -o simv
 深层回归：`source tests/env.sh; python3 tests/run_deep_interfaces.py`。默认递归深度为 2 / 8，对应 7 / 13 层模块实例（含 generate 的完整路径为 11 / 23 段）；检查分支隔离、方向、四态值、时间变化、局部 dump、JSON/CSV 一致性及两种 SV 的仿真。
 
 声明方向与时间下限回归：`source tests/env.sh; python3 tests/run_modport_direction.py`。interface / DUT / TB 分文件，验证 `a.slv xxx` / `a.mst xxx`、受控模拟引用丢失 modport 信息及整数方向属性、60us 之前的正常采样，以及 60us 才开始 dump 时更早的“无初值”报告。
+
+早期取值回归：`source tests/env.sh; python3 tests/run_early_time.py`。使用真实 NPI Writer FSDB / VCS KDB，令同一 interface 的实际路径从 60us、跨层路径从 10us、形式端口路径从 0ns 记录，验证 1ns 采样、slv/mst、重命名与切片/拼接、JSON/CSV 一致性、assign 和 force/release 回放；另外受控测试定位失败/未来定位恢复及同时间戳最后一次变化。
 
 ## 两种 SV 用法
 

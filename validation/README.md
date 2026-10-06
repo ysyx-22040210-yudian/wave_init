@@ -2,7 +2,9 @@
 
 最新验证日期：2026-10-06；下方历史记录保留各次验证日期。验证环境：`192.168.31.116`，CentOS 7、Python 3.6.8 / 3.8.13、Verdi/VCS O-2018.09-SP2。交付源码位于 `D:\wave_init`，VM 副本位于 `/root/wave_init`。
 
-当前版本 **1.3.4** 优先按模块端口的 `a.slv` / `a.mst` 声明解析成员方向，取消 FSDB 起始时间作为查询下限。[方向/时间验证记录](modport_direction_results.json) 保存源码、GUI 与便携包证据。
+当前版本 **1.3.5** 修复早期采样误报无初值，补充同一信号不同路径的记录起点及 VCT 定位恢复诊断。[早期取值验证记录](early_time_results.json) 保存复现对照、源码、GUI 与便携包证据。
+
+版本 **1.3.4** 优先按模块端口的 `a.slv` / `a.mst` 声明解析成员方向，取消 FSDB 起始时间作为查询下限。[方向/时间验证记录](modport_direction_results.json) 保存源码、GUI 与便携包证据。
 
 版本 **1.3.3** 增加持久化运行日志、详细 NPI 追踪、GUI/SSH 日志、环境与版本记录，以及实时调试选项。[日志验证记录](logging_results.json) 保存源码、GUI 与便携包验证证据。
 
@@ -17,6 +19,15 @@
 下方核心功能记录对应 **1.1.0**：独立 `tb_snapshot.sv` 改用常量 `assign`，普通连接保留 RTL 端口名；现有 TB 的 `snapshot.svh` 提供可选的 force/release 任务。版本 1.2.0 的 CLI 取消机制另经过进程组清理测试，并复测普通端口及现有 TB 的 force/release 接入。
 
 [results.json](results.json) 汇总 1.1.0 每个测试组的最后结果和当时核心源码 SHA-256。[runs](runs/) 保留原始各轮结果，包括修正前的测试失败记录；最终各组均通过。测试检查和样例生成都实际调用了 VM 上的 NPI/VCS。
+
+## 早期无初值恢复（1.3.5）
+
+- 用真实 NPI Writer 制作 FSDB，同一 KDB 绑定 interface 的实际路径从 60us、跨层路径从 10us、形式端口路径从 0ns 保存值。1.3.4 便携 CLI 在 1ns 返回 4 个 no_initial_value；新版读取相同 FSDB/KDB 得到正确的 4 个 input/inout 值，包含 X/Z。此 fixture 复现相同症状，没有取得用户设备的原始 FSDB。
+- 检查 0ns、1ns、1us、9.999us、10us、59.999us、60us 和 60.001us，以及 slv/mst、成员重命名、切片和拼接。实际路径尚无值时选择已证明的别名；60us 时重新使用实际路径。
+- 受控模拟快速定位失败或停在未来记录，保留真实 FSDB 和首条/下一条遍历 API，验证恢复取值与同时间戳最后一次变化；所有路径确实在 60us 才开始记录时，1ns 仍保存 no_initial_value / 空值。
+- JSON/CSV 一致性检查包含新增的 attempts 状态、首条记录时间与定位方法。生成的独立 assign SV、现有 TB 的 force/release 接入均经过 VCS 四态值检查。
+- 源码 22 个场景（含旧版真实对照），冻结 CLI 21 个场景，各通过 5 次 assign 回放和 1 次 force/release 回放。原有 10 个核心测试组、13 层模块/23 段层次的 16 个深层场景以及 Python 3.8 / Tk 的 30 项测试通过。
+- 交付便携包的实际 GUI 在同一晚起点 fixture 上选择 1ns，得到 4 个正确值和方向，并显示 assign 预览及详细日志。CentOS 7 和 Ubuntu Base 22.04.5 用户空间验证通过；普通用户、只读且带空格目录、无系统 Python 情况下仍可启动 GUI，并完成 16 个 NPI 值提取与 VCS 回放。归档和内置源码校验值已核对。
 
 ## 声明 modport 方向与时间下限（1.3.4）
 

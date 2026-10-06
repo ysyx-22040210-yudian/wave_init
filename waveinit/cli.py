@@ -267,6 +267,12 @@ def write_reports(result, out):
             lines.append("  " + row["detail"])
         for read in row.get("waveform_reads", []):
             lines.append("  Tried: " + ", ".join(read.get("candidates", [])))
+            for attempt in read.get("attempts", []):
+                lines.append("    {}: {} (first_tick={}, change_tick={}, method={})".format(
+                    attempt["path"], attempt["status"], attempt.get("first_tick") or "unavailable",
+                    attempt.get("change_tick") or "unavailable", attempt.get("read_method") or "unavailable"))
+                if attempt.get("detail"):
+                    lines.append("      " + attempt["detail"])
     (out/"diagnostics.txt").write_text("\n".join(lines)+"\n", encoding="utf-8")
 
 

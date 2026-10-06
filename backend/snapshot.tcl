@@ -312,24 +312,53 @@ proc wi::read_bits {sig {depth 0}} {
     set result [dict create status unsupported_type value "" change_tick ""]
     if {![valid $vct]} {return $result}
     set code [catch {
-        if {![npi_fsdb_goto_time -vct $vct -time $tick]} {
-            dict set result status no_initial_value
-        } else {
+        set seek [npi_fsdb_goto_time -vct $vct -time $tick]
+        set seek_tick ""; set first_tick ""; set scanned 0
+        dict set result read_method time_seek
+        if {$seek} {set seek_tick [npi_fsdb_vct_time -vct $vct]}
+        if {$seek && $seek_tick <= $tick} {
             set changed [npi_fsdb_vct_time -vct $vct]
-            if {$changed > $tick} {
-                dict set result status no_initial_value
-            } else {
-                set value [string tolower [npi_fsdb_vct_value -vct $vct -format npiFsdbBinStrVal]]
-                if {[regexp {^[01xz]+$} $value]} {
-                    dict set result status ok; dict set result value $value; dict set result change_tick $changed
+            set value [string tolower [npi_fsdb_vct_value -vct $vct -format npiFsdbBinStrVal]]
+            if {[regexp {^[01xz]+$} $value]} {
+                dict set result status ok; dict set result value $value; dict set result change_tick $changed
+            }
+        } else {
+            # A failed seek (or a seek into a later FSDB session) alone does not
+            # prove that this signal has no initial value. Initialize from its
+            # first record and retain the last record <= tick, including delta
+            # changes at the same timestamp. Never substitute a future value.
+            dict set result status no_initial_value
+            dict set result read_method first_scan
+            if {[npi_fsdb_goto_first -vct $vct]} {
+                set first_tick [npi_fsdb_vct_time -vct $vct]
+                set previous ""
+                while {1} {
+                    set changed [npi_fsdb_vct_time -vct $vct]
+                    if {$previous ne "" && $changed < $previous} {error "nonmonotonic FSDB value changes"}
+                    if {$changed > $tick} {break}
+                    incr scanned; set previous $changed
+                    set value [string tolower [npi_fsdb_vct_value -vct $vct -format npiFsdbBinStrVal]]
+                    dict set result change_tick $changed
+                    dict set result status unsupported_type; dict set result value ""
+                    if {[regexp {^[01xz]+$} $value]} {
+                        dict set result status ok; dict set result value $value
+                    }
+                    if {$scanned % 10000 == 0} {
+                        trace DEBUG fsdb.scan_progress handle $sig requested_tick $tick change_tick $changed records $scanned
+                    }
+                    if {![npi_fsdb_goto_next -vct $vct]} {break}
                 }
             }
+            trace DEBUG fsdb.seek_recovery handle $sig requested_tick $tick seek_result $seek \
+                seek_tick $seek_tick first_tick $first_tick scanned_records $scanned status [dict get $result status]
         }
+        dict set result first_tick $first_tick
     } why]
     npi_fsdb_release_vct -vct $vct
     if {$code} {error $why}
     trace DEBUG fsdb.vct handle $sig requested_tick $tick status [dict get $result status] \
-        change_tick [dict get $result change_tick] value_bits [string length [dict get $result value]]
+        change_tick [dict get $result change_tick] value_bits [string length [dict get $result value]] \
+        read_method [dict get $result read_method] first_tick [dict get $result first_tick]
     return $result
 }
 proc wi::sample {path width} {
@@ -366,8 +395,9 @@ proc wi::sample {path width} {
     if {[catch {
         set ret [read_bits $sig]
         if {[dict get $ret status] eq "no_initial_value"} {
-            dict set ret detail "no recorded signal value at or before tick $tick (FSDB reported first tick: $min_tick)"
-            trace WARNING fsdb.no_initial_value path $path requested_tick $tick first_tick $min_tick
+            set first ""; if {[dict exists $ret first_tick]} {set first [dict get $ret first_tick]}
+            dict set ret detail "no recorded signal value at or before tick $tick (signal first tick: $first; FSDB reported first tick: $min_tick)"
+            trace WARNING fsdb.no_initial_value path $path requested_tick $tick signal_first_tick $first file_first_tick $min_tick
         }
         if {[dict get $ret status] eq "ok" && [string length [dict get $ret value]] != $width} {
             dict set ret detail "expected $width bits, FSDB returned [string length [dict get $ret value]] bits"
@@ -401,22 +431,34 @@ proc wi::sample_candidates {e paths} {
     set unique {}; foreach path $paths {if {$path ni $unique} {lappend unique $path}}
     trace DEBUG fsdb.candidates design_paths [expr_paths $e] width [dict get $e width] paths $unique
     set result [dict create status not_dumped value "" change_tick ""]
-    set selected ""
+    set selected ""; set missing_initial ""; set attempts {}
     foreach path $unique {
         set result [sample $path [dict get $e width]]
-        # Existing signals remain authoritative for width errors, dump-off and
-        # missing initial data. Only absent paths use a known alias.
-        if {[dict get $result status] ne "not_dumped"} {
+        set first ""; set method ""; set detail ""
+        if {[dict exists $result first_tick]} {set first [dict get $result first_tick]}
+        if {[dict exists $result read_method]} {set method [dict get $result read_method]}
+        if {[dict exists $result detail]} {set detail [dict get $result detail]}
+        lappend attempts [obj path [j $path] status [j [dict get $result status]] first_tick [j $first] \
+            change_tick [j [dict get $result change_tick]] read_method [j $method] detail [j $detail]]
+        # Proven aliases can have different dump start times. Continue after
+        # no_initial_value, but keep it if no alias provides an earlier value.
+        # Width errors and dump-off remain authoritative.
+        if {[dict get $result status] eq "no_initial_value"} {
+            if {$missing_initial eq ""} {set missing_initial $result}
+        } elseif {[dict get $result status] ne "not_dumped"} {
             set selected [dict get $result path]
             break
         }
     }
+    if {[dict get $result status] in {not_dumped no_initial_value} && $missing_initial ne ""} {
+        set result $missing_initial; set selected [dict get $result path]
+    }
     dict set result reads [list [obj design_paths [strings [expr_paths $e]] \
-        waveform_path [j $selected] candidates [strings $unique]]]
+        waveform_path [j $selected] candidates [strings $unique] attempts [arr $attempts]]]
     if {[dict get $result status] eq "not_dumped"} {
         dict set result detail "FSDB signal not found; tried exact NPI-bound paths: [join $unique {, }]"
     }
-    trace DEBUG fsdb.selected waveform_path $selected status [dict get $result status]
+    trace DEBUG fsdb.selected waveform_path $selected status [dict get $result status] attempts [arr $attempts]
     return $result
 }
 proc wi::evaluate {e} {
@@ -429,8 +471,11 @@ proc wi::evaluate {e} {
         constant {return [dict create status ok value [dict get $e value] change_tick "" reads {}]}
         select {
             set result [evaluate [dict get $e parent]]
-            if {[dict get $result status] eq "not_dumped" && [llength $aliases]} {
-                return [sample_candidates $e $aliases]
+            if {[dict get $result status] in {not_dumped no_initial_value} && [llength $aliases]} {
+                set alias [sample_candidates $e $aliases]
+                if {[dict get $alias status] ne "not_dumped"} {return $alias}
+                if {[dict get $result status] eq "not_dumped"} {return $alias}
+                dict lappend result reads {*}[dict get $alias reads]
             }
             if {[dict get $result status] eq "ok"} {
                 set value ""; foreach i [dict get $e offsets] {append value [string index [dict get $result value] $i]}
@@ -442,8 +487,11 @@ proc wi::evaluate {e} {
             set value ""; set time ""; set reads {}
             foreach sub [dict get $e operands] {
                 set r [evaluate $sub]
-                if {[dict get $r status] eq "not_dumped" && [llength $aliases]} {
-                    return [sample_candidates $e $aliases]
+                if {[dict get $r status] in {not_dumped no_initial_value} && [llength $aliases]} {
+                    set alias [sample_candidates $e $aliases]
+                    if {[dict get $alias status] ne "not_dumped"} {return $alias}
+                    if {[dict get $r status] eq "not_dumped"} {return $alias}
+                    dict lappend r reads {*}[dict get $alias reads]
                 }
                 if {[dict get $r status] ne "ok"} {return $r}
                 lappend reads {*}[dict get $r reads]

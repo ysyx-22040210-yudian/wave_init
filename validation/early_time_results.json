@@ -1,0 +1,126 @@
+{
+  "date": "2026-10-06",
+  "tool_version": "1.3.5",
+  "status": "pass",
+  "environment": {
+    "vm": "192.168.31.116",
+    "os": "CentOS 7 / glibc 2.17",
+    "verdi_vcs": "O-2018.09-SP2",
+    "python_cli": "3.6.8",
+    "python_gui_bundled": "3.8.13"
+  },
+  "implementation": [
+    "continue proven full-expression aliases after no_initial_value",
+    "first/next VCT recovery for failed or future time seek",
+    "keep last same-timestamp record and never substitute a future value",
+    "preserve width mismatch and dump-off validation",
+    "attempt statuses, per-signal first tick, change tick and read method in JSON/CSV/text diagnostics and trace"
+  ],
+  "real_fsdb_reproduction": {
+    "user_original_fsdb_available": false,
+    "writer_generated_fsdb_with_real_vcs_kdb": true,
+    "dump_start_ticks": {
+      "actual_interface": 60000,
+      "intermediate_port": 10000,
+      "formal_port": 0
+    },
+    "fsdb_timescale": "1ns",
+    "requested_time": "1ns",
+    "baseline_tool_version": "1.3.4",
+    "baseline_no_initial_signals": 4,
+    "after_values_read": 4,
+    "after_values": {
+      "direction_top.u_wrap.dut.xxx.clk": "1",
+      "direction_top.u_wrap.dut.xxx.data": "10xz0101",
+      "direction_top.u_wrap.dut.xxx.pad": "z",
+      "direction_top.u_wrap.dut.xxx.req": "1"
+    },
+    "after_directions_complete": true,
+    "before": "runs/early_time_before.json",
+    "after": "runs/early_time_after.json"
+  },
+  "source_checks": {
+    "cases": 22,
+    "vcs_assign_replays": 5,
+    "vcs_force_release_replays": 1,
+    "evidence": "runs/early_time_source.json"
+  },
+  "frozen_checks": {
+    "cases": 21,
+    "vcs_assign_replays": 5,
+    "vcs_force_release_replays": 1,
+    "evidence": "runs/early_time_frozen.json",
+    "controlled_hooks_use_bundled_backend": true
+  },
+  "controlled_seek_tests": {
+    "api_degradation_is_controlled_test": true,
+    "actual_first_next_records_unchanged": true,
+    "failed_seek_and_future_seek": true,
+    "same_timestamp_last_value": "0011",
+    "evidence": [
+      "runs/early_time_seek_recovery.json",
+      "runs/early_time_last_delta.json"
+    ]
+  },
+  "genuine_missing_data": {
+    "status": "no_initial_value",
+    "values_remain_null": true,
+    "no_future_value_substitution": true,
+    "evidence": "runs/early_time_no_initial.json"
+  },
+  "renamed_slice_concat": {
+    "status": "pass",
+    "evidence": "runs/early_time_remap.json"
+  },
+  "core_regression": {
+    "groups": 10,
+    "status": "pass",
+    "evidence": "runs/early_time_core.json"
+  },
+  "deep_regression": {
+    "cases": 16,
+    "module_levels": 13,
+    "hierarchy_segments": 23,
+    "status": "pass",
+    "evidence": "runs/early_time_deep.json"
+  },
+  "unit_gui": {
+    "tests": 30,
+    "vm_passed": 30,
+    "skipped_on_vm": 0
+  },
+  "frozen_gui": {
+    "status": "pass",
+    "mode": "frozen_gui_local",
+    "signals": 4,
+    "interface_alias_case": true,
+    "scope": "direction_top.u_wrap.dut",
+    "tool_version": "1.3.5",
+    "requested_time": "1ns",
+    "directions_complete": true,
+    "responsive_ui_queries": 64,
+    "assign_preview": true,
+    "detailed_logs": true,
+    "release": "/root/wave_init/build/linux_package_ti5jzm60/stage/wave_init-linux-x86_64",
+    "evidence_directory": "/root/wave_init/build/frozen_gui_v05j8hjs"
+  },
+  "portable": {
+    "status": "pass",
+    "evidence": "runs/early_time_portable.json",
+    "platforms": [
+      "CentOS 7",
+      "Ubuntu Base 22.04.5 userspace / glibc 2.35 on CentOS kernel"
+    ],
+    "non_root": true,
+    "read_only_and_spaces": true,
+    "system_python_required": false,
+    "signals": 16,
+    "vcs_assign_replay": "pass"
+  },
+  "archive": {
+    "file": "dist/wave_init-1.3.5-linux-x86_64.tar.gz",
+    "sha256": "97cdf4a8b958321536257106469d2668ab82edfc0840a10a88cdcf65b8916137",
+    "size_bytes": 26993397,
+    "source_hashes_match": true
+  }
+}
